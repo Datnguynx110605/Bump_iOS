@@ -28,7 +28,7 @@ struct OtpVerifyView: View {
             VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 TextField("000000", text: $otp)
                     .textFieldStyle(.bump)
-                    .font(.system(size: 28, weight: .semibold, design: .monospaced))
+                    .font(.system(.title, design: .monospaced, weight: .semibold))
                     .kerning(6)
                     .multilineTextAlignment(.center)
                     .keyboardType(.numberPad)

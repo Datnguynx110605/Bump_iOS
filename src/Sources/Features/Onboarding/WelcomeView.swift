@@ -16,12 +16,12 @@ struct WelcomeView: View {
                         ))
                         .frame(width: 96, height: 96)
                     Image(systemName: "mappin.and.ellipse")
-                        .font(.system(size: 40, weight: .semibold))
+                        .font(.system(.largeTitle, weight: .semibold))
                         .foregroundStyle(.white)
                 }
 
                 Text("Bump")
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
 
                 Text("Discover great local spots through the people around you.")
                     .font(.subheadline)
@@ -50,6 +50,6 @@ struct WelcomeView: View {
             .padding(.bottom, BumpSpacing.l)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
+        .background(BumpColor.surface)
     }
 }

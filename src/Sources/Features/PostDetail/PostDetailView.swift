@@ -1,14 +1,18 @@
 import SwiftUI
 import UIKit
 
+private let commentPollInterval: Duration = .seconds(20)
+
 struct PostDetailView: View {
     let postId: UUID
     @Environment(AppEnvironment.self) private var environment
     @Environment(AuthSession.self) private var authSession
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: PostDetailViewModel?
     @State private var showingReportSheet = false
     @State private var showingDeleteConfirm = false
+    @State private var isVisible = false
 
     var body: some View {
         Group {
@@ -33,6 +37,16 @@ struct PostDetailView: View {
                 )
             }
             await viewModel?.loadIfNeeded()
+        }
+        .onAppear { isVisible = true }
+        .onDisappear { isVisible = false }
+        .task(id: "\(isVisible)-\(scenePhase == .active)") {
+            guard isVisible, scenePhase == .active else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: commentPollInterval)
+                if Task.isCancelled { return }
+                await viewModel?.checkForNewComments()
+            }
         }
         .navigationTitle("Post")
         .navigationBarTitleDisplayMode(.inline)
@@ -96,8 +110,23 @@ private struct PostDetailContent: View {
 
     @ViewBuilder
     private var commentsSection: some View {
-        Text("Comments")
-            .font(.headline)
+        HStack {
+            Text("Comments")
+                .font(.headline)
+            Spacer()
+            if viewModel.hasNewComments {
+                Button {
+                    Task { await viewModel.loadComments() }
+                } label: {
+                    Label("New comments", systemImage: "arrow.clockwise")
+                        .font(.footnote.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(BumpColor.brand)
+                .transition(.opacity)
+            }
+        }
+        .animation(BumpMotion.quick, value: viewModel.hasNewComments)
 
         if viewModel.isLoadingComments && viewModel.comments.isEmpty {
             ProgressView().frame(maxWidth: .infinity)

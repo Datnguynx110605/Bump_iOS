@@ -24,6 +24,7 @@
 		2A612F320AAC676779B91B38 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9370927AFA89777964C38F5 /* EditProfileView.swift */; };
 		2E2F275F37D42679C696017B /* ReactorsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CE6E8E84B7ED2F5D0ECA02 /* ReactorsListViewModel.swift */; };
 		2F3B4A849F597E1AABE26DA6 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D846CBCC8887A78FF9AE338 /* WelcomeView.swift */; };
+		2FAAE7309BA31EE714639481 /* UIImage+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B7F6DEDD1B34DC468DB26 /* UIImage+Orientation.swift */; };
 		307A0469DDE73F95790E6024 /* CommentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3594662C05F3F19567D718DF /* CommentService.swift */; };
 		31265380D15459248102ACD3 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E5C2B553DCE27157C162F2 /* Validation.swift */; };
 		31D608C2ECEED00301346FA3 /* ChangeEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4D2C181499A0C4D36F7B99 /* ChangeEmailView.swift */; };
@@ -130,6 +131,7 @@
 		4FED0076D4C72B203378C79F /* SignUpEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpEmailView.swift; sourceTree = "<group>"; };
 		521FA3CB5DF6A0DEEE569E5A /* ActivityHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHistoryViewModel.swift; sourceTree = "<group>"; };
 		56AECD0E4F359EEA10CF71C4 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		5A3B7F6DEDD1B34DC468DB26 /* UIImage+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Orientation.swift"; sourceTree = "<group>"; };
 		5FC0AA27DF0E8224F330C088 /* StateViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateViews.swift; sourceTree = "<group>"; };
 		6050DD9B4C65DE45CC926EAE /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		63FDB1D31F3D6D8F06025BC6 /* SavedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedViewModel.swift; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 				5FC0AA27DF0E8224F330C088 /* StateViews.swift */,
 				10D735438BEB0338B2A41F81 /* Styles.swift */,
 				CCA84BBD62BB563A51AA629F /* Theme.swift */,
+				5A3B7F6DEDD1B34DC468DB26 /* UIImage+Orientation.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -669,6 +672,7 @@
 				5528F98DEFF0D12282476D83 /* StateViews.swift in Sources */,
 				E844BA500EF42290487ED6D2 /* Styles.swift in Sources */,
 				15240CAA83600DCC46640EDB /* Theme.swift in Sources */,
+				2FAAE7309BA31EE714639481 /* UIImage+Orientation.swift in Sources */,
 				31265380D15459248102ACD3 /* Validation.swift in Sources */,
 				2F3B4A849F597E1AABE26DA6 /* WelcomeView.swift in Sources */,
 				A375271F107A06556551076F /* Wrapped.swift in Sources */,

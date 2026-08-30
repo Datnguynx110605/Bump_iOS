@@ -34,7 +34,7 @@ struct EditProfileView: View {
                             }
                             .overlay(alignment: .bottomTrailing) {
                                 Image(systemName: "camera.circle.fill")
-                                    .font(.system(size: 26))
+                                    .font(.system(.title2))
                                     .foregroundStyle(.white, Color.accentColor)
                             }
                         }

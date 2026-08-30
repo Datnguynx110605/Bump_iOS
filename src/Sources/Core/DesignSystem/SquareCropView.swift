@@ -138,12 +138,16 @@ struct SquareCropView: View {
         let cropRect = CGRect(x: originPixels.x, y: originPixels.y, width: sidePixels, height: sidePixels)
             .intersection(CGRect(origin: .zero, size: pixelSize))
 
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: exportSide, height: exportSide))
+        // Never upscale past the source crop, and cap at exportSide either way.
+        let outputSide = min(exportSide, max(cropRect.width, cropRect.height, 1))
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1 // otherwise the renderer multiplies by the device's screen scale (2x/3x)
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: outputSide, height: outputSide), format: format)
         let data = renderer.jpegData(withCompressionQuality: 0.85) { _ in
             if let cgImage = image.cgImage, let cropped = cgImage.cropping(to: cropRect) {
-                UIImage(cgImage: cropped).draw(in: CGRect(x: 0, y: 0, width: exportSide, height: exportSide))
+                UIImage(cgImage: cropped).draw(in: CGRect(x: 0, y: 0, width: outputSide, height: outputSide))
             } else {
-                image.draw(in: CGRect(x: 0, y: 0, width: exportSide, height: exportSide))
+                image.draw(in: CGRect(x: 0, y: 0, width: outputSide, height: outputSide))
             }
         }
         onConfirm(data)

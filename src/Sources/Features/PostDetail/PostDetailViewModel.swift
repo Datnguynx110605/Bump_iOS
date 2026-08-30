@@ -16,11 +16,13 @@ final class PostDetailViewModel {
     var errorMessage: String?
     var commentDraft = ""
     var didDelete = false
+    var hasNewComments = false
 
     var selectedCommentImages: [Data] = []
 
     private var nextCommentsCursor: String?
     private var hasMoreComments = true
+    private var topCommentId: UUID?
     private let postService: PostService
     private let commentService: CommentService
 
@@ -64,7 +66,18 @@ final class PostDetailViewModel {
             comments = page.items
             nextCommentsCursor = page.nextCursor
             hasMoreComments = page.hasMore
+            topCommentId = page.items.first?.id
+            hasNewComments = false
         } catch {
+        }
+    }
+
+    /// Cheap single-item probe used for battery-friendly polling while this post is open.
+    func checkForNewComments() async {
+        guard !isLoadingComments else { return }
+        guard let page = try? await commentService.byPost(postId, cursor: nil, pageSize: 1) else { return }
+        if let latestId = page.items.first?.id, latestId != topCommentId {
+            hasNewComments = true
         }
     }
 
