@@ -1,9 +1,13 @@
 import SwiftUI
 
+private let feedPollInterval: Duration = .seconds(25)
+
 struct FeedView: View {
     @Environment(AppEnvironment.self) private var environment
+    @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: FeedViewModel?
     @State private var hasAppearedOnce = false
+    @State private var isVisible = false
 
     var body: some View {
         NavigationStack {
@@ -18,13 +22,23 @@ struct FeedView: View {
             await viewModel?.loadInitialIfNeeded()
         }
         .onAppear {
+            isVisible = true
             if hasAppearedOnce {
-                Task { await viewModel?.reload() }
+                Task { await viewModel?.refreshIfStale() }
             }
             hasAppearedOnce = true
         }
+        .onDisappear { isVisible = false }
         .onChange(of: environment.feedRefreshSignal.version) { _, _ in
             Task { await viewModel?.reload() }
+        }
+        .task(id: "\(isVisible)-\(scenePhase == .active)") {
+            guard isVisible, scenePhase == .active else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: feedPollInterval)
+                if Task.isCancelled { return }
+                await viewModel?.checkForNewPosts()
+            }
         }
     }
 
@@ -40,6 +54,7 @@ struct FeedView: View {
 
 private struct FeedListView: View {
     @Bindable var viewModel: FeedViewModel
+    private let topAnchor = "feed-top"
 
     var body: some View {
         Group {
@@ -48,43 +63,78 @@ private struct FeedListView: View {
             } else if let errorMessage = viewModel.errorMessage, viewModel.posts.isEmpty {
                 ErrorStateView(message: errorMessage) { Task { await viewModel.reload() } }
             } else {
-                List {
-                    Section {
-                        Picker("Sort", selection: $viewModel.sort) {
-                            ForEach(FeedSort.allCases) { sort in
-                                Text(sort.rawValue).tag(sort)
+                ScrollViewReader { scrollProxy in
+                    List {
+                        Section {
+                            Picker("Sort", selection: $viewModel.sort) {
+                                ForEach(FeedSort.allCases) { sort in
+                                    Text(sort.rawValue).tag(sort)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                        }
+                        .id(topAnchor)
+
+                        if viewModel.posts.isEmpty {
+                            EmptyStateView(
+                                icon: "photo.on.rectangle.angled",
+                                title: "No posts yet",
+                                message: "Be the first to share a spot."
+                            )
+                            .listRowSeparator(.hidden)
+                        } else {
+                            ForEach(viewModel.posts) { item in
+                                PostRowView(item: item)
+                                    .listRowSeparator(.hidden)
+                                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                                    .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
+                            }
+                            if viewModel.isLoadingMore {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                                    .listRowSeparator(.hidden)
                             }
                         }
-                        .pickerStyle(.segmented)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                     }
-
-                    if viewModel.posts.isEmpty {
-                        EmptyStateView(
-                            icon: "photo.on.rectangle.angled",
-                            title: "No posts yet",
-                            message: "Be the first to share a spot."
-                        )
-                        .listRowSeparator(.hidden)
-                    } else {
-                        ForEach(viewModel.posts) { item in
-                            PostRowView(item: item)
-                                .listRowSeparator(.hidden)
-                                .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-                                .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
-                        }
-                        if viewModel.isLoadingMore {
-                            ProgressView()
-                                .frame(maxWidth: .infinity)
-                                .listRowSeparator(.hidden)
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .refreshable { await viewModel.reload() }
+                    .safeAreaInset(edge: .top) {
+                        if viewModel.hasNewPosts {
+                            NewPostsPill {
+                                Task {
+                                    await viewModel.reload()
+                                    withAnimation(BumpMotion.standard) {
+                                        scrollProxy.scrollTo(topAnchor, anchor: .top)
+                                    }
+                                }
+                            }
+                            .padding(.top, BumpSpacing.s)
+                            .transition(.move(edge: .top).combined(with: .opacity))
                         }
                     }
+                    .animation(BumpMotion.standard, value: viewModel.hasNewPosts)
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .refreshable { await viewModel.reload() }
             }
         }
+    }
+}
+
+private struct NewPostsPill: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label("New posts", systemImage: "arrow.up.circle.fill")
+                .font(.subheadline.weight(.semibold))
+                .padding(.horizontal, BumpSpacing.m)
+                .padding(.vertical, BumpSpacing.s)
+                .background(BumpColor.brand, in: Capsule())
+                .foregroundStyle(.white)
+                .shadow(radius: 4, y: 2)
+        }
+        .buttonStyle(.plain)
     }
 }

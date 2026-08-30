@@ -19,9 +19,11 @@ final class FeedViewModel {
     var isLoading = false
     var isLoadingMore = false
     var errorMessage: String?
+    var hasNewPosts = false
 
     private var nextCursor: String?
     private var hasMore = true
+    private var topPostId: UUID?
     private let postService: PostService
 
     init(postService: PostService) {
@@ -42,9 +44,27 @@ final class FeedViewModel {
             posts = page.items
             nextCursor = page.nextCursor
             hasMore = page.hasMore
+            topPostId = page.items.first?.id
+            hasNewPosts = false
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
         }
+    }
+
+    /// Cheap freshness probe (single-item page) so revisiting the feed doesn't force a full
+    /// reload — and idle polling doesn't cost more than a tiny request every cycle.
+    func checkForNewPosts() async {
+        guard sort == .latest, !isLoading else { return }
+        guard let page = try? await postService.latest(cursor: nil, pageSize: 1) else { return }
+        if let latestId = page.items.first?.id, latestId != topPostId {
+            hasNewPosts = true
+        }
+    }
+
+    func refreshIfStale() async {
+        guard !posts.isEmpty else { await reload(); return }
+        await checkForNewPosts()
+        if hasNewPosts { await reload() }
     }
 
     func loadMoreIfNeeded(currentItem: PostFeedItemDto) async {
