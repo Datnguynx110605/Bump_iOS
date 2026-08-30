@@ -32,8 +32,8 @@ struct FeedView: View {
         .onChange(of: environment.feedRefreshSignal.version) { _, _ in
             Task { await viewModel?.reload() }
         }
-        .task(id: "\(isVisible)-\(scenePhase == .active)") {
-            guard isVisible, scenePhase == .active else { return }
+        .task(id: "\(isVisible)-\(scenePhase == .active)-\(viewModel?.sort.rawValue ?? "")") {
+            guard isVisible, scenePhase == .active, viewModel?.sort == .latest else { return }
             while !Task.isCancelled {
                 try? await Task.sleep(for: feedPollInterval)
                 if Task.isCancelled { return }

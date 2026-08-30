@@ -96,6 +96,14 @@ private struct PostDetailContent: View {
                     .padding(BumpSpacing.m)
                 }
                 .refreshable { await viewModel.refresh() }
+                .safeAreaInset(edge: .top) {
+                    if viewModel.hasNewComments {
+                        NewCommentsPill { Task { await viewModel.loadComments() } }
+                            .padding(.top, BumpSpacing.s)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+                .animation(BumpMotion.quick, value: viewModel.hasNewComments)
             } else if viewModel.isLoadingPost {
                 LoadingView()
             } else if let errorMessage = viewModel.errorMessage {
@@ -110,23 +118,8 @@ private struct PostDetailContent: View {
 
     @ViewBuilder
     private var commentsSection: some View {
-        HStack {
-            Text("Comments")
-                .font(.headline)
-            Spacer()
-            if viewModel.hasNewComments {
-                Button {
-                    Task { await viewModel.loadComments() }
-                } label: {
-                    Label("New comments", systemImage: "arrow.clockwise")
-                        .font(.footnote.weight(.semibold))
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(BumpColor.brand)
-                .transition(.opacity)
-            }
-        }
-        .animation(BumpMotion.quick, value: viewModel.hasNewComments)
+        Text("Comments")
+            .font(.headline)
 
         if viewModel.isLoadingComments && viewModel.comments.isEmpty {
             ProgressView().frame(maxWidth: .infinity)
@@ -203,6 +196,23 @@ private struct PostDetailContent: View {
         }
         .padding(.vertical, BumpSpacing.s)
         .background(.bar)
+    }
+}
+
+private struct NewCommentsPill: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label("New comments", systemImage: "arrow.up.circle.fill")
+                .font(.subheadline.weight(.semibold))
+                .padding(.horizontal, BumpSpacing.m)
+                .padding(.vertical, BumpSpacing.s)
+                .background(BumpColor.brand, in: Capsule())
+                .foregroundStyle(.white)
+                .shadow(radius: 4, y: 2)
+        }
+        .buttonStyle(.plain)
     }
 }
 

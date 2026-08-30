@@ -113,6 +113,8 @@ final class PostDetailViewModel {
                 reactionAmount: created.reactionAmount,
                 createdAt: created.createdAt
             ), at: 0)
+            topCommentId = comments.first?.id
+            hasNewComments = false
             commentDraft = ""
             selectedCommentImages = []
             await loadPost()
@@ -125,6 +127,7 @@ final class PostDetailViewModel {
         do {
             try await commentService.delete(commentId: comment.id)
             comments.removeAll { $0.id == comment.id }
+            topCommentId = comments.first?.id
             await loadPost()
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? "Couldn't delete that comment."

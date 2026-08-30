@@ -52,6 +52,7 @@ struct SquarePhotoAttachmentPicker<Content: View>: View {
         .fullScreenCover(isPresented: $showingFlow) {
             PhotoCropFlow(initialImages: flowSeedImages) { croppedData in
                 images.append(contentsOf: croppedData)
+                flowSeedImages = []
             }
         }
     }
