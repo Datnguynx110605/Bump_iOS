@@ -37,7 +37,7 @@ struct CommentRowView: View {
                                 case .success(let img):
                                     img.resizable().scaledToFill()
                                 default:
-                                    Rectangle().fill(Color(.tertiarySystemFill))
+                                    Rectangle().fill(BumpColor.fill)
                                 }
                             }
                             .frame(width: 96, height: 96)

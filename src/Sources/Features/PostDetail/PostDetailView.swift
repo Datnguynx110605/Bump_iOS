@@ -200,19 +200,22 @@ private struct PostHeaderSection: View {
             .buttonStyle(.plain)
 
             if !post.images.isEmpty {
-                TabView {
-                    ForEach(post.images, id: \.url) { image in
-                        CachedAsyncImage(url: URL(string: image.url), targetSize: CGSize(width: 400, height: 320)) { phase in
-                            switch phase {
-                            case .success(let img): img.resizable().scaledToFill()
-                            default: Rectangle().fill(Color(.tertiarySystemFill))
+                GeometryReader { proxy in
+                    TabView {
+                        ForEach(post.images, id: \.url) { image in
+                            CachedAsyncImage(url: URL(string: image.url), targetSize: CGSize(width: proxy.size.width, height: proxy.size.width)) { phase in
+                                switch phase {
+                                case .success(let img): img.resizable().scaledToFill()
+                                default: Rectangle().fill(BumpColor.fill)
+                                }
                             }
+                            .frame(width: proxy.size.width, height: proxy.size.width)
+                            .clipped()
                         }
-                        .clipped()
                     }
+                    .tabViewStyle(.page)
                 }
-                .tabViewStyle(.page)
-                .frame(height: 320)
+                .aspectRatio(1, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: BumpRadius.card))
             }
 

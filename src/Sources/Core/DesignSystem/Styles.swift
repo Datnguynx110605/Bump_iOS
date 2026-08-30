@@ -34,7 +34,7 @@ struct BumpTextFieldStyle: TextFieldStyle {
         configuration
             .padding(.horizontal, BumpSpacing.m)
             .padding(.vertical, 12)
-            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: BumpRadius.control))
+            .background(BumpColor.surfaceSecondary, in: RoundedRectangle(cornerRadius: BumpRadius.control))
     }
 }
 

@@ -27,14 +27,14 @@ struct PostThumbnailGrid: View {
                     case .success(let image):
                         image.resizable().scaledToFill()
                     default:
-                        Rectangle().fill(Color(.tertiarySystemFill))
+                        Rectangle().fill(BumpColor.fill)
                     }
                 }
                 .frame(width: proxy.size.width, height: proxy.size.width)
                 .clipped()
             } else {
                 Rectangle()
-                    .fill(Color(.tertiarySystemFill))
+                    .fill(BumpColor.fill)
                     .frame(width: proxy.size.width, height: proxy.size.width)
                     .overlay {
                         Image(systemName: "text.bubble")

@@ -51,18 +51,21 @@ struct PostRowView: View {
             shopRow
 
             if let firstImage = post.images.first, let url = URL(string: firstImage.url) {
-                CachedAsyncImage(url: url, targetSize: CGSize(width: 400, height: 220)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().scaledToFill()
-                    case .empty:
-                        Rectangle().fill(Color(.tertiarySystemFill)).overlay(ProgressView())
-                    case .failure:
-                        Rectangle().fill(Color(.tertiarySystemFill))
+                GeometryReader { proxy in
+                    CachedAsyncImage(url: url, targetSize: CGSize(width: proxy.size.width, height: proxy.size.width)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().scaledToFill()
+                        case .empty:
+                            Rectangle().fill(BumpColor.fill).overlay(ProgressView())
+                        case .failure:
+                            Rectangle().fill(BumpColor.fill)
+                        }
                     }
+                    .frame(width: proxy.size.width, height: proxy.size.width)
+                    .clipped()
                 }
-                .frame(height: 220)
-                .clipped()
+                .aspectRatio(1, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: BumpRadius.card))
             }
 
