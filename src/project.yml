@@ -33,6 +33,7 @@ targets:
       properties:
         UILaunchScreen: {}
         UIRequiresFullScreen: true
+        NSCameraUsageDescription: Bump uses your camera so you can take a photo to share in a post or comment.
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSLocalNetworkUsageDescription: Bump connects to your local dev server while testing on a physical device.

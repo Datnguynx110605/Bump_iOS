@@ -1,6 +1,4 @@
 import Foundation
-import PhotosUI
-import SwiftUI
 
 @MainActor
 @Observable
@@ -19,9 +17,6 @@ final class PostDetailViewModel {
     var commentDraft = ""
     var didDelete = false
 
-    var commentPhotoPickerItems: [PhotosPickerItem] = [] {
-        didSet { Task { await loadCommentImages() } }
-    }
     var selectedCommentImages: [Data] = []
 
     private var nextCommentsCursor: String?
@@ -106,22 +101,11 @@ final class PostDetailViewModel {
                 createdAt: created.createdAt
             ), at: 0)
             commentDraft = ""
-            commentPhotoPickerItems = []
             selectedCommentImages = []
             await loadPost()
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? "Couldn't post your comment."
         }
-    }
-
-    private func loadCommentImages() async {
-        var images: [Data] = []
-        for item in commentPhotoPickerItems {
-            if let data = try? await item.loadTransferable(type: Data.self) {
-                images.append(data)
-            }
-        }
-        selectedCommentImages = images
     }
 
     func deleteComment(_ comment: CommentSummaryDto) async {

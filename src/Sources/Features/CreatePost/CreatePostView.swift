@@ -1,5 +1,4 @@
 import SwiftUI
-import PhotosUI
 import UIKit
 
 struct CreatePostView: View {
@@ -52,7 +51,7 @@ private struct CreatePostForm: View {
     var body: some View {
         Form {
             Section {
-                PhotosPicker(selection: $viewModel.photoPickerItems, maxSelectionCount: 6, matching: .images) {
+                SquarePhotoAttachmentPicker(images: $viewModel.selectedImages, maxCount: 6) {
                     Label("Add Photos", systemImage: "photo.on.rectangle")
                 }
                 if !viewModel.selectedImages.isEmpty {

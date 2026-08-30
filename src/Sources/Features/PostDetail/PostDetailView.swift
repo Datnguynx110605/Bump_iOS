@@ -1,4 +1,3 @@
-import PhotosUI
 import SwiftUI
 import UIKit
 
@@ -143,9 +142,9 @@ private struct PostDetailContent: View {
             }
 
             HStack(spacing: BumpSpacing.s) {
-                PhotosPicker(selection: $viewModel.commentPhotoPickerItems, maxSelectionCount: 6, matching: .images) {
+                SquarePhotoAttachmentPicker(images: $viewModel.selectedCommentImages, maxCount: 6) {
                     Image(systemName: "photo.on.rectangle")
-                        .font(.system(size: 20))
+                        .font(.system(.title2))
                         .foregroundStyle(.secondary)
                 }
 
@@ -163,7 +162,7 @@ private struct PostDetailContent: View {
                         ProgressView()
                     } else {
                         Image(systemName: "arrow.up.circle.fill")
-                            .font(.system(size: 30))
+                            .font(.system(.largeTitle))
                     }
                 }
                 .disabled(

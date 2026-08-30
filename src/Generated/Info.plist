@@ -42,6 +42,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Bump uses your camera so you can take a photo to share in a post or comment.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Bump connects to your local dev server while testing on a physical device.</string>
 	<key>UILaunchScreen</key>

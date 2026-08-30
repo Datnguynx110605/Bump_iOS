@@ -15,10 +15,10 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: BumpSpacing.s) {
             Image(systemName: icon)
-                .font(.system(size: 40))
+                .font(.system(.largeTitle))
                 .foregroundStyle(.secondary)
             Text(title)
-                .font(.headline)
+                .font(.title3.weight(.semibold))
             if let message {
                 Text(message)
                     .font(.subheadline)
@@ -39,10 +39,10 @@ struct ErrorStateView: View {
     var body: some View {
         VStack(spacing: BumpSpacing.m) {
             Image(systemName: "wifi.exclamationmark")
-                .font(.system(size: 40))
+                .font(.system(.largeTitle))
                 .foregroundStyle(.secondary)
             Text(message)
-                .font(.subheadline)
+                .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, BumpSpacing.l)

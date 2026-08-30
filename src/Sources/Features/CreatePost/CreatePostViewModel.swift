@@ -1,6 +1,4 @@
 import Foundation
-import PhotosUI
-import SwiftUI
 
 @MainActor
 @Observable
@@ -9,9 +7,6 @@ final class CreatePostViewModel {
     var shopAddress = ""
     var caption = ""
     var rating = 5
-    var photoPickerItems: [PhotosPickerItem] = [] {
-        didSet { Task { await loadImages() } }
-    }
     var selectedImages: [Data] = []
 
     var shopSuggestions: [ShopSummaryDto] = []
@@ -61,16 +56,6 @@ final class CreatePostViewModel {
         shopName = shop.name
         shopAddress = shop.address
         shopSuggestions = []
-    }
-
-    private func loadImages() async {
-        var images: [Data] = []
-        for item in photoPickerItems {
-            if let data = try? await item.loadTransferable(type: Data.self) {
-                images.append(data)
-            }
-        }
-        selectedImages = images
     }
 
     func submit() async {
