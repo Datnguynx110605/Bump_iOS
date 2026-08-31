@@ -16,6 +16,14 @@ struct OnboardingFlowView: View {
                         CreateAccountView(path: $path, email: email, registrationToken: registrationToken)
                     case .login:
                         LoginView(path: $path)
+                    case .recoveryEmail(let purpose):
+                        RecoveryEmailView(path: $path, purpose: purpose)
+                    case .recoveryOtpVerify(let purpose, let email):
+                        RecoveryOtpVerifyView(path: $path, purpose: purpose, email: email)
+                    case .resetPassword(let email, let registrationToken):
+                        ResetPasswordView(path: $path, email: email, registrationToken: registrationToken)
+                    case .recoverAccountConfirm(let email, let registrationToken):
+                        RecoverAccountConfirmView(path: $path, email: email, registrationToken: registrationToken)
                     }
                 }
         }

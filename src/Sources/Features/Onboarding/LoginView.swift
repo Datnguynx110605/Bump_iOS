@@ -40,6 +40,22 @@ struct LoginView: View {
                 .textContentType(.password)
                 .onSubmit { Task { await login() } }
 
+            HStack {
+                Button {
+                    path.append(.recoveryEmail(purpose: .forgotPassword))
+                } label: {
+                    Text("Forgot password?")
+                        .font(.subheadline.weight(.medium))
+                }
+                Spacer()
+                Button {
+                    path.append(.recoveryEmail(purpose: .recoverAccount))
+                } label: {
+                    Text("Recover account")
+                        .font(.subheadline.weight(.medium))
+                }
+            }
+
             if let errorMessage {
                 InlineErrorBanner(message: errorMessage)
             }

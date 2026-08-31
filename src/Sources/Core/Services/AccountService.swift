@@ -46,6 +46,24 @@ struct AccountService {
         ))
     }
 
+    func recoverAccount(registrationToken: String) async throws {
+        let _: EmptyResponse = try await api.send(.json(
+            path: "api/v1/Account/recover",
+            method: .post,
+            body: RecoverAccountRequest(registrationToken: registrationToken),
+            requiresAuth: false
+        ))
+    }
+
+    func resetPassword(registrationToken: String, newPassword: String) async throws {
+        let _: EmptyResponse = try await api.send(.json(
+            path: "api/v1/Account/reset-password",
+            method: .put,
+            body: ResetPasswordRequest(registrationToken: registrationToken, newPassword: newPassword),
+            requiresAuth: false
+        ))
+    }
+
     func changeAvatar(_ image: ImageUpload) async throws {
         var form = MultipartFormData()
         form.addFile(name: "avatar", filename: image.filename, mimeType: image.mimeType, fileData: image.data)

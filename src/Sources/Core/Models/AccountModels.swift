@@ -48,3 +48,12 @@ struct ChangePasswordRequest: Encodable {
 struct ChangeEmailRequest: Encodable {
     let registrationToken: String
 }
+
+struct RecoverAccountRequest: Encodable {
+    let registrationToken: String
+}
+
+struct ResetPasswordRequest: Encodable {
+    let registrationToken: String
+    let newPassword: String
+}
