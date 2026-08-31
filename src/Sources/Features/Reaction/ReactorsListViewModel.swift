@@ -57,7 +57,7 @@ final class ReactorsListViewModel {
             hasMore = page.hasMore
         } catch {
             if !append {
-                errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+                errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
             }
         }
     }

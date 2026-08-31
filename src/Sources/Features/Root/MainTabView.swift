@@ -9,15 +9,28 @@ struct MainTabView: View {
     @State private var selectedTab: MainTab = .feed
     @State private var showingCreatePost = false
 
+    private var selectedTabBinding: Binding<MainTab> {
+        Binding(
+            get: { selectedTab },
+            set: { newValue in
+                if newValue == .create {
+                    showingCreatePost = true
+                } else {
+                    selectedTab = newValue
+                }
+            }
+        )
+    }
+
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: selectedTabBinding) {
             Tab("Feed", systemImage: "house.fill", value: MainTab.feed) {
                 FeedView()
             }
             Tab("Search", systemImage: "magnifyingglass", value: MainTab.search) {
                 SearchView()
             }
-            Tab("Post", systemImage: "plus.circle.fill", value: MainTab.create) {
+            Tab("tab.post", systemImage: "plus.circle.fill", value: MainTab.create) {
                 Color.clear
             }
             Tab("Alerts", systemImage: "bell.fill", value: MainTab.notifications) {
@@ -30,12 +43,6 @@ struct MainTabView: View {
                             .appRouteDestinations()
                     }
                 }
-            }
-        }
-        .onChange(of: selectedTab) { _, newValue in
-            if newValue == .create {
-                showingCreatePost = true
-                selectedTab = .feed
             }
         }
         .sheet(isPresented: $showingCreatePost) {

@@ -30,8 +30,8 @@ struct RatingPickerView: View {
             }
         }
         .accessibilityElement()
-        .accessibilityLabel("Rating")
-        .accessibilityValue("\(rating) out of \(maxRating) stars")
+        .accessibilityLabel(String(localized: "Rating"))
+        .accessibilityValue(String(localized: "\(rating) out of \(maxRating) stars"))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: rating = min(rating + 1, maxRating)

@@ -10,7 +10,7 @@ struct SavedView: View {
                 VStack(spacing: 0) {
                     Picker("", selection: Bindable(viewModel).tab) {
                         ForEach(SavedTab.allCases, id: \.self) { tab in
-                            Text(tab.rawValue).tag(tab)
+                            Text(tab.displayName).tag(tab)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -44,7 +44,7 @@ struct SavedView: View {
         } else if let errorMessage = viewModel.errorMessage, viewModel.posts.isEmpty {
             ErrorStateView(message: errorMessage) { Task { await viewModel.loadPosts() } }
         } else if viewModel.posts.isEmpty {
-            EmptyStateView(icon: "bookmark", title: "No saved posts yet")
+            EmptyStateView(icon: "bookmark", title: String(localized: "No saved posts yet"))
         } else {
             ScrollView {
                 PostThumbnailGrid(posts: viewModel.posts) { post in
@@ -62,7 +62,7 @@ struct SavedView: View {
         } else if let errorMessage = viewModel.errorMessage, viewModel.shops.isEmpty {
             ErrorStateView(message: errorMessage) { Task { await viewModel.loadShops() } }
         } else if viewModel.shops.isEmpty {
-            EmptyStateView(icon: "bookmark", title: "No saved shops yet")
+            EmptyStateView(icon: "bookmark", title: String(localized: "No saved shops yet"))
         } else {
             List {
                 ForEach(viewModel.shops) { shop in

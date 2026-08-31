@@ -31,7 +31,7 @@ struct SignUpEmailView: View {
                     .autocorrectionDisabled()
                     .focused($isFocused)
                 if !email.isEmpty && !isValid {
-                    FieldHint(text: "Enter a valid email address.", tone: .error)
+                    FieldHint(text: String(localized: "Enter a valid email address."), tone: .error)
                 }
             }
 
@@ -63,7 +63,7 @@ struct SignUpEmailView: View {
             try await environment.emailService.sendForRegister(email: email)
             path.append(.otpVerify(email: email))
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 }

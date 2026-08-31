@@ -4,10 +4,13 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AuthSession.self) private var authSession
     @Environment(AppEnvironment.self) private var environment
+    @Environment(LanguagePreference.self) private var languagePreference
     @State private var showingDeleteConfirm = false
     @State private var deleteError: String?
+    @AppStorage(NotificationPreference.key) private var notificationsEnabled = true
 
     var body: some View {
+        @Bindable var languagePreference = languagePreference
         NavigationStack {
             Form {
                 Section("Profile") {
@@ -21,6 +24,21 @@ struct SettingsView: View {
 
                 Section("Activity") {
                     NavigationLink("Activity History") { ActivityHistoryView() }
+                }
+
+                Section("Notifications") {
+                    Toggle("Enable Notifications", isOn: $notificationsEnabled)
+                        .onChange(of: notificationsEnabled) { _, isOn in
+                            if isOn { LocalNotificationScheduler.requestAuthorizationIfNeeded() }
+                        }
+                }
+
+                Section("Language") {
+                    Picker("Language", selection: $languagePreference.language) {
+                        ForEach(AppLanguage.allCases) { language in
+                            Text(language.displayName).tag(language)
+                        }
+                    }
                 }
 
                 Section {
@@ -59,7 +77,7 @@ struct SettingsView: View {
             try await environment.accountService.deleteAccount()
             authSession.signOut()
         } catch {
-            deleteError = (error as? LocalizedError)?.errorDescription ?? "Couldn't delete your account."
+            deleteError = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't delete your account.")
         }
     }
 }

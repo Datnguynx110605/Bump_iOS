@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import UIKit
 
 struct EditProfileView: View {
     @Environment(AppEnvironment.self) private var environment
@@ -13,6 +14,8 @@ struct EditProfileView: View {
     @State private var errorMessage: String?
     @State private var photoPickerItem: PhotosPickerItem?
     @State private var isUploadingAvatar = false
+    @State private var croppingImage: UIImage?
+    @State private var showingCrop = false
 
     private var isNameValid: Bool { AccountNameRule.isValid(name) }
 
@@ -49,7 +52,7 @@ struct EditProfileView: View {
                         .autocorrectionDisabled()
                         .onChange(of: name) { _, newValue in name = AccountNameRule.sanitize(newValue) }
                     FieldHint(
-                        text: name.isEmpty ? "Lowercase letters and numbers only." : "Looks good.",
+                        text: name.isEmpty ? String(localized: "Lowercase letters and numbers only.") : String(localized: "Looks good."),
                         tone: name.isEmpty ? .neutral : .success)
                 }
 
@@ -78,7 +81,19 @@ struct EditProfileView: View {
         }
         .task { await load() }
         .onChange(of: photoPickerItem) { _, newValue in
-            Task { await uploadAvatar(newValue) }
+            Task { await loadForCropping(newValue) }
+        }
+        .fullScreenCover(isPresented: $showingCrop) {
+            if let croppingImage {
+                SquareCropView(
+                    image: croppingImage,
+                    onConfirm: { data in
+                        showingCrop = false
+                        Task { await uploadAvatar(data) }
+                    },
+                    onCancel: { showingCrop = false }
+                )
+            }
         }
     }
 
@@ -91,7 +106,7 @@ struct EditProfileView: View {
             name = me.name.value
             bio = me.bio ?? ""
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 
@@ -111,24 +126,30 @@ struct EditProfileView: View {
             environment.feedRefreshSignal.bump()
             dismiss()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Couldn't save your changes."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't save your changes.")
         }
     }
 
-    private func uploadAvatar(_ item: PhotosPickerItem?) async {
+    private func loadForCropping(_ item: PhotosPickerItem?) async {
         guard let item else { return }
+        defer { photoPickerItem = nil }
+        guard let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) else { return }
+        croppingImage = image.normalizedOrientation()
+        showingCrop = true
+    }
+
+    private func uploadAvatar(_ data: Data) async {
         isUploadingAvatar = true
         errorMessage = nil
         defer { isUploadingAvatar = false }
         do {
-            guard let data = try await item.loadTransferable(type: Data.self) else { return }
             try await environment.accountService.changeAvatar(ImageUpload(filename: "avatar.jpg", mimeType: "image/jpeg", data: data))
             let updated = try await environment.accountService.me()
             account = updated
             environment.accountCache.store(updated)
             environment.feedRefreshSignal.bump()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Couldn't update your photo."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't update your photo.")
         }
     }
 }

@@ -68,7 +68,7 @@ private struct FeedListView: View {
                         Section {
                             Picker("Sort", selection: $viewModel.sort) {
                                 ForEach(FeedSort.allCases) { sort in
-                                    Text(sort.rawValue).tag(sort)
+                                    Text(sort.displayName).tag(sort)
                                 }
                             }
                             .pickerStyle(.segmented)
@@ -80,8 +80,8 @@ private struct FeedListView: View {
                         if viewModel.posts.isEmpty {
                             EmptyStateView(
                                 icon: "photo.on.rectangle.angled",
-                                title: "No posts yet",
-                                message: "Be the first to share a spot."
+                                title: String(localized: "No posts yet"),
+                                message: String(localized: "Be the first to share a spot.")
                             )
                             .listRowSeparator(.hidden)
                         } else {

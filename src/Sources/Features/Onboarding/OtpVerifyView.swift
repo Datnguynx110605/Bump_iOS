@@ -37,7 +37,7 @@ struct OtpVerifyView: View {
                         otp = String(newValue.filter(\.isNumber).prefix(6))
                     }
                 if !otp.isEmpty && !isValid {
-                    FieldHint(text: "Enter all 6 digits (\(otp.count)/6).", tone: .neutral)
+                    FieldHint(text: String(localized: "Enter all 6 digits (\(otp.count)/6)."), tone: .neutral)
                 }
             }
 
@@ -81,7 +81,7 @@ struct OtpVerifyView: View {
             let registrationToken = try await environment.emailService.verify(email: email, otp: otp)
             path.append(.createAccount(email: email, registrationToken: registrationToken))
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 
@@ -91,7 +91,7 @@ struct OtpVerifyView: View {
             try await environment.emailService.sendForRegister(email: email)
             startCooldown()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 

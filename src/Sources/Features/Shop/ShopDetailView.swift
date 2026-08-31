@@ -42,7 +42,7 @@ struct ShopDetailView: View {
                         Divider()
 
                         if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
-                            EmptyStateView(icon: "photo.on.rectangle.angled", title: "No posts yet")
+                            EmptyStateView(icon: "photo.on.rectangle.angled", title: String(localized: "No posts yet"))
                                 .frame(height: 200)
                         } else {
                             PostThumbnailGrid(posts: viewModel.posts) { post in

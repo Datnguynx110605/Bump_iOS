@@ -33,7 +33,7 @@ struct EmptyStateView: View {
 
 struct ErrorStateView: View {
     let message: String
-    var retryTitle: String = "Try Again"
+    var retryTitle: String = String(localized: "Try Again")
     var onRetry: (() -> Void)? = nil
 
     var body: some View {

@@ -35,7 +35,7 @@ final class ProfileViewModel {
         do {
             account = try await accountService.account(id: accountId)
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 

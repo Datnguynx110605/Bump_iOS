@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChangePasswordView: View {
     @Environment(AppEnvironment.self) private var environment
+    @Environment(AuthSession.self) private var authSession
     @Environment(\.dismiss) private var dismiss
 
     @State private var currentPassword = ""
@@ -58,7 +59,12 @@ struct ChangePasswordView: View {
             }
         }
         .alert("Password Updated", isPresented: $didSave) {
-            Button("OK") { dismiss() }
+            Button("OK") {
+                dismiss()
+                authSession.signOut()
+            }
+        } message: {
+            Text("Please log in again with your new password.")
         }
     }
 
@@ -70,7 +76,7 @@ struct ChangePasswordView: View {
             try await environment.accountService.changePassword(current: currentPassword, new: newPassword)
             didSave = true
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Couldn't update your password."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't update your password.")
         }
     }
 }

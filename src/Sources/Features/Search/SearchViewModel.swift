@@ -5,6 +5,14 @@ enum SearchScope: String, CaseIterable, Identifiable {
     case shops = "Shops"
     case accounts = "Accounts"
     var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .posts: String(localized: "Posts")
+        case .shops: String(localized: "Shops")
+        case .accounts: String(localized: "Accounts")
+        }
+    }
 }
 
 @MainActor
@@ -82,7 +90,7 @@ final class SearchViewModel {
                 accounts = page.items; accountsCursor = page.nextCursor; accountsHasMore = page.hasMore
             }
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 

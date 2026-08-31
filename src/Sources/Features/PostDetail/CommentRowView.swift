@@ -54,6 +54,10 @@ struct CommentRowView: View {
                             let liked = await environment.reactionStore.toggleComment(comment.id)
                             isLiked = liked
                             displayedLikeCount += liked ? 1 : -1
+                            if liked {
+                                HapticFeedback.reacted()
+                                SoundEffect.confirm.play()
+                            }
                         }
                     } label: {
                         Image(systemName: isLiked ? "heart.fill" : "heart")

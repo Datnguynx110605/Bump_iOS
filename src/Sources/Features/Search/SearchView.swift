@@ -39,7 +39,7 @@ private struct SearchResultsView: View {
         VStack(spacing: 0) {
             Picker("Scope", selection: $viewModel.scope) {
                 ForEach(SearchScope.allCases) { scope in
-                    Text(scope.rawValue).tag(scope)
+                    Text(scope.displayName).tag(scope)
                 }
             }
             .pickerStyle(.segmented)
@@ -47,7 +47,7 @@ private struct SearchResultsView: View {
             .padding(.top, BumpSpacing.s)
 
             if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                EmptyStateView(icon: "magnifyingglass", title: "Search Bump", message: "Find shops, posts, or people.")
+                EmptyStateView(icon: "magnifyingglass", title: String(localized: "Search Bump"), message: String(localized: "Find shops, posts, or people."))
             } else if viewModel.isLoading && isCurrentScopeEmpty {
                 LoadingView()
             } else if let errorMessage = viewModel.errorMessage, isCurrentScopeEmpty {
@@ -71,7 +71,7 @@ private struct SearchResultsView: View {
         switch viewModel.scope {
         case .posts:
             if viewModel.posts.isEmpty {
-                EmptyStateView(icon: "photo", title: "No posts found")
+                EmptyStateView(icon: "photo", title: String(localized: "No posts found"))
             } else {
                 ScrollView {
                     LazyVStack(spacing: BumpSpacing.m) {
@@ -85,7 +85,7 @@ private struct SearchResultsView: View {
             }
         case .shops:
             if viewModel.shops.isEmpty {
-                EmptyStateView(icon: "storefront", title: "No shops found")
+                EmptyStateView(icon: "storefront", title: String(localized: "No shops found"))
             } else {
                 List(viewModel.shops) { shop in
                     NavigationLink(value: AppRoute.shop(shop.id)) {
@@ -100,7 +100,7 @@ private struct SearchResultsView: View {
             }
         case .accounts:
             if viewModel.accounts.isEmpty {
-                EmptyStateView(icon: "person.2", title: "No people found")
+                EmptyStateView(icon: "person.2", title: String(localized: "No people found"))
             } else {
                 List(viewModel.accounts) { account in
                     NavigationLink(value: AppRoute.account(account.id)) {

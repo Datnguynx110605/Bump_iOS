@@ -45,7 +45,7 @@ final class ShopDetailViewModel {
             shop = detail.shop
             isSaved = detail.isSaved
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 

@@ -12,7 +12,7 @@ struct ActivityHistoryView: View {
                 } else if let errorMessage = viewModel.errorMessage, viewModel.comments.isEmpty {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.comments.isEmpty {
-                    EmptyStateView(icon: "bubble.left.and.bubble.right", title: "No comments yet")
+                    EmptyStateView(icon: "bubble.left.and.bubble.right", title: String(localized: "No comments yet"))
                 } else {
                     List {
                         ForEach(viewModel.comments) { comment in

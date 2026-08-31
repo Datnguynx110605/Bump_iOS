@@ -31,7 +31,7 @@ struct LoginView: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                 if !email.isEmpty && !EmailRule.isValid(email) {
-                    FieldHint(text: "Enter a valid email address.", tone: .error)
+                    FieldHint(text: String(localized: "Enter a valid email address."), tone: .error)
                 }
             }
 
@@ -67,7 +67,7 @@ struct LoginView: View {
             let tokens = try await environment.authService.login(email: email, password: password)
             authSession.setTokens(accessToken: tokens.accessToken, refreshToken: tokens.refreshToken)
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 }

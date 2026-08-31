@@ -4,6 +4,13 @@ enum FeedSort: String, CaseIterable, Identifiable {
     case latest = "Latest"
     case top = "Top"
     var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .latest: String(localized: "Latest")
+        case .top: String(localized: "Top")
+        }
+    }
 }
 
 @MainActor
@@ -47,7 +54,7 @@ final class FeedViewModel {
             topPostId = page.items.first?.id
             hasNewPosts = false
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 

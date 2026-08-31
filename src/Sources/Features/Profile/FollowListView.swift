@@ -14,7 +14,7 @@ struct FollowListView: View {
                 } else if let errorMessage = viewModel.errorMessage, viewModel.rows.isEmpty {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.rows.isEmpty {
-                    EmptyStateView(icon: "person.2", title: "No \(kind.rawValue.lowercased()) yet")
+                    EmptyStateView(icon: "person.2", title: String(localized: "No \(kind.displayNameLowercased) yet"))
                 } else {
                     List {
                         ForEach(viewModel.rows) { row in
@@ -44,7 +44,7 @@ struct FollowListView: View {
             }
             await viewModel?.loadInitialIfNeeded()
         }
-        .navigationTitle(kind.rawValue)
+        .navigationTitle(kind.displayName)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -3,6 +3,20 @@ import Foundation
 enum FollowListKind: String {
     case followers = "Followers"
     case following = "Following"
+
+    var displayName: String {
+        switch self {
+        case .followers: String(localized: "Followers")
+        case .following: String(localized: "Following")
+        }
+    }
+
+    var displayNameLowercased: String {
+        switch self {
+        case .followers: String(localized: "followers")
+        case .following: String(localized: "following")
+        }
+    }
 }
 
 struct FollowListRow: Identifiable {
@@ -63,7 +77,7 @@ final class FollowListViewModel {
             }
         } catch {
             if !append {
-                errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+                errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
             }
         }
     }

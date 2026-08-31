@@ -26,7 +26,7 @@ struct ProfileView: View {
                         if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
                             EmptyStateView(
                                 icon: "photo.on.rectangle.angled",
-                                title: isOwnProfile ? "Share your first post" : "No posts yet"
+                                title: isOwnProfile ? String(localized: "Share your first post") : String(localized: "No posts yet")
                             )
                             .frame(height: 200)
                         } else {
@@ -112,11 +112,11 @@ private struct ProfileHeaderView: View {
 
             HStack(spacing: BumpSpacing.xl) {
                 NavigationLink(value: AppRoute.followers(viewModel.accountId)) {
-                    statTile(count: viewModel.account?.followerAmount.value, label: "Followers")
+                    statTile(count: viewModel.account?.followerAmount.value, label: String(localized: "Followers"))
                 }
                 .buttonStyle(.plain)
                 NavigationLink(value: AppRoute.following(viewModel.accountId)) {
-                    statTile(count: viewModel.account?.followingAmount.value, label: "Following")
+                    statTile(count: viewModel.account?.followingAmount.value, label: String(localized: "Following"))
                 }
                 .buttonStyle(.plain)
             }

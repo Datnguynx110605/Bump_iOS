@@ -13,7 +13,7 @@ struct ReactorsListView: View {
                 } else if let errorMessage = viewModel.errorMessage, viewModel.reactors.isEmpty {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.reactors.isEmpty {
-                    EmptyStateView(icon: "heart", title: "No reactions yet")
+                    EmptyStateView(icon: "heart", title: String(localized: "No reactions yet"))
                 } else {
                     List {
                         ForEach(viewModel.reactors) { reactor in

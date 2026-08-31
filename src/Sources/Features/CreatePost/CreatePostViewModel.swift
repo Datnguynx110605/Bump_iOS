@@ -73,8 +73,9 @@ final class CreatePostViewModel {
                 images: uploads
             )
             didSubmit = true
+            SoundEffect.confirm.play()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Couldn't share your post."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't share your post.")
         }
     }
 }

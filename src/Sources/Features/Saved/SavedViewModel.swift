@@ -3,6 +3,13 @@ import Foundation
 enum SavedTab: String, CaseIterable {
     case posts = "Posts"
     case shops = "Shops"
+
+    var displayName: String {
+        switch self {
+        case .posts: String(localized: "Posts")
+        case .shops: String(localized: "Shops")
+        }
+    }
 }
 
 @MainActor
@@ -56,7 +63,7 @@ final class SavedViewModel {
             hasMorePosts = page.hasMore
             for post in page.items { saveStore.setSaved(post: post.id, true) }
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 
@@ -85,7 +92,7 @@ final class SavedViewModel {
             hasMoreShops = page.hasMore
             for shop in page.items { saveStore.setSaved(shop: shop.id, true) }
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 

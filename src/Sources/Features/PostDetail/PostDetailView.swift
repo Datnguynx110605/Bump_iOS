@@ -261,7 +261,7 @@ private struct PostHeaderSection: View {
             NavigationLink(value: AppRoute.shop(post.shopId)) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(shop?.name ?? "Loading shop…")
+                        Text(shop?.name ?? String(localized: "Loading shop…"))
                             .font(.headline)
                             .redacted(reason: shop == nil ? .placeholder : [])
                         if let address = shop?.address {
@@ -291,6 +291,10 @@ private struct PostHeaderSection: View {
                             let liked = await environment.reactionStore.togglePost(post.id)
                             isLiked = liked
                             displayedLikeCount += liked ? 1 : -1
+                            if liked {
+                                HapticFeedback.reacted()
+                                SoundEffect.confirm.play()
+                            }
                         }
                     } label: {
                         Image(systemName: isLiked ? "heart.fill" : "heart")

@@ -82,7 +82,7 @@ struct PostRowView: View {
         HStack(spacing: BumpSpacing.xs) {
             Image(systemName: "mappin.circle.fill")
                 .foregroundStyle(.secondary)
-            Text(shop?.name ?? "Loading shop…")
+            Text(shop?.name ?? String(localized: "Loading shop…"))
                 .font(.footnote.weight(.medium))
                 .lineLimit(1)
                 .layoutPriority(1)
@@ -105,6 +105,10 @@ struct PostRowView: View {
                     let liked = await environment.reactionStore.togglePost(post.id)
                     isLiked = liked
                     displayedLikeCount += liked ? 1 : -1
+                    if liked {
+                        HapticFeedback.reacted()
+                        SoundEffect.confirm.play()
+                    }
                 }
             } label: {
                 Label("\(displayedLikeCount)", systemImage: isLiked ? "heart.fill" : "heart")

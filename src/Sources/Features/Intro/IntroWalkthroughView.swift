@@ -14,9 +14,9 @@ struct IntroWalkthroughView: View {
     @State private var pageIndex = 0
 
     private let pages: [IntroPage] = [
-        IntroPage(icon: "fork.knife.circle.fill", title: "Discover great spots", message: "Browse real photos and ratings from people who've actually been there."),
-        IntroPage(icon: "camera.fill", title: "Share what you find", message: "Snap a photo, rate the place, and bump it to your feed in seconds."),
-        IntroPage(icon: "bubble.left.and.bubble.right.fill", title: "Talk about it", message: "React and comment on posts to help others decide where to go next.")
+        IntroPage(icon: "fork.knife.circle.fill", title: String(localized: "Discover great spots"), message: String(localized: "Browse real photos and ratings from people who've actually been there.")),
+        IntroPage(icon: "camera.fill", title: String(localized: "Share what you find"), message: String(localized: "Snap a photo, rate the place, and bump it to your feed in seconds.")),
+        IntroPage(icon: "bubble.left.and.bubble.right.fill", title: String(localized: "Talk about it"), message: String(localized: "React and comment on posts to help others decide where to go next."))
     ]
 
     var body: some View {

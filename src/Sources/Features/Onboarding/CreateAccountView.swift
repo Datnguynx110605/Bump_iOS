@@ -20,8 +20,8 @@ struct CreateAccountView: View {
     private var isValid: Bool { isNameValid && isPasswordValid && passwordsMatch }
 
     private var passwordHint: String {
-        guard !password.isEmpty, !isPasswordValid else { return "10-40 characters." }
-        return "10-40 characters (currently \(password.count))."
+        guard !password.isEmpty, !isPasswordValid else { return String(localized: "10-40 characters.") }
+        return String(localized: "10-40 characters (currently \(password.count)).")
     }
 
     var body: some View {
@@ -45,7 +45,7 @@ struct CreateAccountView: View {
                             name = AccountNameRule.sanitize(newValue)
                         }
                     FieldHint(
-                        text: name.isEmpty ? "Lowercase letters and numbers only, no spaces." : "Looks good.",
+                        text: name.isEmpty ? String(localized: "Lowercase letters and numbers only, no spaces.") : String(localized: "Looks good."),
                         tone: name.isEmpty ? .neutral : .success)
                 }
 
@@ -62,7 +62,7 @@ struct CreateAccountView: View {
                         .textContentType(.newPassword)
                     if !confirmPassword.isEmpty {
                         FieldHint(
-                            text: passwordsMatch ? "Passwords match." : "Passwords don't match.",
+                            text: passwordsMatch ? String(localized: "Passwords match.") : String(localized: "Passwords don't match."),
                             tone: passwordsMatch ? .success : .error)
                     }
                 }
@@ -109,7 +109,7 @@ struct CreateAccountView: View {
             let tokens = try await environment.authService.login(email: email, password: password)
             authSession.setTokens(accessToken: tokens.accessToken, refreshToken: tokens.refreshToken)
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 }
