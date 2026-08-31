@@ -39,22 +39,12 @@ private struct NotificationsListView: View {
             } else if let errorMessage = viewModel.errorMessage, viewModel.notifications.isEmpty {
                 ErrorStateView(message: errorMessage) { Task { await viewModel.reload() } }
             } else if viewModel.notifications.isEmpty {
-                EmptyStateView(icon: "bell", title: "No notifications yet", message: "Likes, comments, and new followers show up here.")
+                EmptyStateView(icon: "bell", title: String(localized: "No notifications yet"), message: String(localized: "Likes, comments, and new followers show up here."))
             } else {
                 List {
                     ForEach(viewModel.notifications) { notification in
-                        VStack(alignment: .leading, spacing: BumpSpacing.xs) {
-                            Text(notification.title)
-                                .font(.subheadline.weight(.semibold))
-                            Text(notification.content)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                            Text(notification.createdAt.relativeDescription)
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding(.vertical, BumpSpacing.xs)
-                        .task { await viewModel.loadMoreIfNeeded(current: notification) }
+                        rowContent(for: notification)
+                            .task { await viewModel.loadMoreIfNeeded(current: notification) }
                     }
                     if viewModel.isLoadingMore {
                         ProgressView().frame(maxWidth: .infinity)
@@ -64,5 +54,38 @@ private struct NotificationsListView: View {
                 .refreshable { await viewModel.reload() }
             }
         }
+    }
+
+    @ViewBuilder
+    private func rowContent(for notification: NotificationSummaryDto) -> some View {
+        if let route = notification.route {
+            NavigationLink(value: route) {
+                NotificationRow(notification: notification)
+            }
+        } else {
+            NotificationRow(notification: notification)
+        }
+    }
+}
+
+private struct NotificationRow: View {
+    let notification: NotificationSummaryDto
+
+    var body: some View {
+        HStack(alignment: .top, spacing: BumpSpacing.s) {
+            AvatarView(url: notification.actorAvatar?.url, size: 40)
+
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+                Text(notification.title)
+                    .font(.subheadline.weight(.semibold))
+                Text(notification.content)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Text(notification.createdAt.relativeDescription)
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.vertical, BumpSpacing.xs)
     }
 }

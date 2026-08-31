@@ -10,15 +10,15 @@ enum APIError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .network:
-            return "Couldn't connect. Check your connection and try again."
+            return String(localized: "Couldn't connect. Check your connection and try again.")
         case .decoding:
-            return "Something went wrong reading the server's response."
+            return String(localized: "Something went wrong reading the server's response.")
         case .server(_, let message):
             return message
         case .rateLimited:
-            return "You're doing that a bit too fast. Try again in a moment."
+            return String(localized: "You're doing that a bit too fast. Try again in a moment.")
         case .unauthenticated:
-            return "Your session expired. Please log in again."
+            return String(localized: "Your session expired. Please log in again.")
         }
     }
 
@@ -40,6 +40,6 @@ struct ProblemDetailsPayload: Decodable {
         if let errors, let messages = errors[""], !messages.isEmpty {
             return messages.joined(separator: "\n")
         }
-        return detail ?? title ?? "Something went wrong."
+        return detail ?? title ?? String(localized: "Something went wrong.")
     }
 }

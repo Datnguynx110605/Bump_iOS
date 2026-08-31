@@ -1,15 +1,27 @@
 import Foundation
 import SignalRClient
+import UserNotifications
 
 private struct NotificationPushDto: Decodable {
     let id: UUID
     let title: String
     let content: String
     let createdAt: String
+    let type: NotificationType?
+    let targetId: UUID?
+    let actorAccountId: UUID?
+    let actorAvatar: ActorAvatarPushDto?
+}
+
+// Only the URL is needed for display. `AvatarDto.createdAt` is a `Date`, and unlike
+// `APICoding.decoder` (used for REST), the SignalR hub protocol's decoder has no
+// custom date strategy — so a nested `AvatarDto` would fail to decode .NET's date format here.
+private struct ActorAvatarPushDto: Decodable {
+    let url: String
 }
 
 @MainActor
-final class NotificationHubClient: NSObject, HubConnectionDelegate {
+final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotificationCenterDelegate {
     var onNotification: ((NotificationSummaryDto) -> Void)?
 
     private let baseURL: URL
@@ -19,6 +31,8 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate {
     init(baseURL: URL, authSession: AuthSession) {
         self.baseURL = baseURL
         self.authSession = authSession
+        super.init()
+        UNUserNotificationCenter.current().delegate = self
     }
 
     func start() {
@@ -41,8 +55,13 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate {
                     title: payload.title,
                     content: payload.content,
                     isSent: true,
-                    createdAt: DotNetDate.parse(payload.createdAt) ?? Date()
+                    createdAt: DotNetDate.parse(payload.createdAt) ?? Date(),
+                    type: payload.type,
+                    targetId: payload.targetId,
+                    actorAccountId: payload.actorAccountId,
+                    actorAvatar: payload.actorAvatar.map { AvatarDto(url: $0.url, createdAt: Date()) }
                 ))
+                LocalNotificationScheduler.notify(title: payload.title, body: payload.content)
             }
         }
 
@@ -64,4 +83,12 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate {
     }
 
     nonisolated func connectionDidClose(error: Error?) {}
+
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound])
+    }
 }

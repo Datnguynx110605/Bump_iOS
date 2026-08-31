@@ -36,7 +36,7 @@ final class NotificationsViewModel {
             nextCursor = page.nextCursor
             hasMore = page.hasMore
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
         }
     }
 
