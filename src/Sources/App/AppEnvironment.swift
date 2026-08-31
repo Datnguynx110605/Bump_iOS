@@ -53,5 +53,5 @@ final class AppEnvironment {
 }
 
 enum AppConfig {
-    static let baseURL = URL(string: "http://192.168.1.4:5294")!
+    static let baseURL = URL(string: "https://bumpserver-production.up.railway.app")!
 }

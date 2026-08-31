@@ -15,6 +15,7 @@ struct BumpApp: App {
             RootView()
                 .environment(environment)
                 .environment(environment.authSession)
+                .environment(LanguagePreference.shared)
                 .tint(Color.accentColor)
         }
     }
