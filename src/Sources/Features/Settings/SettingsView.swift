@@ -5,12 +5,14 @@ struct SettingsView: View {
     @Environment(AuthSession.self) private var authSession
     @Environment(AppEnvironment.self) private var environment
     @Environment(LanguagePreference.self) private var languagePreference
+    @Environment(AppearancePreference.self) private var appearancePreference
     @State private var showingDeleteConfirm = false
     @State private var deleteError: String?
     @AppStorage(NotificationPreference.key) private var notificationsEnabled = true
 
     var body: some View {
         @Bindable var languagePreference = languagePreference
+        @Bindable var appearancePreference = appearancePreference
         NavigationStack {
             Form {
                 Section("Profile") {
@@ -37,6 +39,14 @@ struct SettingsView: View {
                     Picker("Language", selection: $languagePreference.language) {
                         ForEach(AppLanguage.allCases) { language in
                             Text(language.displayName).tag(language)
+                        }
+                    }
+                }
+
+                Section("Appearance") {
+                    Picker("Appearance", selection: $appearancePreference.appearance) {
+                        ForEach(AppAppearance.allCases) { appearance in
+                            Text(appearance.displayName).tag(appearance)
                         }
                     }
                 }

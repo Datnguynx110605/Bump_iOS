@@ -4,6 +4,7 @@ struct RootView: View {
     @Environment(AuthSession.self) private var authSession
     @Environment(AppEnvironment.self) private var environment
     @Environment(LanguagePreference.self) private var languagePreference
+    @Environment(AppearancePreference.self) private var appearancePreference
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("hasSeenIntroWalkthrough") private var hasSeenIntro = false
     @State private var showingSplash = true
@@ -29,6 +30,7 @@ struct RootView: View {
             }
         }
         .environment(\.locale, languagePreference.locale)
+        .preferredColorScheme(appearancePreference.appearance.colorScheme)
         .animation(.easeInOut(duration: 0.25), value: authSession.isAuthenticated)
         .animation(BumpMotion.standard, value: hasSeenIntro)
         .onChange(of: authSession.isAuthenticated, initial: true) { _, isAuthenticated in
