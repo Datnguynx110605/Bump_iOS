@@ -15,13 +15,24 @@ enum BumpRadius {
     static let pill: CGFloat = 100
 }
 
+extension Color {
+    /// A dynamic color that swaps by appearance, so a single token can commit to a
+    /// specific light palette while overriding what dark mode uses (e.g. true black
+    /// instead of the system's default elevated dark grays).
+    static func adaptive(light: UIColor, dark: UIColor) -> Color {
+        Color(UIColor { $0.userInterfaceStyle == .dark ? dark : light })
+    }
+}
+
 /// Semantic colors layered on top of system colors so every screen stays
 /// consistent and adapts automatically to light/dark mode and increased contrast.
+/// Dark mode intentionally commits to true black rather than the system's default
+/// elevated dark grays, for a cleaner OLED-style look.
 enum BumpColor {
-    static let surface = Color(.systemBackground)
-    static let surfaceSecondary = Color(.secondarySystemBackground)
-    static let surfaceTertiary = Color(.tertiarySystemBackground)
-    static let fill = Color(.tertiarySystemFill)
+    static let surface = Color.adaptive(light: .systemBackground, dark: .black)
+    static let surfaceSecondary = Color.adaptive(light: .secondarySystemBackground, dark: UIColor(white: 0.07, alpha: 1))
+    static let surfaceTertiary = Color.adaptive(light: .tertiarySystemBackground, dark: UIColor(white: 0.12, alpha: 1))
+    static let fill = Color.adaptive(light: .tertiarySystemFill, dark: UIColor(white: 0.16, alpha: 1))
 
     static let textPrimary = Color.primary
     static let textSecondary = Color.secondary

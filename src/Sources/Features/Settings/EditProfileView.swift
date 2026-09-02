@@ -67,6 +67,8 @@ struct EditProfileView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(BumpColor.surface)
         .navigationTitle("Edit Profile")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

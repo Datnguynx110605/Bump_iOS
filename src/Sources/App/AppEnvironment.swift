@@ -8,6 +8,7 @@ final class AppEnvironment {
     let api: APIClient
     let notificationHubClient: NotificationHubClient
     let feedRefreshSignal = FeedRefreshSignal()
+    let notificationRouteSignal = NotificationRouteSignal()
 
     let accountService: AccountService
     let authService: AuthService
@@ -49,6 +50,11 @@ final class AppEnvironment {
         self.saveStore = SaveStore(saveService: SaveService(api: api))
         self.shopCache = ShopCache(shopService: ShopService(api: api))
         self.accountCache = AccountCache(accountService: AccountService(api: api))
+
+        let notificationRouteSignal = notificationRouteSignal
+        self.notificationHubClient.onNotificationTapped = { [weak notificationRouteSignal] route in
+            notificationRouteSignal?.open(route)
+        }
     }
 }
 

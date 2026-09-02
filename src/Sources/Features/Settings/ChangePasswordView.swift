@@ -46,6 +46,8 @@ struct ChangePasswordView: View {
                     .listRowBackground(Color.clear)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(BumpColor.surface)
         .navigationTitle("Change Password")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

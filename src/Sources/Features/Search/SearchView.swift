@@ -97,6 +97,8 @@ private struct SearchResultsView: View {
                     .task { await viewModel.loadMoreShopsIfNeeded(current: shop) }
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(BumpColor.surface)
             }
         case .accounts:
             if viewModel.accounts.isEmpty {
@@ -112,6 +114,8 @@ private struct SearchResultsView: View {
                     .task { await viewModel.loadMoreAccountsIfNeeded(current: account) }
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(BumpColor.surface)
             }
         }
     }

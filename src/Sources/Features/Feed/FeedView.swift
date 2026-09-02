@@ -100,6 +100,7 @@ private struct FeedListView: View {
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
+                    .background(BumpColor.surface)
                     .refreshable { await viewModel.reload() }
                     .safeAreaInset(edge: .top) {
                         if viewModel.hasNewPosts {

@@ -8,6 +8,7 @@ struct PostRowView: View {
     @State private var displayedLikeCount: Int
     @State private var isLiked: Bool
     @State private var isSaved: Bool
+    @ScaledMetric private var bookmarkIconSize: CGFloat = BumpIconSize.medium
 
     private var post: PostSummaryDto { item.post }
 
@@ -28,7 +29,7 @@ struct PostRowView: View {
             footer
         }
         .padding(BumpSpacing.m)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: BumpRadius.card))
+        .background(BumpColor.surfaceSecondary, in: RoundedRectangle(cornerRadius: BumpRadius.card))
         .task {
             environment.reactionStore.setLiked(post: post.id, isLiked)
             environment.saveStore.setSaved(post: post.id, isSaved)
@@ -50,23 +51,8 @@ struct PostRowView: View {
 
             shopRow
 
-            if let firstImage = post.images.first, let url = URL(string: firstImage.url) {
-                GeometryReader { proxy in
-                    CachedAsyncImage(url: url, targetSize: CGSize(width: proxy.size.width, height: proxy.size.width)) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().scaledToFill()
-                        case .empty:
-                            Rectangle().fill(BumpColor.fill).overlay(ProgressView())
-                        case .failure:
-                            Rectangle().fill(BumpColor.fill)
-                        }
-                    }
-                    .frame(width: proxy.size.width, height: proxy.size.width)
-                    .clipped()
-                }
-                .aspectRatio(1, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: BumpRadius.card))
+            if !post.images.isEmpty {
+                PostImageCarousel(imageURLs: post.images.map(\.url))
             }
 
             if let caption = post.caption, !caption.isEmpty {
@@ -107,17 +93,14 @@ struct PostRowView: View {
                     displayedLikeCount += liked ? 1 : -1
                     if liked {
                         HapticFeedback.reacted()
-                        SoundEffect.confirm.play()
                     }
                 }
             } label: {
-                Label("\(displayedLikeCount)", systemImage: isLiked ? "heart.fill" : "heart")
-                    .foregroundStyle(isLiked ? .red : .secondary)
+                ReactionCountLabel(systemImage: isLiked ? "heart.fill" : "heart", count: displayedLikeCount, isActive: isLiked)
             }
             .buttonStyle(.plain)
 
-            Label("\(post.commentAmount.value)", systemImage: "bubble.right")
-                .foregroundStyle(.secondary)
+            ReactionCountLabel(systemImage: "bubble.right", count: post.commentAmount.value)
 
             Spacer()
 
@@ -125,10 +108,10 @@ struct PostRowView: View {
                 Task { isSaved = await environment.saveStore.togglePost(post.id) }
             } label: {
                 Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
-                    .foregroundStyle(isSaved ? Color.accentColor : .secondary)
+                    .font(.system(size: bookmarkIconSize))
+                    .foregroundStyle(isSaved ? Color.accentColor : BumpColor.textSecondary)
             }
             .buttonStyle(.plain)
         }
-        .font(.subheadline)
     }
 }

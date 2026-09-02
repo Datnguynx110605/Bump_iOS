@@ -8,6 +8,8 @@ struct CommentRowView: View {
     @State private var displayedLikeCount: Int
     @State private var isLiked = false
     @State private var showingReportSheet = false
+    @ScaledMetric private var reactionIconSize: CGFloat = BumpIconSize.small
+    @ScaledMetric private var menuIconSize: CGFloat = BumpIconSize.small
 
     init(comment: CommentSummaryDto, onDelete: (() -> Void)? = nil) {
         self.comment = comment
@@ -18,37 +20,22 @@ struct CommentRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BumpSpacing.xs) {
             NavigationLink(value: AppRoute.account(comment.accountId)) {
-                AuthorRowView(accountId: comment.accountId, avatarSize: 28)
+                AuthorRowView(accountId: comment.accountId)
             }
             .buttonStyle(.plain)
 
             if let content = comment.content, !content.isEmpty {
                 Text(content)
-                    .font(.subheadline)
+                    .font(.body)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             if !comment.images.isEmpty {
-                ScrollView(.horizontal) {
-                    HStack(spacing: BumpSpacing.xs) {
-                        ForEach(comment.images, id: \.url) { image in
-                            CachedAsyncImage(url: URL(string: image.url), targetSize: CGSize(width: 96, height: 96)) { phase in
-                                switch phase {
-                                case .success(let img):
-                                    img.resizable().scaledToFill()
-                                default:
-                                    Rectangle().fill(BumpColor.fill)
-                                }
-                            }
-                            .frame(width: 96, height: 96)
-                            .clipShape(RoundedRectangle(cornerRadius: BumpRadius.control))
-                        }
-                    }
-                }
+                PostImageCarousel(imageURLs: comment.images.map(\.url))
             }
 
             HStack(spacing: BumpSpacing.m) {
-                HStack(spacing: 4) {
+                HStack(spacing: BumpSpacing.xs) {
                     Button {
                         Task {
                             let liked = await environment.reactionStore.toggleComment(comment.id)
@@ -56,26 +43,25 @@ struct CommentRowView: View {
                             displayedLikeCount += liked ? 1 : -1
                             if liked {
                                 HapticFeedback.reacted()
-                                SoundEffect.confirm.play()
                             }
                         }
                     } label: {
                         Image(systemName: isLiked ? "heart.fill" : "heart")
-                            .font(.caption)
-                            .foregroundStyle(isLiked ? .red : .secondary)
+                            .font(.system(size: reactionIconSize))
+                            .foregroundStyle(isLiked ? BumpColor.like : BumpColor.textSecondary)
                     }
                     .buttonStyle(.plain)
 
                     NavigationLink(value: AppRoute.commentReactors(comment.id)) {
                         Text("\(displayedLikeCount)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(BumpColor.textSecondary)
                     }
                     .buttonStyle(.plain)
                 }
 
                 Text(comment.createdAt.relativeDescription)
-                    .font(.caption)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
 
                 Spacer()
@@ -88,6 +74,7 @@ struct CommentRowView: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis")
+                        .font(.system(size: menuIconSize))
                         .foregroundStyle(.secondary)
                 }
             }

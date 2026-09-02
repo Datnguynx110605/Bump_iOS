@@ -117,7 +117,7 @@ final class PostDetailViewModel {
             hasNewComments = false
             commentDraft = ""
             selectedCommentImages = []
-            SoundEffect.confirm.play()
+            SoundEffect.sent.play()
             await loadPost()
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't post your comment.")

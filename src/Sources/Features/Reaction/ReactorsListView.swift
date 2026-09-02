@@ -31,6 +31,8 @@ struct ReactorsListView: View {
                         }
                     }
                     .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .background(BumpColor.surface)
                     .refreshable { await viewModel.reload() }
                 }
             } else {

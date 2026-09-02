@@ -223,6 +223,8 @@ private struct PostHeaderSection: View {
     @State private var displayedLikeCount: Int
     @State private var isLiked: Bool
     @State private var isSaved: Bool
+    @ScaledMetric private var reactionIconSize: CGFloat = BumpIconSize.medium
+    @ScaledMetric private var bookmarkIconSize: CGFloat = BumpIconSize.medium
 
     init(post: PostSummaryDto, isReacted: Bool, isSaved: Bool) {
         self.post = post
@@ -239,45 +241,41 @@ private struct PostHeaderSection: View {
             .buttonStyle(.plain)
 
             if !post.images.isEmpty {
-                GeometryReader { proxy in
-                    TabView {
-                        ForEach(post.images, id: \.url) { image in
-                            CachedAsyncImage(url: URL(string: image.url), targetSize: CGSize(width: proxy.size.width, height: proxy.size.width)) { phase in
-                                switch phase {
-                                case .success(let img): img.resizable().scaledToFill()
-                                default: Rectangle().fill(BumpColor.fill)
-                                }
-                            }
-                            .frame(width: proxy.size.width, height: proxy.size.width)
-                            .clipped()
-                        }
-                    }
-                    .tabViewStyle(.page)
-                }
-                .aspectRatio(1, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: BumpRadius.card))
+                PostImageCarousel(imageURLs: post.images.map(\.url))
             }
 
-            NavigationLink(value: AppRoute.shop(post.shopId)) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(shop?.name ?? String(localized: "Loading shop…"))
-                            .font(.headline)
-                            .redacted(reason: shop == nil ? .placeholder : [])
-                        if let address = shop?.address {
-                            Text(address)
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+                NavigationLink(value: AppRoute.shop(post.shopId)) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(shop?.name ?? String(localized: "Loading shop…"))
+                                .font(.headline)
+                                .redacted(reason: shop == nil ? .placeholder : [])
+                            if let address = shop?.address {
+                                Text(address)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        Spacer()
+                        RatingStarsView(rating: post.rate.value)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
                     }
-                    Spacer()
-                    RatingStarsView(rating: post.rate.value)
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
+
+                if let shop {
+                    Button {
+                        AppleMaps.openDirections(shopName: shop.name, address: shop.address)
+                    } label: {
+                        Label("View in Map", systemImage: "map")
+                            .font(.footnote.weight(.medium))
+                    }
+                    .buttonStyle(.plain)
                 }
             }
-            .buttonStyle(.plain)
 
             if let caption = post.caption, !caption.isEmpty {
                 Text(caption)
@@ -293,24 +291,24 @@ private struct PostHeaderSection: View {
                             displayedLikeCount += liked ? 1 : -1
                             if liked {
                                 HapticFeedback.reacted()
-                                SoundEffect.confirm.play()
                             }
                         }
                     } label: {
                         Image(systemName: isLiked ? "heart.fill" : "heart")
-                            .foregroundStyle(isLiked ? .red : .secondary)
+                            .font(.system(size: reactionIconSize))
+                            .foregroundStyle(isLiked ? BumpColor.like : BumpColor.textSecondary)
                     }
                     .buttonStyle(.plain)
 
                     NavigationLink(value: AppRoute.postReactors(post.id)) {
                         Text("\(displayedLikeCount)")
-                            .foregroundStyle(.secondary)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(BumpColor.textSecondary)
                     }
                     .buttonStyle(.plain)
                 }
 
-                Label("\(post.commentAmount.value)", systemImage: "bubble.right")
-                    .foregroundStyle(.secondary)
+                ReactionCountLabel(systemImage: "bubble.right", count: post.commentAmount.value)
 
                 Spacer()
 
@@ -322,11 +320,11 @@ private struct PostHeaderSection: View {
                     Task { isSaved = await environment.saveStore.togglePost(post.id) }
                 } label: {
                     Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
-                        .foregroundStyle(isSaved ? Color.accentColor : .secondary)
+                        .font(.system(size: bookmarkIconSize))
+                        .foregroundStyle(isSaved ? Color.accentColor : BumpColor.textSecondary)
                 }
                 .buttonStyle(.plain)
             }
-            .font(.subheadline)
         }
         .task {
             environment.reactionStore.setLiked(post: post.id, isLiked)

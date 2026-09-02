@@ -3,9 +3,10 @@ import SwiftUI
 struct NotificationsView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var viewModel: NotificationsViewModel?
+    @Binding var path: NavigationPath
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 if let viewModel {
                     NotificationsListView(viewModel: viewModel)
@@ -51,6 +52,8 @@ private struct NotificationsListView: View {
                     }
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(BumpColor.surface)
                 .refreshable { await viewModel.reload() }
             }
         }

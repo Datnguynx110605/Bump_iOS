@@ -338,6 +338,9 @@
         }
       }
     },
+    "Choose a new password for %@." : {
+
+    },
     "Choose from Library" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1046,6 +1049,9 @@
         }
       }
     },
+    "Forgot password?" : {
+
+    },
     "Get Started" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1636,6 +1642,9 @@
         }
       }
     },
+    "Please log in again with your new password." : {
+
+    },
     "Position Photo" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1755,6 +1764,15 @@
         }
       }
     },
+    "Recover account" : {
+
+    },
+    "Recover Account" : {
+
+    },
+    "Recover your account" : {
+
+    },
     "Report" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1856,6 +1874,9 @@
           }
         }
       }
+    },
+    "Reset Password" : {
+
     },
     "Save" : {
       "localizations" : {
@@ -1974,6 +1995,9 @@
           }
         }
       }
+    },
+    "Set a new password" : {
+
     },
     "Settings" : {
       "extractionState" : "stale",
@@ -2428,6 +2452,9 @@
           }
         }
       }
+    },
+    "We found a deleted account for %@. Recovering it will restore your profile and data." : {
+
     },
     "We sent a 6-digit code to %@." : {
       "localizations" : {

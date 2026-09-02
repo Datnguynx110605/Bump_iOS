@@ -23,6 +23,7 @@ private struct ActorAvatarPushDto: Decodable {
 @MainActor
 final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotificationCenterDelegate {
     var onNotification: ((NotificationSummaryDto) -> Void)?
+    var onNotificationTapped: ((AppRoute) -> Void)?
 
     private let baseURL: URL
     private let authSession: AuthSession
@@ -61,7 +62,8 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotifi
                     actorAccountId: payload.actorAccountId,
                     actorAvatar: payload.actorAvatar.map { AvatarDto(url: $0.url, createdAt: Date()) }
                 ))
-                LocalNotificationScheduler.notify(title: payload.title, body: payload.content)
+                let route = payload.type.flatMap { type in payload.targetId.map { type.route(for: $0) } }
+                LocalNotificationScheduler.notify(title: payload.title, body: payload.content, route: route)
             }
         }
 
@@ -90,5 +92,19 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotifi
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         completionHandler([.banner, .sound])
+    }
+
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let userInfo = response.notification.request.content.userInfo
+        Task { @MainActor [weak self] in
+            if let route = AppRoute(notificationUserInfo: userInfo) {
+                self?.onNotificationTapped?(route)
+            }
+            completionHandler()
+        }
     }
 }

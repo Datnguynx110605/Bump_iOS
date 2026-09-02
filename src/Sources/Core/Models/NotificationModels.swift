@@ -58,7 +58,13 @@ struct NotificationSummaryDto: Decodable, Identifiable {
 
     var route: AppRoute? {
         guard let type, let targetId else { return nil }
-        switch type {
+        return type.route(for: targetId)
+    }
+}
+
+extension NotificationType {
+    func route(for targetId: UUID) -> AppRoute {
+        switch self {
         case .follow: return .account(targetId)
         case .postReaction, .commentReaction, .comment: return .post(targetId)
         }

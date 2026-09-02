@@ -4,6 +4,7 @@ struct ShopDetailView: View {
     let shopId: UUID
     @Environment(AppEnvironment.self) private var environment
     @State private var viewModel: ShopDetailViewModel?
+    @ScaledMetric private var bookmarkIconSize: CGFloat = BumpIconSize.medium
 
     var body: some View {
         Group {
@@ -20,6 +21,14 @@ struct ShopDetailView: View {
                                         .foregroundStyle(.secondary)
                                     RatingStarsView(rating: shop.rate.value, size: 16)
                                         .padding(.top, 2)
+                                    Button {
+                                        AppleMaps.openDirections(shopName: shop.name, address: shop.address)
+                                    } label: {
+                                        Label("View in Map", systemImage: "map")
+                                            .font(.footnote.weight(.medium))
+                                    }
+                                    .buttonStyle(.plain)
+                                    .padding(.top, 2)
                                 }
                                 Spacer()
                                 Button {
@@ -29,8 +38,8 @@ struct ShopDetailView: View {
                                     }
                                 } label: {
                                     Image(systemName: viewModel.isSaved ? "bookmark.fill" : "bookmark")
-                                        .font(.title3)
-                                        .foregroundStyle(viewModel.isSaved ? Color.accentColor : .secondary)
+                                        .font(.system(size: bookmarkIconSize))
+                                        .foregroundStyle(viewModel.isSaved ? Color.accentColor : BumpColor.textSecondary)
                                 }
                                 .buttonStyle(.plain)
                             }

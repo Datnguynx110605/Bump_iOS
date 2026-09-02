@@ -92,6 +92,7 @@ private struct ProfileHeaderView: View {
     let onEditProfile: () -> Void
     @Environment(AppEnvironment.self) private var environment
     @State private var isFollowing = false
+    @State private var isTogglingFollow = false
 
     var body: some View {
         VStack(spacing: BumpSpacing.m) {
@@ -126,23 +127,35 @@ private struct ProfileHeaderView: View {
                     .buttonStyle(.bordered)
             } else if isFollowing {
                 Button {
-                    Task { isFollowing = await environment.followStore.toggle(viewModel.accountId) }
+                    Task { await toggleFollow() }
                 } label: {
                     Text("Following").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
+                .disabled(isTogglingFollow)
                 .padding(.horizontal, BumpSpacing.xl)
             } else {
                 Button {
-                    Task { isFollowing = await environment.followStore.toggle(viewModel.accountId) }
+                    Task { await toggleFollow() }
                 } label: {
                     Text("Follow").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(isTogglingFollow)
                 .padding(.horizontal, BumpSpacing.xl)
             }
         }
         .task { isFollowing = environment.followStore.isFollowing(viewModel.accountId) }
+    }
+
+    private func toggleFollow() async {
+        isTogglingFollow = true
+        defer { isTogglingFollow = false }
+        let nowFollowing = await environment.followStore.toggle(viewModel.accountId)
+        if nowFollowing && !isFollowing {
+            HapticFeedback.reacted()
+        }
+        isFollowing = nowFollowing
     }
 
     private func statTile(count: Int?, label: String) -> some View {

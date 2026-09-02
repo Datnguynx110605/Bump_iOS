@@ -40,17 +40,6 @@ targets:
         NSCameraUsageDescription: Bump uses your camera so you can take a photo to share in a post or comment.
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSLocalNetworkUsageDescription: Bump connects to your local dev server while testing on a physical device.
-        NSAppTransportSecurity:
-          NSExceptionDomains:
-            localhost:
-              NSExceptionAllowsInsecureHTTPLoads: true
-              NSIncludesSubdomains: false
-              NSTemporaryExceptionAllowsInsecureHTTPSLoads: false
-            192.168.1.4:
-              NSExceptionAllowsInsecureHTTPLoads: true
-              NSIncludesSubdomains: false
-              NSTemporaryExceptionAllowsInsecureHTTPSLoads: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.bump.client

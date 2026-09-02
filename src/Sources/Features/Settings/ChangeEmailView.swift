@@ -54,6 +54,8 @@ struct ChangeEmailView: View {
                     .listRowBackground(Color.clear)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(BumpColor.surface)
         .navigationTitle("Change Email")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

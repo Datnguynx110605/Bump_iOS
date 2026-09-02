@@ -14,7 +14,8 @@ enum APIError: Error, LocalizedError {
         case .decoding:
             return String(localized: "Something went wrong reading the server's response.")
         case .server(_, let message):
-            return message
+            let key = message.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            return Self.friendlyServerMessages[key] ?? message
         case .rateLimited:
             return String(localized: "You're doing that a bit too fast. Try again in a moment.")
         case .unauthenticated:
@@ -26,6 +27,21 @@ enum APIError: Error, LocalizedError {
         if case .unauthenticated = self { return true }
         return false
     }
+
+    /// Known backend messages that read as engineering internals rather than
+    /// something to show a user, mapped to clear, friendly copy. Anything not
+    /// in this table is already a clean sentence (verified against the backend)
+    /// and is passed through as-is rather than guessed at here.
+    private static let friendlyServerMessages: [String: String] = [
+        "invalid credentials": String(localized: "Incorrect email or password."),
+        "unauthenticated": String(localized: "That code or link has expired. Please try again."),
+        "unauthorized": String(localized: "You're not signed in. Please log in and try again."),
+        "account not found": String(localized: "We couldn't find an account with that email."),
+        "email not found": String(localized: "We couldn't find an account with that email."),
+        "email already exists": String(localized: "That email is already registered. Try logging in instead."),
+        "otp is incorrect": String(localized: "That code isn't right. Please check and try again."),
+        "current password is incorrect": String(localized: "That doesn't match your current password.")
+    ]
 }
 
 struct EmptyResponse: Decodable {}

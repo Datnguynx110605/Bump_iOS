@@ -6,8 +6,10 @@ private enum MainTab: Hashable {
 
 struct MainTabView: View {
     @Environment(AuthSession.self) private var authSession
+    @Environment(AppEnvironment.self) private var environment
     @State private var selectedTab: MainTab = .feed
     @State private var showingCreatePost = false
+    @State private var notificationsPath = NavigationPath()
 
     private var selectedTabBinding: Binding<MainTab> {
         Binding(
@@ -34,7 +36,7 @@ struct MainTabView: View {
                 Color.clear
             }
             Tab("Alerts", systemImage: "bell.fill", value: MainTab.notifications) {
-                NotificationsView()
+                NotificationsView(path: $notificationsPath)
             }
             Tab("Profile", systemImage: "person.crop.circle.fill", value: MainTab.profile) {
                 if let accountId = authSession.accountId {
@@ -47,6 +49,12 @@ struct MainTabView: View {
         }
         .sheet(isPresented: $showingCreatePost) {
             CreatePostView()
+        }
+        .onChange(of: environment.notificationRouteSignal.pendingRoute, initial: true) { _, route in
+            guard let route else { return }
+            selectedTab = .notifications
+            notificationsPath = NavigationPath([route])
+            environment.notificationRouteSignal.clear()
         }
     }
 }

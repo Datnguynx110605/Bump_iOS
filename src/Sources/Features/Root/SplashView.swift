@@ -20,7 +20,7 @@ struct SplashView: View {
             .ignoresSafeArea()
 
             PinLogoShape()
-                .stroke(Color.white, style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                .fill(Color.white, style: FillStyle(eoFill: true))
                 .frame(width: 160, height: 160)
                 .offset(y: dropOffset)
                 .scaleEffect(scale)

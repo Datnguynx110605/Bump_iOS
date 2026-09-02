@@ -13,7 +13,7 @@ final class APIClient {
 
     func send<Response: Decodable>(_ endpoint: Endpoint) async throws -> Response {
         let (data, http) = try await execute(endpoint)
-        try validate(http: http, data: data)
+        try validate(http: http, data: data, endpoint: endpoint)
 
         if Response.self == EmptyResponse.self {
             return EmptyResponse() as! Response
@@ -87,10 +87,14 @@ final class APIClient {
         return request
     }
 
-    private func validate(http: HTTPURLResponse, data: Data) throws {
+    private func validate(http: HTTPURLResponse, data: Data, endpoint: Endpoint) throws {
         guard !(200..<300).contains(http.statusCode) else { return }
 
-        if http.statusCode == 401 {
+        // A 401 only means "your session expired" for endpoints that actually sent a
+        // session token. For unauthenticated endpoints (login, OTP verify, password
+        // reset, etc.) a 401 is a normal rejection (e.g. wrong password, expired code)
+        // and should fall through to the server's own message below instead.
+        if http.statusCode == 401, endpoint.requiresAuth, !endpoint.isAuthBootstrap {
             throw APIError.unauthenticated
         }
         if http.statusCode == 429 {

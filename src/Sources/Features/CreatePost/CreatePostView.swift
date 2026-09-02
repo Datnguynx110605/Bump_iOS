@@ -105,5 +105,7 @@ private struct CreatePostForm: View {
                     .listRowBackground(Color.clear)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(BumpColor.surface)
     }
 }

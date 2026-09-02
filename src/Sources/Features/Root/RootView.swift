@@ -4,6 +4,7 @@ struct RootView: View {
     @Environment(AuthSession.self) private var authSession
     @Environment(AppEnvironment.self) private var environment
     @Environment(LanguagePreference.self) private var languagePreference
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage("hasSeenIntroWalkthrough") private var hasSeenIntro = false
     @State private var showingSplash = true
 
@@ -32,10 +33,23 @@ struct RootView: View {
         .animation(BumpMotion.standard, value: hasSeenIntro)
         .onChange(of: authSession.isAuthenticated, initial: true) { _, isAuthenticated in
             if isAuthenticated {
-                environment.notificationHubClient.start()
+                if scenePhase == .active { environment.notificationHubClient.start() }
                 if NotificationPreference.isEnabled { LocalNotificationScheduler.requestAuthorizationIfNeeded() }
             } else {
                 environment.notificationHubClient.stop()
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard authSession.isAuthenticated else { return }
+            switch newPhase {
+            case .active:
+                environment.notificationHubClient.start()
+            case .background:
+                environment.notificationHubClient.stop()
+            case .inactive:
+                break
+            @unknown default:
+                break
             }
         }
     }
