@@ -9,17 +9,14 @@ struct SplashView: View {
     @State private var scale: CGFloat = 0.6
     @State private var logoOpacity: Double = 0
     @State private var isFadingOut = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [BumpColor.brand.opacity(0.8), BumpColor.brand],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            BumpBrandPalette.gradient
+                .ignoresSafeArea()
 
-            PinLogoShape()
+            BumpLogoShape()
                 .fill(Color.white, style: FillStyle(eoFill: true))
                 .frame(width: 160, height: 160)
                 .offset(y: dropOffset)
@@ -28,7 +25,10 @@ struct SplashView: View {
         }
         .opacity(isFadingOut ? 0 : 1)
         .onAppear {
-            withAnimation(.interpolatingSpring(stiffness: 170, damping: 12)) {
+            // The bouncy drop is the first thing every cold launch shows — exactly the
+            // kind of motion Reduce Motion exists to suppress. The mark still settles and
+            // the dwell time is unchanged; it just doesn't travel to get there.
+            withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .interpolatingSpring(stiffness: 170, damping: 12)) {
                 dropOffset = 0
                 scale = 1
                 logoOpacity = 1

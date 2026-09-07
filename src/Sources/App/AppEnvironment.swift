@@ -31,25 +31,33 @@ final class AppEnvironment {
         let authSession = AuthSession(baseURL: baseURL)
         let api = APIClient(baseURL: baseURL, authSession: authSession)
 
+        let accountService = AccountService(api: api)
+        let reactionService = ReactionService(api: api)
+        let followService = FollowService(api: api)
+        let shopService = ShopService(api: api)
+        let saveService = SaveService(api: api)
+
         self.authSession = authSession
         self.api = api
         self.notificationHubClient = NotificationHubClient(baseURL: baseURL, authSession: authSession)
-        self.accountService = AccountService(api: api)
+        self.accountService = accountService
         self.authService = AuthService(api: api)
         self.emailService = EmailService(api: api)
         self.postService = PostService(api: api)
         self.commentService = CommentService(api: api)
-        self.reactionService = ReactionService(api: api)
-        self.followService = FollowService(api: api)
-        self.shopService = ShopService(api: api)
+        self.reactionService = reactionService
+        self.followService = followService
+        self.shopService = shopService
         self.notificationService = NotificationService(api: api)
         self.reportService = ReportService(api: api)
-        self.saveService = SaveService(api: api)
-        self.reactionStore = ReactionStore(reactionService: ReactionService(api: api))
-        self.followStore = FollowStore(followService: FollowService(api: api))
-        self.saveStore = SaveStore(saveService: SaveService(api: api))
-        self.shopCache = ShopCache(shopService: ShopService(api: api))
-        self.accountCache = AccountCache(accountService: AccountService(api: api))
+        self.saveService = saveService
+        // Stores and caches share the service instances above rather than constructing a
+        // second copy of each.
+        self.reactionStore = ReactionStore(reactionService: reactionService)
+        self.followStore = FollowStore(followService: followService)
+        self.saveStore = SaveStore(saveService: saveService)
+        self.shopCache = ShopCache(shopService: shopService)
+        self.accountCache = AccountCache(accountService: accountService)
 
         let notificationRouteSignal = notificationRouteSignal
         self.notificationHubClient.onNotificationTapped = { [weak notificationRouteSignal] route in

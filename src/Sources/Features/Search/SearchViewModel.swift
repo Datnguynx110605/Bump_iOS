@@ -33,6 +33,10 @@ final class SearchViewModel {
     var accounts: [AccountSummaryDto] = []
     var isLoading = false
     var errorMessage: String?
+    /// Guards against the `.task` on the last row firing again before the previous page
+    /// lands. Without it, a page appends more than once and `ForEach` ends up with
+    /// duplicate ids. Every other paginated view model in the app already has this.
+    private var isLoadingMore = false
 
     private var postsCursor: String?
     private var postsHasMore = true
@@ -68,6 +72,8 @@ final class SearchViewModel {
 
     private func clearResults() {
         posts = []; shops = []; accounts = []
+        postsCursor = nil; shopsCursor = nil; accountsCursor = nil
+        postsHasMore = true; shopsHasMore = true; accountsHasMore = true
         errorMessage = nil
     }
 
@@ -95,23 +101,32 @@ final class SearchViewModel {
     }
 
     func loadMorePostsIfNeeded(current: PostFeedItemDto) async {
-        guard postsHasMore, posts.last?.id == current.id else { return }
+        guard postsHasMore, !isLoadingMore, posts.last?.id == current.id else { return }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, let page = try? await postService.search(keyword: trimmed, cursor: postsCursor) else { return }
+        guard !trimmed.isEmpty else { return }
+        isLoadingMore = true
+        defer { isLoadingMore = false }
+        guard let page = try? await postService.search(keyword: trimmed, cursor: postsCursor) else { return }
         posts.append(contentsOf: page.items); postsCursor = page.nextCursor; postsHasMore = page.hasMore
     }
 
     func loadMoreShopsIfNeeded(current: ShopSummaryDto) async {
-        guard shopsHasMore, shops.last?.id == current.id else { return }
+        guard shopsHasMore, !isLoadingMore, shops.last?.id == current.id else { return }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, let page = try? await shopService.search(keyword: trimmed, cursor: shopsCursor) else { return }
+        guard !trimmed.isEmpty else { return }
+        isLoadingMore = true
+        defer { isLoadingMore = false }
+        guard let page = try? await shopService.search(keyword: trimmed, cursor: shopsCursor) else { return }
         shops.append(contentsOf: page.items); shopsCursor = page.nextCursor; shopsHasMore = page.hasMore
     }
 
     func loadMoreAccountsIfNeeded(current: AccountSummaryDto) async {
-        guard accountsHasMore, accounts.last?.id == current.id else { return }
+        guard accountsHasMore, !isLoadingMore, accounts.last?.id == current.id else { return }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, let page = try? await accountService.searchByKeyword(trimmed, cursor: accountsCursor) else { return }
+        guard !trimmed.isEmpty else { return }
+        isLoadingMore = true
+        defer { isLoadingMore = false }
+        guard let page = try? await accountService.searchByKeyword(trimmed, cursor: accountsCursor) else { return }
         accounts.append(contentsOf: page.items); accountsCursor = page.nextCursor; accountsHasMore = page.hasMore
     }
 }

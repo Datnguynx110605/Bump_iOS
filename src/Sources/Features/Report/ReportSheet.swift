@@ -22,8 +22,7 @@ struct ReportSheet: View {
                         .listRowBackground(Color.clear)
                 }
             }
-            .scrollContentBackground(.hidden)
-            .background(BumpColor.surface)
+            .bumpScrollBackground()
             .navigationTitle("Report")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

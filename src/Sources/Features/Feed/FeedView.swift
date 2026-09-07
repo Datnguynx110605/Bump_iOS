@@ -73,34 +73,38 @@ private struct FeedListView: View {
                             }
                             .pickerStyle(.segmented)
                             .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets(top: BumpSpacing.xs, leading: BumpSpacing.m, bottom: BumpSpacing.ms, trailing: BumpSpacing.m))
                         }
                         .id(topAnchor)
 
                         if viewModel.posts.isEmpty {
                             EmptyStateView(
-                                icon: "photo.on.rectangle.angled",
+                                icon: "cup.and.saucer.fill",
                                 title: String(localized: "No posts yet"),
                                 message: String(localized: "Be the first to share a spot.")
                             )
                             .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
                         } else {
                             ForEach(viewModel.posts) { item in
                                 PostRowView(item: item)
                                     .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                                    .listRowBackground(Color.clear)
+                                    .listRowInsets(EdgeInsets(top: BumpSpacing.s, leading: BumpSpacing.m, bottom: BumpSpacing.s, trailing: BumpSpacing.m))
                                     .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
                             }
                             if viewModel.isLoadingMore {
                                 ProgressView()
                                     .frame(maxWidth: .infinity)
+                                    .padding(.vertical, BumpSpacing.m)
                                     .listRowSeparator(.hidden)
+                                    .listRowBackground(Color.clear)
                             }
                         }
                     }
                     .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .background(BumpColor.surface)
+                    .bumpScrollBackground()
                     .refreshable { await viewModel.reload() }
                     .safeAreaInset(edge: .top) {
                         if viewModel.hasNewPosts {
@@ -116,7 +120,7 @@ private struct FeedListView: View {
                             .transition(.move(edge: .top).combined(with: .opacity))
                         }
                     }
-                    .animation(BumpMotion.standard, value: viewModel.hasNewPosts)
+                    .bumpAnimation(BumpMotion.standard, value: viewModel.hasNewPosts)
                 }
             }
         }
@@ -128,13 +132,13 @@ private struct NewPostsPill: View {
 
     var body: some View {
         Button(action: action) {
-            Label("New posts", systemImage: "arrow.up.circle.fill")
+            Label("New posts", systemImage: "arrow.up")
                 .font(.subheadline.weight(.semibold))
-                .padding(.horizontal, BumpSpacing.m)
-                .padding(.vertical, BumpSpacing.s)
-                .background(BumpColor.brand, in: Capsule())
                 .foregroundStyle(.white)
-                .shadow(radius: 4, y: 2)
+                .padding(.horizontal, BumpSpacing.m)
+                .frame(minHeight: BumpHitTarget.min)
+                .background(BumpColor.brandFill, in: Capsule())
+                .shadow(color: .black.opacity(0.18), radius: 8, y: 3)
         }
         .buttonStyle(.plain)
     }

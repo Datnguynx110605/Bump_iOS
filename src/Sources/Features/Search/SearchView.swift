@@ -44,10 +44,14 @@ private struct SearchResultsView: View {
             }
             .pickerStyle(.segmented)
             .padding(.horizontal, BumpSpacing.m)
-            .padding(.top, BumpSpacing.s)
+            .padding(.vertical, BumpSpacing.s)
 
             if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                EmptyStateView(icon: "magnifyingglass", title: String(localized: "Search Bump"), message: String(localized: "Find shops, posts, or people."))
+                EmptyStateView(
+                    icon: "magnifyingglass",
+                    title: String(localized: "Search Bump"),
+                    message: String(localized: "Find shops, posts, or people.")
+                )
             } else if viewModel.isLoading && isCurrentScopeEmpty {
                 LoadingView()
             } else if let errorMessage = viewModel.errorMessage, isCurrentScopeEmpty {
@@ -56,6 +60,7 @@ private struct SearchResultsView: View {
                 results
             }
         }
+        .background(BumpColor.surface)
     }
 
     private var isCurrentScopeEmpty: Bool {
@@ -89,16 +94,13 @@ private struct SearchResultsView: View {
             } else {
                 List(viewModel.shops) { shop in
                     NavigationLink(value: AppRoute.shop(shop.id)) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(shop.name).font(.subheadline.weight(.semibold))
-                            Text(shop.address).font(.caption).foregroundStyle(.secondary)
-                        }
+                        ShopResultRow(shop: shop)
                     }
+                    .listRowBackground(BumpColor.surface)
                     .task { await viewModel.loadMoreShopsIfNeeded(current: shop) }
                 }
                 .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .background(BumpColor.surface)
+                .bumpScrollBackground()
             }
         case .accounts:
             if viewModel.accounts.isEmpty {
@@ -106,17 +108,73 @@ private struct SearchResultsView: View {
             } else {
                 List(viewModel.accounts) { account in
                     NavigationLink(value: AppRoute.account(account.id)) {
-                        HStack(spacing: BumpSpacing.s) {
-                            AvatarView(url: account.avatar?.url, size: 40)
-                            Text(account.name.value).font(.subheadline.weight(.medium))
-                        }
+                        AccountResultRow(account: account)
                     }
+                    .listRowBackground(BumpColor.surface)
                     .task { await viewModel.loadMoreAccountsIfNeeded(current: account) }
                 }
                 .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .background(BumpColor.surface)
+                .bumpScrollBackground()
             }
         }
+    }
+}
+
+private struct ShopResultRow: View {
+    let shop: ShopSummaryDto
+
+    var body: some View {
+        HStack(spacing: BumpSpacing.ms) {
+            RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous)
+                .fill(Color.accentColor.opacity(0.12))
+                .frame(width: 40, height: 40)
+                .overlay {
+                    Image(systemName: "cup.and.saucer.fill")
+                        .font(.footnote)
+                        .foregroundStyle(Color.accentColor)
+                }
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(shop.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(BumpColor.textPrimary)
+                    .lineLimit(1)
+                Text(shop.address)
+                    .font(.caption)
+                    .foregroundStyle(BumpColor.textSecondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: BumpSpacing.s)
+
+            RatingStarsView(rating: shop.rate.value)
+        }
+        .padding(.vertical, BumpSpacing.xs)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+private struct AccountResultRow: View {
+    let account: AccountSummaryDto
+
+    var body: some View {
+        HStack(spacing: BumpSpacing.ms) {
+            AvatarView(url: account.avatar?.url, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(account.name.value)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(BumpColor.textPrimary)
+                if let bio = account.bio, !bio.isEmpty {
+                    Text(bio)
+                        .font(.caption)
+                        .foregroundStyle(BumpColor.textSecondary)
+                        .lineLimit(1)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, BumpSpacing.xs)
+        .accessibilityElement(children: .combine)
     }
 }

@@ -110,12 +110,14 @@ struct SquareCropView: View {
     }
 
     private func magnificationGesture(frameSide: CGFloat, fit: CGFloat) -> some Gesture {
-        MagnificationGesture()
+        // `MagnifyGesture` replaced the deprecated `MagnificationGesture` in iOS 17; it
+        // reports the same ratio as `magnification` instead of the gesture value itself.
+        MagnifyGesture()
             .onChanged { value in
-                gestureScale = max(1 / max(steadyScale, 0.001), min(value, maxScale / max(steadyScale, 1)))
+                gestureScale = max(1 / max(steadyScale, 0.001), min(value.magnification, maxScale / max(steadyScale, 1)))
             }
             .onEnded { value in
-                steadyScale = max(1, min(steadyScale * value, maxScale))
+                steadyScale = max(1, min(steadyScale * value.magnification, maxScale))
                 gestureScale = 1
                 steadyOffset = clampedOffset(steadyOffset, frameSide: frameSide, fit: fit, scale: steadyScale)
             }

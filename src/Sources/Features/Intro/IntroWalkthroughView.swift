@@ -25,12 +25,11 @@ struct IntroWalkthroughView: View {
                 Spacer()
                 if pageIndex < pages.count - 1 {
                     Button("Skip", action: onFinish)
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .padding(BumpSpacing.m)
+                        .buttonStyle(.bumpText)
+                        .padding(.horizontal, BumpSpacing.m)
                 }
             }
-            .frame(height: 44)
+            .frame(height: BumpHitTarget.min)
 
             TabView(selection: $pageIndex) {
                 ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
@@ -38,14 +37,14 @@ struct IntroWalkthroughView: View {
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(BumpMotion.standard, value: pageIndex)
+            .bumpAnimation(BumpMotion.standard, value: pageIndex)
 
             HStack(spacing: BumpSpacing.s) {
                 ForEach(pages.indices, id: \.self) { index in
                     Capsule()
-                        .fill(index == pageIndex ? BumpColor.brand : BumpColor.fill)
+                        .fill(index == pageIndex ? Color.accentColor : BumpColor.fill)
                         .frame(width: index == pageIndex ? 20 : 6, height: 6)
-                        .animation(BumpMotion.quick, value: pageIndex)
+                        .bumpAnimation(BumpMotion.quick, value: pageIndex)
                 }
             }
             .padding(.bottom, BumpSpacing.l)
@@ -64,26 +63,35 @@ struct IntroWalkthroughView: View {
             .padding(.bottom, BumpSpacing.l)
         }
         .background(BumpColor.surface)
+        .accessibilityAction(named: Text("Skip")) { onFinish() }
     }
 }
 
 private struct IntroPageView: View {
     fileprivate let page: IntroPage
+    @ScaledMetric private var iconSize: CGFloat = BumpIconSize.hero
+    @ScaledMetric private var discSize: CGFloat = 128
 
     var body: some View {
         VStack(spacing: BumpSpacing.l) {
             Spacer(minLength: BumpSpacing.l)
-            Image(systemName: page.icon)
-                .font(.system(size: 96))
-                .foregroundStyle(BumpColor.brand)
+            Circle()
+                .fill(Color.accentColor.opacity(0.12))
+                .frame(width: discSize, height: discSize)
+                .overlay {
+                    Image(systemName: page.icon)
+                        .font(.system(size: iconSize))
+                        .foregroundStyle(Color.accentColor)
+                }
                 .accessibilityHidden(true)
             VStack(spacing: BumpSpacing.s) {
                 Text(page.title)
                     .font(.title.weight(.bold))
+                    .foregroundStyle(BumpColor.textPrimary)
                     .multilineTextAlignment(.center)
                 Text(page.message)
                     .font(.body)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(BumpColor.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BumpSpacing.xl)
             }

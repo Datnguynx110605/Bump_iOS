@@ -45,15 +45,17 @@ private struct NotificationsListView: View {
                 List {
                     ForEach(viewModel.notifications) { notification in
                         rowContent(for: notification)
+                            .listRowBackground(BumpColor.surface)
                             .task { await viewModel.loadMoreIfNeeded(current: notification) }
                     }
                     if viewModel.isLoadingMore {
-                        ProgressView().frame(maxWidth: .infinity)
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .listRowBackground(BumpColor.surface)
                     }
                 }
                 .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .background(BumpColor.surface)
+                .bumpScrollBackground()
                 .refreshable { await viewModel.reload() }
             }
         }
@@ -75,20 +77,46 @@ private struct NotificationRow: View {
     let notification: NotificationSummaryDto
 
     var body: some View {
-        HStack(alignment: .top, spacing: BumpSpacing.s) {
+        HStack(alignment: .top, spacing: BumpSpacing.ms) {
             AvatarView(url: notification.actorAvatar?.url, size: 40)
+                .overlay(alignment: .bottomTrailing) {
+                    if let badge {
+                        Image(systemName: badge.symbol)
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 18, height: 18)
+                            .background(badge.tint, in: Circle())
+                            .overlay(Circle().strokeBorder(BumpColor.surface, lineWidth: 2))
+                            .offset(x: 3, y: 3)
+                    }
+                }
 
-            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(notification.title)
                     .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(BumpColor.textPrimary)
                 Text(notification.content)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(BumpColor.textSecondary)
                 Text(notification.createdAt.relativeDescription)
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
+
+            Spacer(minLength: 0)
         }
-        .padding(.vertical, BumpSpacing.xs)
+        .padding(.vertical, BumpSpacing.s)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// Small glyph on the actor's avatar saying *why* this arrived, so the list is
+    /// scannable without reading every line.
+    private var badge: (symbol: String, tint: Color)? {
+        switch notification.type {
+        case .follow: return ("person.fill", BumpColor.brandFill)
+        case .postReaction, .commentReaction: return ("heart.fill", BumpColor.like)
+        case .comment: return ("bubble.right.fill", BumpColor.success)
+        case nil: return nil
+        }
     }
 }

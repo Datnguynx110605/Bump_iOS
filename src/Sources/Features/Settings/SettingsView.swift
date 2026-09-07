@@ -16,16 +16,24 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section("Profile") {
-                    NavigationLink("Edit Profile") { EditProfileView() }
+                    NavigationLink { EditProfileView() } label: {
+                        Label("Edit Profile", systemImage: "person.crop.circle")
+                    }
                 }
 
                 Section("Security") {
-                    NavigationLink("Change Password") { ChangePasswordView() }
-                    NavigationLink("Change Email") { ChangeEmailView() }
+                    NavigationLink { ChangePasswordView() } label: {
+                        Label("Change Password", systemImage: "lock")
+                    }
+                    NavigationLink { ChangeEmailView() } label: {
+                        Label("Change Email", systemImage: "envelope")
+                    }
                 }
 
                 Section("Activity") {
-                    NavigationLink("Activity History") { ActivityHistoryView() }
+                    NavigationLink { ActivityHistoryView() } label: {
+                        Label("Activity History", systemImage: "clock.arrow.circlepath")
+                    }
                 }
 
                 Section("Notifications") {
@@ -63,8 +71,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .scrollContentBackground(.hidden)
-            .background(BumpColor.surface)
+            .bumpScrollBackground()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

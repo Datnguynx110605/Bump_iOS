@@ -37,10 +37,11 @@ struct EditProfileView: View {
                             }
                             .overlay(alignment: .bottomTrailing) {
                                 Image(systemName: "camera.circle.fill")
-                                    .font(.system(.title2))
+                                    .font(.title2)
                                     .foregroundStyle(.white, Color.accentColor)
                             }
                         }
+                        .accessibilityLabel(String(localized: "Change profile photo"))
                         Spacer()
                     }
                     .listRowBackground(Color.clear)
@@ -67,8 +68,7 @@ struct EditProfileView: View {
                 }
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(BumpColor.surface)
+        .bumpScrollBackground()
         .navigationTitle("Edit Profile")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

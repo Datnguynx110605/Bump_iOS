@@ -52,6 +52,10 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         GENERATE_INFOPLIST_FILE: NO
         DEVELOPMENT_ASSET_PATHS: ""
+        # Keeps Localizable.xcstrings in sync: new String(localized:)/LocalizedStringKey
+        # literals are extracted into the catalog on build instead of silently shipping
+        # untranslated.
+        SWIFT_EMIT_LOC_STRINGS: YES
 schemes:
   Bump:
     build:

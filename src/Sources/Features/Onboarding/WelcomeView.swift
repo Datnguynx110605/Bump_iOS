@@ -8,24 +8,17 @@ struct WelcomeView: View {
             Spacer()
 
             VStack(spacing: BumpSpacing.m) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 28, style: .continuous)
-                        .fill(LinearGradient(
-                            colors: [Color.accentColor, Color.accentColor.opacity(0.7)],
-                            startPoint: .topLeading, endPoint: .bottomTrailing
-                        ))
-                        .frame(width: 96, height: 96)
-                    Image(systemName: "mappin.and.ellipse")
-                        .font(.system(.largeTitle, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
+                // The same mark the app icon and splash use, so the first screen a new
+                // user sees matches the icon they just tapped.
+                BumpLogoMark(size: 104)
 
                 Text("Bump")
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .foregroundStyle(BumpColor.textPrimary)
 
                 Text("Discover great local spots through the people around you.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(BumpColor.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BumpSpacing.xl)
             }
@@ -38,13 +31,10 @@ struct WelcomeView: View {
                 }
                 .buttonStyle(.bumpPrimary)
 
-                Button {
+                Button("I already have an account") {
                     path.append(.login)
-                } label: {
-                    Text("I already have an account")
-                        .font(.subheadline.weight(.medium))
                 }
-                .padding(.top, BumpSpacing.xs)
+                .buttonStyle(.bumpText)
             }
             .padding(.horizontal, BumpSpacing.l)
             .padding(.bottom, BumpSpacing.l)

@@ -17,9 +17,10 @@ struct LoginView: View {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Welcome back")
                     .font(.largeTitle.bold())
+                    .foregroundStyle(BumpColor.textPrimary)
                 Text("Log in to continue.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
 
@@ -41,19 +42,15 @@ struct LoginView: View {
                 .onSubmit { Task { await login() } }
 
             HStack {
-                Button {
+                Button("Forgot password?") {
                     path.append(.recoveryEmail(purpose: .forgotPassword))
-                } label: {
-                    Text("Forgot password?")
-                        .font(.subheadline.weight(.medium))
                 }
+                .buttonStyle(.bumpText)
                 Spacer()
-                Button {
+                Button("Recover account") {
                     path.append(.recoveryEmail(purpose: .recoverAccount))
-                } label: {
-                    Text("Recover account")
-                        .font(.subheadline.weight(.medium))
                 }
+                .buttonStyle(.bumpText)
             }
 
             if let errorMessage {
@@ -72,6 +69,7 @@ struct LoginView: View {
         }
         .padding(.horizontal, BumpSpacing.l)
         .padding(.bottom, BumpSpacing.l)
+        .background(BumpColor.surface)
         .navigationBarTitleDisplayMode(.inline)
     }
 

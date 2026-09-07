@@ -1,5 +1,8 @@
 import SwiftUI
 
+/// Circular profile image. Always decorative: every place it appears, the account's name
+/// is already on screen as text, so it stays out of the accessibility tree rather than
+/// making VoiceOver announce each row twice.
 struct AvatarView: View {
     let url: String?
     var size: CGFloat = 40
@@ -21,14 +24,16 @@ struct AvatarView: View {
         }
         .frame(width: size, height: size)
         .clipShape(Circle())
+        .overlay(Circle().strokeBorder(BumpColor.border, lineWidth: 0.5))
+        .accessibilityHidden(true)
     }
 
     private var placeholder: some View {
         Circle()
-            .fill(Color.accentColor.opacity(0.15))
+            .fill(Color.accentColor.opacity(0.14))
             .overlay {
                 Image(systemName: "person.fill")
-                    .font(.system(size: size * 0.45))
+                    .font(.system(size: size * 0.42))
                     .foregroundStyle(Color.accentColor)
             }
     }

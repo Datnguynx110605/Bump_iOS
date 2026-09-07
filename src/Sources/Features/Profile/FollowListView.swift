@@ -19,21 +19,27 @@ struct FollowListView: View {
                     List {
                         ForEach(viewModel.rows) { row in
                             NavigationLink(value: AppRoute.account(row.id)) {
-                                HStack(spacing: BumpSpacing.s) {
+                                HStack(spacing: BumpSpacing.ms) {
                                     AvatarView(url: row.avatarURL, size: 40)
                                     Text(row.name)
-                                        .font(.subheadline.weight(.medium))
+                                        .font(.subheadline.weight(.semibold))
+                                        .foregroundStyle(BumpColor.textPrimary)
+                                    Spacer(minLength: 0)
                                 }
+                                .padding(.vertical, BumpSpacing.xs)
+                                .accessibilityElement(children: .combine)
                             }
+                            .listRowBackground(BumpColor.surface)
                             .task { await viewModel.loadMoreIfNeeded(current: row) }
                         }
                         if viewModel.isLoadingMore {
-                            ProgressView().frame(maxWidth: .infinity)
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                                .listRowBackground(BumpColor.surface)
                         }
                     }
                     .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .background(BumpColor.surface)
+                    .bumpScrollBackground()
                     .refreshable { await viewModel.reload() }
                 }
             } else {

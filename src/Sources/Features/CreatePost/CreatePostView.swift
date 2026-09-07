@@ -53,46 +53,51 @@ private struct CreatePostForm: View {
             Section {
                 SquarePhotoAttachmentPicker(images: $viewModel.selectedImages, maxCount: 6) {
                     Label("Add Photos", systemImage: "photo.on.rectangle")
+                        .foregroundStyle(Color.accentColor)
+                        .frame(minHeight: BumpHitTarget.min)
                 }
                 if !viewModel.selectedImages.isEmpty {
-                    ScrollView(.horizontal) {
-                        HStack {
-                            ForEach(Array(viewModel.selectedImages.enumerated()), id: \.offset) { _, data in
-                                if let uiImage = UIImage(data: data) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 72, height: 72)
-                                        .clipShape(RoundedRectangle(cornerRadius: BumpRadius.control))
-                                }
-                            }
-                        }
-                    }
-                    .listRowInsets(EdgeInsets())
-                    .padding(BumpSpacing.s)
+                    attachmentStrip
+                        .listRowInsets(EdgeInsets())
                 }
+            } header: {
+                Text("Photos")
+            } footer: {
+                Text("Up to 6 photos, squared to a 1:1 crop.")
             }
 
             Section("Shop") {
                 TextField("Shop name", text: $viewModel.shopName)
                     .onChange(of: viewModel.shopName) { _, newValue in viewModel.searchShops(keyword: newValue) }
-                if !viewModel.shopSuggestions.isEmpty {
-                    ForEach(viewModel.shopSuggestions) { shop in
-                        Button {
-                            viewModel.selectShop(shop)
-                        } label: {
-                            VStack(alignment: .leading) {
-                                Text(shop.name).foregroundStyle(.primary)
-                                Text(shop.address).font(.caption).foregroundStyle(.secondary)
+                ForEach(viewModel.shopSuggestions) { shop in
+                    Button {
+                        viewModel.selectShop(shop)
+                    } label: {
+                        HStack(spacing: BumpSpacing.s) {
+                            Image(systemName: "mappin.circle.fill")
+                                .foregroundStyle(Color.accentColor)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(shop.name)
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundStyle(BumpColor.textPrimary)
+                                Text(shop.address)
+                                    .font(.caption)
+                                    .foregroundStyle(BumpColor.textSecondary)
                             }
+                            Spacer(minLength: 0)
                         }
+                        .frame(minHeight: BumpHitTarget.min)
+                        .contentShape(Rectangle())
                     }
+                    .accessibilityHint(String(localized: "Fills in this shop"))
                 }
                 TextField("Address", text: $viewModel.shopAddress)
             }
 
             Section("Your Rating") {
                 RatingPickerView(rating: $viewModel.rating)
+                    .padding(.vertical, BumpSpacing.xs)
             }
 
             Section("Caption") {
@@ -105,7 +110,36 @@ private struct CreatePostForm: View {
                     .listRowBackground(Color.clear)
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(BumpColor.surface)
+        .bumpScrollBackground()
+    }
+
+    private var attachmentStrip: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: BumpSpacing.s) {
+                ForEach(Array(viewModel.selectedImages.enumerated()), id: \.offset) { index, data in
+                    if let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 72, height: 72)
+                            .clipShape(RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous))
+                            .overlay(alignment: .topTrailing) {
+                                Button {
+                                    viewModel.selectedImages.remove(at: index)
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.body)
+                                        .foregroundStyle(.white, .black.opacity(0.55))
+                                        .padding(3)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(String(localized: "Remove photo"))
+                            }
+                    }
+                }
+            }
+            .padding(BumpSpacing.m)
+        }
+        .scrollIndicators(.hidden)
     }
 }

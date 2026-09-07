@@ -27,5 +27,9 @@ struct OnboardingFlowView: View {
                     }
                 }
         }
+        // One page background for the whole auth flow: each screen underneath is
+        // transparent, so this is what keeps them all on the app's warm surface instead
+        // of the system's default white.
+        .background(BumpColor.surface)
     }
 }

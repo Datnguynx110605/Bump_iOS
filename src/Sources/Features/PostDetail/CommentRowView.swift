@@ -8,7 +8,6 @@ struct CommentRowView: View {
     @State private var displayedLikeCount: Int
     @State private var isLiked = false
     @State private var showingReportSheet = false
-    @ScaledMetric private var reactionIconSize: CGFloat = BumpIconSize.small
     @ScaledMetric private var menuIconSize: CGFloat = BumpIconSize.small
 
     init(comment: CommentSummaryDto, onDelete: (() -> Void)? = nil) {
@@ -34,35 +33,36 @@ struct CommentRowView: View {
                 PostImageCarousel(imageURLs: comment.images.map(\.url))
             }
 
-            HStack(spacing: BumpSpacing.m) {
-                HStack(spacing: BumpSpacing.xs) {
-                    Button {
-                        Task {
-                            let liked = await environment.reactionStore.toggleComment(comment.id)
-                            isLiked = liked
-                            displayedLikeCount += liked ? 1 : -1
-                            if liked {
-                                HapticFeedback.reacted()
-                            }
-                        }
-                    } label: {
-                        Image(systemName: isLiked ? "heart.fill" : "heart")
-                            .font(.system(size: reactionIconSize))
-                            .foregroundStyle(isLiked ? BumpColor.like : BumpColor.textSecondary)
+            HStack(spacing: BumpSpacing.xs) {
+                BumpToggleIconButton(
+                    isOn: isLiked,
+                    onImage: "heart.fill",
+                    offImage: "heart",
+                    label: isLiked ? String(localized: "Unlike comment") : String(localized: "Like comment"),
+                    activeColor: BumpColor.like,
+                    size: BumpIconSize.small
+                ) {
+                    Task {
+                        let toggle = await environment.reactionStore.toggleComment(comment.id)
+                        isLiked = toggle.isLiked
+                        displayedLikeCount += toggle.countDelta
+                        if toggle.countDelta > 0 { HapticFeedback.reacted() }
                     }
-                    .buttonStyle(.plain)
-
-                    NavigationLink(value: AppRoute.commentReactors(comment.id)) {
-                        Text("\(displayedLikeCount)")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(BumpColor.textSecondary)
-                    }
-                    .buttonStyle(.plain)
                 }
+
+                NavigationLink(value: AppRoute.commentReactors(comment.id)) {
+                    Text("\(displayedLikeCount)")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(BumpColor.textSecondary)
+                        .contentTransition(.numericText())
+                }
+                .buttonStyle(.bumpIcon)
+                .accessibilityLabel(String(localized: "See who liked this"))
+                .accessibilityValue(Text("\(displayedLikeCount)"))
 
                 Text(comment.createdAt.relativeDescription)
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(BumpColor.textSecondary)
 
                 Spacer()
 
@@ -75,8 +75,11 @@ struct CommentRowView: View {
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: menuIconSize))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(BumpColor.textSecondary)
+                        .frame(minWidth: BumpHitTarget.min, minHeight: BumpHitTarget.min)
+                        .contentShape(Rectangle())
                 }
+                .accessibilityLabel(String(localized: "More actions"))
             }
         }
         .task { isLiked = environment.reactionStore.isLiked(comment: comment.id) }

@@ -14,7 +14,7 @@ struct ProfileView: View {
         Group {
             if let viewModel {
                 ScrollView {
-                    VStack(spacing: BumpSpacing.m) {
+                    VStack(spacing: BumpSpacing.l) {
                         ProfileHeaderView(
                             viewModel: viewModel,
                             isOwnProfile: isOwnProfile,
@@ -25,10 +25,11 @@ struct ProfileView: View {
 
                         if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
                             EmptyStateView(
-                                icon: "photo.on.rectangle.angled",
-                                title: isOwnProfile ? String(localized: "Share your first post") : String(localized: "No posts yet")
+                                icon: "camera.fill",
+                                title: isOwnProfile ? String(localized: "Share your first post") : String(localized: "No posts yet"),
+                                message: isOwnProfile ? String(localized: "Rate a coffee shop or restaurant and it shows up here.") : nil
                             )
-                            .frame(height: 200)
+                            .frame(height: 220)
                         } else {
                             PostThumbnailGrid(posts: viewModel.posts) { post in
                                 Task { await viewModel.loadMorePostsIfNeeded(current: post) }
@@ -37,6 +38,7 @@ struct ProfileView: View {
                     }
                     .padding(.top, BumpSpacing.m)
                 }
+                .background(BumpColor.surface)
                 .refreshable { await viewModel.refresh() }
             } else {
                 LoadingView()
@@ -60,13 +62,15 @@ struct ProfileView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if isOwnProfile {
-                    HStack(spacing: BumpSpacing.m) {
+                    HStack(spacing: BumpSpacing.s) {
                         NavigationLink(value: AppRoute.saved) {
                             Image(systemName: "bookmark")
                         }
+                        .accessibilityLabel(String(localized: "Saved"))
                         Button { showingSettings = true } label: {
                             Image(systemName: "gearshape")
                         }
+                        .accessibilityLabel(String(localized: "Settings"))
                     }
                 } else {
                     Menu {
@@ -74,6 +78,7 @@ struct ProfileView: View {
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
+                    .accessibilityLabel(String(localized: "More actions"))
                 }
             }
         }
@@ -98,53 +103,49 @@ private struct ProfileHeaderView: View {
         VStack(spacing: BumpSpacing.m) {
             AvatarView(url: viewModel.account?.avatar?.url, size: 88)
 
-            VStack(spacing: 2) {
-                Text(viewModel.account?.name.value ?? "…")
+            VStack(spacing: BumpSpacing.xs) {
+                Text(viewModel.account?.name.value ?? "            ")
                     .font(.title2.bold())
+                    .foregroundStyle(BumpColor.textPrimary)
                     .redacted(reason: viewModel.account == nil ? .placeholder : [])
                 if let bio = viewModel.account?.bio, !bio.isEmpty {
                     Text(bio)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(BumpColor.textSecondary)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, BumpSpacing.l)
                 }
             }
 
-            HStack(spacing: BumpSpacing.xl) {
+            HStack(spacing: 0) {
                 NavigationLink(value: AppRoute.followers(viewModel.accountId)) {
                     statTile(count: viewModel.account?.followerAmount.value, label: String(localized: "Followers"))
                 }
                 .buttonStyle(.plain)
+
+                Divider().frame(height: 28)
+
                 NavigationLink(value: AppRoute.following(viewModel.accountId)) {
                     statTile(count: viewModel.account?.followingAmount.value, label: String(localized: "Following"))
                 }
                 .buttonStyle(.plain)
             }
+            .frame(maxWidth: 280)
 
             if isOwnProfile {
                 Button("Edit Profile", action: onEditProfile)
-                    .buttonStyle(.bordered)
-            } else if isFollowing {
-                Button {
-                    Task { await toggleFollow() }
-                } label: {
-                    Text("Following").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .disabled(isTogglingFollow)
-                .padding(.horizontal, BumpSpacing.xl)
+                    .buttonStyle(.bumpSecondary)
             } else {
                 Button {
                     Task { await toggleFollow() }
                 } label: {
-                    Text("Follow").frame(maxWidth: .infinity)
+                    Text(isFollowing ? "Following" : "Follow")
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bumpSecondary(isProminent: !isFollowing))
                 .disabled(isTogglingFollow)
-                .padding(.horizontal, BumpSpacing.xl)
+                .accessibilityAddTraits(isFollowing ? [.isSelected] : [])
             }
         }
+        .padding(.horizontal, BumpSpacing.l)
         .task { isFollowing = environment.followStore.isFollowing(viewModel.accountId) }
     }
 
@@ -161,10 +162,15 @@ private struct ProfileHeaderView: View {
     private func statTile(count: Int?, label: String) -> some View {
         VStack(spacing: 2) {
             Text(count.map(String.init) ?? "–")
-                .font(.headline)
+                .font(.title3.weight(.bold))
+                .foregroundStyle(BumpColor.textPrimary)
+                .contentTransition(.numericText())
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(BumpColor.textSecondary)
         }
+        .frame(maxWidth: .infinity, minHeight: BumpHitTarget.min)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
     }
 }

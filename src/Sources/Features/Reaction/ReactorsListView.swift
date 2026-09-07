@@ -13,26 +13,32 @@ struct ReactorsListView: View {
                 } else if let errorMessage = viewModel.errorMessage, viewModel.reactors.isEmpty {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.reactors.isEmpty {
-                    EmptyStateView(icon: "heart", title: String(localized: "No reactions yet"))
+                    EmptyStateView(icon: "heart.fill", title: String(localized: "No reactions yet"))
                 } else {
                     List {
                         ForEach(viewModel.reactors) { reactor in
                             NavigationLink(value: AppRoute.account(reactor.accountId)) {
-                                HStack(spacing: BumpSpacing.s) {
+                                HStack(spacing: BumpSpacing.ms) {
                                     AvatarView(url: reactor.avatar?.url, size: 40)
                                     Text(reactor.name.value)
-                                        .font(.subheadline.weight(.medium))
+                                        .font(.subheadline.weight(.semibold))
+                                        .foregroundStyle(BumpColor.textPrimary)
+                                    Spacer(minLength: 0)
                                 }
+                                .padding(.vertical, BumpSpacing.xs)
+                                .accessibilityElement(children: .combine)
                             }
+                            .listRowBackground(BumpColor.surface)
                             .task { await viewModel.loadMoreIfNeeded(current: reactor) }
                         }
                         if viewModel.isLoadingMore {
-                            ProgressView().frame(maxWidth: .infinity)
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                                .listRowBackground(BumpColor.surface)
                         }
                     }
                     .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .background(BumpColor.surface)
+                    .bumpScrollBackground()
                     .refreshable { await viewModel.reload() }
                 }
             } else {
