@@ -9,6 +9,7 @@ final class AppEnvironment {
     let notificationHubClient: NotificationHubClient
     let feedRefreshSignal = FeedRefreshSignal()
     let notificationRouteSignal = NotificationRouteSignal()
+    let locationProvider = LocationProvider()
 
     let accountService: AccountService
     let authService: AuthService

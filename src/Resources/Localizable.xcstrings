@@ -19,7 +19,6 @@
       }
     },
     "%lld out of %lld stars": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -104,7 +103,6 @@
       }
     },
     "10-40 characters (currently %lld).": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -137,7 +135,6 @@
       }
     },
     "6-digit code": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -154,7 +151,6 @@
       }
     },
     "Accounts": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -171,7 +167,6 @@
       }
     },
     "Activity": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -188,7 +183,6 @@
       }
     },
     "Activity History": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -205,7 +199,6 @@
       }
     },
     "Add Photos": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -222,7 +215,6 @@
       }
     },
     "Add a comment…": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -256,7 +248,6 @@
       }
     },
     "Address": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -273,7 +264,6 @@
       }
     },
     "Alerts": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -323,25 +313,7 @@
         }
       }
     },
-    "Be the first to share a spot.": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Be the first to share a spot."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hãy là người đầu tiên chia sẻ một địa điểm."
-          }
-        }
-      }
-    },
     "Bio": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -358,7 +330,6 @@
       }
     },
     "Bio (optional)": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -375,7 +346,6 @@
       }
     },
     "Browse real photos and ratings from people who've actually been there.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -401,8 +371,23 @@
         }
       }
     },
+    "Bump fills this with posts from people you follow and places you've reacted to. Find a few to get started.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bump fills this with posts from people you follow and places you've reacted to. Find a few to get started."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bump hiển thị ở đây bài đăng từ những người bạn theo dõi và những quán bạn đã thả tim. Hãy tìm vài gợi ý để bắt đầu."
+          }
+        }
+      }
+    },
     "Cancel": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -419,7 +404,6 @@
       }
     },
     "Caption": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -436,7 +420,6 @@
       }
     },
     "Change Email": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -453,7 +436,6 @@
       }
     },
     "Change Password": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -486,6 +468,22 @@
         }
       }
     },
+    "Check your connection and try again.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check your connection and try again."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy kiểm tra kết nối và thử lại."
+          }
+        }
+      }
+    },
     "Choose a new password for %@.": {
       "localizations": {
         "vi": {
@@ -497,7 +495,6 @@
       }
     },
     "Choose from Library": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -529,8 +526,8 @@
         }
       }
     },
+    "Comments you leave on posts show up here.": {},
     "Confirm new password": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -547,7 +544,6 @@
       }
     },
     "Confirm password": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -580,7 +576,6 @@
       }
     },
     "Couldn't connect. Check your connection and try again.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -597,7 +592,6 @@
       }
     },
     "Couldn't delete that comment.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -614,7 +608,6 @@
       }
     },
     "Couldn't delete this post.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -631,7 +624,6 @@
       }
     },
     "Couldn't delete your account.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -647,8 +639,23 @@
         }
       }
     },
+    "Couldn't find shops nearby": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't find shops nearby"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tìm được quán gần bạn"
+          }
+        }
+      }
+    },
     "Couldn't post your comment.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -665,7 +672,6 @@
       }
     },
     "Couldn't save your changes.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -682,7 +688,6 @@
       }
     },
     "Couldn't send the code.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -699,7 +704,6 @@
       }
     },
     "Couldn't share your post.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -716,7 +720,6 @@
       }
     },
     "Couldn't submit your report.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -733,7 +736,6 @@
       }
     },
     "Couldn't update your email.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -750,7 +752,6 @@
       }
     },
     "Couldn't update your password.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -767,7 +768,6 @@
       }
     },
     "Couldn't update your photo.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -816,7 +816,6 @@
       }
     },
     "Current password": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -833,7 +832,6 @@
       }
     },
     "Delete": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -850,7 +848,6 @@
       }
     },
     "Delete Account": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -867,7 +864,6 @@
       }
     },
     "Delete Post": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -884,7 +880,6 @@
       }
     },
     "Delete this post?": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -901,7 +896,6 @@
       }
     },
     "Delete your account? This can't be undone from the app.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -918,7 +912,6 @@
       }
     },
     "Describe the issue": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -930,6 +923,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mô tả vấn đề"
+          }
+        }
+      }
+    },
+    "Discover Shops & People": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discover Shops & People"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khám phá quán và mọi người"
           }
         }
       }
@@ -951,7 +960,6 @@
       }
     },
     "Discover great spots": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -968,7 +976,6 @@
       }
     },
     "Done": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -985,7 +992,6 @@
       }
     },
     "Edit Profile": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1002,7 +1008,6 @@
       }
     },
     "Email": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1019,7 +1024,6 @@
       }
     },
     "Email Updated": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1069,7 +1073,6 @@
       }
     },
     "Enter all 6 digits (%lld/6).": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1135,23 +1138,6 @@
         }
       }
     },
-    "Feed": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Feed"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bảng tin"
-          }
-        }
-      }
-    },
     "Fills in this shop": {
       "extractionState": "manual",
       "localizations": {
@@ -1170,7 +1156,6 @@
       }
     },
     "Find shops, posts, or people.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1203,7 +1188,6 @@
       }
     },
     "Followers": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1246,7 +1230,6 @@
       }
     },
     "Get Started": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1258,6 +1241,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bắt đầu"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trang chủ"
           }
         }
       }
@@ -1296,7 +1295,6 @@
       }
     },
     "Language": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1308,23 +1306,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngôn ngữ"
-          }
-        }
-      }
-    },
-    "Latest": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Latest"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mới nhất"
           }
         }
       }
@@ -1381,7 +1362,6 @@
       }
     },
     "Likes, comments, and new followers show up here.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1415,7 +1395,6 @@
       }
     },
     "Loading shop…": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1427,6 +1406,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đang tải cửa hàng…"
+          }
+        }
+      }
+    },
+    "Location attached": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location attached"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã đính kèm vị trí"
+          }
+        }
+      }
+    },
+    "Location is off": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location is off"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vị trí đang tắt"
+          }
+        }
+      }
+    },
+    "Location is off. Turn it on in Settings to pin this shop.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location is off. Turn it on in Settings to pin this shop."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vị trí đang tắt. Hãy bật trong Cài đặt để ghim quán này."
           }
         }
       }
@@ -1448,7 +1475,6 @@
       }
     },
     "Log Out": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1481,7 +1507,6 @@
       }
     },
     "Looks good.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1498,7 +1523,6 @@
       }
     },
     "Lowercase letters and numbers only, no spaces.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1515,7 +1539,6 @@
       }
     },
     "Lowercase letters and numbers only.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1549,7 +1572,6 @@
       }
     },
     "New Post": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1566,7 +1588,6 @@
       }
     },
     "New comments": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1583,7 +1604,6 @@
       }
     },
     "New email": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1600,7 +1620,6 @@
       }
     },
     "New password": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1616,25 +1635,7 @@
         }
       }
     },
-    "New posts": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New posts"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bài đăng mới"
-          }
-        }
-      }
-    },
     "Next": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1651,7 +1652,6 @@
       }
     },
     "No %@ yet": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1668,7 +1668,6 @@
       }
     },
     "No comments yet": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1701,7 +1700,6 @@
       }
     },
     "No notifications yet": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1718,7 +1716,6 @@
       }
     },
     "No people found": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1735,7 +1732,6 @@
       }
     },
     "No posts found": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1752,7 +1748,6 @@
       }
     },
     "No posts yet": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1769,7 +1764,6 @@
       }
     },
     "No reactions yet": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1786,7 +1780,6 @@
       }
     },
     "No saved posts yet": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1803,7 +1796,6 @@
       }
     },
     "No saved shops yet": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1819,8 +1811,23 @@
         }
       }
     },
+    "No shop near you has cleared four stars. Be the first to post one.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No shop near you has cleared four stars. Be the first to post one."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có quán nào gần bạn đạt bốn sao. Hãy là người đầu tiên đăng bài."
+          }
+        }
+      }
+    },
     "No shops found": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1836,8 +1843,23 @@
         }
       }
     },
+    "Nothing highly rated yet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing highly rated yet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có quán nào nổi bật"
+          }
+        }
+      }
+    },
     "Notifications": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1849,6 +1871,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thông báo"
+          }
+        }
+      }
+    },
+    "Number %lld nearby, %@, %@, rated %lld out of 5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Number %lld nearby, %@, %@, rated %lld out of 5"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vị trí số %lld gần bạn, %@, %@, đánh giá %lld trên 5"
           }
         }
       }
@@ -1870,8 +1908,39 @@
         }
       }
     },
+    "Open Settings": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Cài đặt"
+          }
+        }
+      }
+    },
+    "Optional. Helps this shop show up in nearby searches.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. Helps this shop show up in nearby searches."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không bắt buộc. Giúp quán này xuất hiện trong tìm kiếm lân cận."
+          }
+        }
+      }
+    },
     "Password": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1888,7 +1957,6 @@
       }
     },
     "Password Updated": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1905,7 +1973,6 @@
       }
     },
     "Passwords don't match.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1922,7 +1989,6 @@
       }
     },
     "Passwords match.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1999,7 +2065,6 @@
       }
     },
     "Position Photo": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2016,7 +2081,6 @@
       }
     },
     "Post": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2033,7 +2097,6 @@
       }
     },
     "Posts": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2050,7 +2113,6 @@
       }
     },
     "Profile": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2084,7 +2146,6 @@
       }
     },
     "Rating": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2101,7 +2162,6 @@
       }
     },
     "React and comment on posts to help others decide where to go next.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2118,7 +2178,6 @@
       }
     },
     "Reactions": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2164,6 +2223,22 @@
         }
       }
     },
+    "Remove": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa"
+          }
+        }
+      }
+    },
     "Remove from saved": {
       "extractionState": "manual",
       "localizations": {
@@ -2199,7 +2274,6 @@
       }
     },
     "Report": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2216,7 +2290,6 @@
       }
     },
     "Report Account": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2233,7 +2306,6 @@
       }
     },
     "Report Post": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2250,7 +2322,6 @@
       }
     },
     "Report submitted": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2267,7 +2338,6 @@
       }
     },
     "Resend code": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2284,7 +2354,6 @@
       }
     },
     "Resend code (%llds)": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2395,7 +2464,6 @@
       }
     },
     "Saved": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2429,7 +2497,6 @@
       }
     },
     "Scope": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2446,7 +2513,6 @@
       }
     },
     "Search": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2463,7 +2529,6 @@
       }
     },
     "Search Bump": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2480,7 +2545,6 @@
       }
     },
     "Security": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2492,6 +2556,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bảo mật"
+          }
+        }
+      }
+    },
+    "See the best spots around you": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See the best spots around you"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xem những quán tuyệt nhất quanh bạn"
           }
         }
       }
@@ -2514,7 +2594,6 @@
       }
     },
     "Send Code": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2558,7 +2637,6 @@
       }
     },
     "Settings": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2591,7 +2669,6 @@
       }
     },
     "Share what you find": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2608,7 +2685,6 @@
       }
     },
     "Share your first post": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2624,8 +2700,23 @@
         }
       }
     },
+    "Share your location and Bump shows the top-rated shops within five kilometres.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share your location and Bump shows the top-rated shops within five kilometres."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia sẻ vị trí để Bump gợi ý những quán được đánh giá cao trong bán kính năm ki-lô-mét."
+          }
+        }
+      }
+    },
     "Shop": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2642,7 +2733,6 @@
       }
     },
     "Shop name": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2659,7 +2749,6 @@
       }
     },
     "Shops": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2676,7 +2765,6 @@
       }
     },
     "Shops, posts, or people": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2693,7 +2781,6 @@
       }
     },
     "Skip": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2710,7 +2797,6 @@
       }
     },
     "Snap a photo, rate the place, and bump it to your feed in seconds.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2727,7 +2813,6 @@
       }
     },
     "Something went wrong reading the server's response.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2744,7 +2829,6 @@
       }
     },
     "Something went wrong.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2756,23 +2840,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đã xảy ra lỗi."
-          }
-        }
-      }
-    },
-    "Sort": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sort"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sắp xếp"
           }
         }
       }
@@ -2794,7 +2861,6 @@
       }
     },
     "Take Photo": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2811,7 +2877,6 @@
       }
     },
     "Talk about it": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2845,7 +2910,6 @@
       }
     },
     "Tell people about yourself": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2961,25 +3025,23 @@
         }
       }
     },
-    "Top": {
-      "extractionState": "stale",
+    "Top Rated Nearby": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Top"
+            "value": "Top Rated Nearby"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nổi bật"
+            "value": "Đánh giá cao gần bạn"
           }
         }
       }
     },
     "Try Again": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -2991,6 +3053,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thử lại"
+          }
+        }
+      }
+    },
+    "Turn location on in Settings to see top-rated shops near you.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn location on in Settings to see top-rated shops near you."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật vị trí trong Cài đặt để xem những quán được đánh giá cao gần bạn."
           }
         }
       }
@@ -3030,7 +3108,6 @@
       }
     },
     "Unsave": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3063,8 +3140,23 @@
         }
       }
     },
+    "Use My Location": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use My Location"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng vị trí của tôi"
+          }
+        }
+      }
+    },
     "Use Photo": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3080,8 +3172,23 @@
         }
       }
     },
+    "Use my current location": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use my current location"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng vị trí hiện tại của tôi"
+          }
+        }
+      }
+    },
     "Username": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3222,7 +3329,6 @@
       }
     },
     "What made this place worth a Bump?": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3255,7 +3361,6 @@
       }
     },
     "Why are you reporting this?": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3272,7 +3377,6 @@
       }
     },
     "You're doing that a bit too fast. Try again in a moment.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3306,7 +3410,6 @@
       }
     },
     "Your Rating": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3322,8 +3425,23 @@
         }
       }
     },
+    "Your feed is quiet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your feed is quiet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bảng tin của bạn đang yên ắng"
+          }
+        }
+      }
+    },
     "Your session expired. Please log in again.": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3340,7 +3458,6 @@
       }
     },
     "followers": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3357,7 +3474,6 @@
       }
     },
     "following": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3374,7 +3490,6 @@
       }
     },
     "tab.post": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -3391,7 +3506,6 @@
       }
     },
     "username": {
-      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {

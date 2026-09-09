@@ -7,8 +7,13 @@ struct ShopService {
         try await api.send(.plain(path: "api/v1/Shop/\(id)"))
     }
 
-    func all(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<ShopSummaryDto> {
-        try await api.send(.plain(path: "api/v1/Shop", query: .cursor(cursor, pageSize: pageSize)))
+    /// Top-rated shops within 5km of a point. The server answers a fixed top ten with a
+    /// null cursor, so this is deliberately not paginated.
+    func bestAround(_ coordinate: PostCoordinate) async throws -> CursorPage<ShopSummaryDto> {
+        try await api.send(.plain(path: "api/v1/Shop/around", query: [
+            URLQueryItem(name: "latitude", value: String(coordinate.latitude)),
+            URLQueryItem(name: "longitude", value: String(coordinate.longitude)),
+        ]))
     }
 
     func search(keyword: String, cursor: String?, pageSize: Int = 20) async throws -> CursorPage<ShopSummaryDto> {
@@ -16,9 +21,5 @@ struct ShopService {
             path: "api/v1/Shop/search",
             query: [URLQueryItem(name: "keyword", value: keyword)] + .cursor(cursor, pageSize: pageSize)
         ))
-    }
-
-    func mostRated(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<ShopSummaryDto> {
-        try await api.send(.plain(path: "api/v1/Shop/most-rated", query: .cursor(cursor, pageSize: pageSize)))
     }
 }

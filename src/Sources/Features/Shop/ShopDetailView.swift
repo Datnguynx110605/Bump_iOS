@@ -20,7 +20,7 @@ struct ShopDetailView: View {
                                         .font(.subheadline)
                                         .foregroundStyle(BumpColor.textSecondary)
                                     RatingStarsView(rating: shop.rate.value, size: BumpIconSize.small)
-                                        .padding(.top, 2)
+                                        .padding(.top, BumpSpacing.xs)
                                     Button {
                                         AppleMaps.openDirections(shopName: shop.name, address: shop.address)
                                     } label: {

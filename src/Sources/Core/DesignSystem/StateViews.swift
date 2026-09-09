@@ -25,12 +25,12 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: BumpSpacing.ms) {
             Circle()
-                .fill(Color.accentColor.opacity(0.12))
+                .fill(BumpColor.brand.opacity(0.12))
                 .frame(width: discSize, height: discSize)
                 .overlay {
                     Image(systemName: icon)
                         .font(.system(size: iconSize))
-                        .foregroundStyle(Color.accentColor)
+                        .foregroundStyle(BumpColor.brand)
                 }
                 .accessibilityHidden(true)
 

@@ -9,6 +9,13 @@ final class CreatePostViewModel {
     var rating = 5
     var selectedImages: [Data] = []
 
+    /// Only ever set as a pair, and only meaningful for a shop nobody has posted yet:
+    /// the server reuses an existing (name, address) row and never overwrites its
+    /// coordinate, so this is what puts a brand-new shop on the nearby map.
+    private(set) var coordinate: PostCoordinate?
+    private(set) var isLocating = false
+    private(set) var locationDenied = false
+
     var shopSuggestions: [ShopSummaryDto] = []
     var isSearchingShops = false
     private var shopSearchTask: Task<Void, Never>?
@@ -19,10 +26,25 @@ final class CreatePostViewModel {
 
     private let postService: PostService
     private let shopService: ShopService
+    private let locationProvider: LocationProvider
 
-    init(postService: PostService, shopService: ShopService) {
+    init(postService: PostService, shopService: ShopService, locationProvider: LocationProvider) {
         self.postService = postService
         self.shopService = shopService
+        self.locationProvider = locationProvider
+    }
+
+    func attachLocation() async {
+        isLocating = true
+        locationDenied = false
+        defer { isLocating = false }
+        coordinate = await locationProvider.requestCurrent()
+        locationDenied = coordinate == nil && locationProvider.isDenied
+    }
+
+    func clearLocation() {
+        coordinate = nil
+        locationDenied = false
     }
 
     var isValid: Bool {
@@ -68,6 +90,7 @@ final class CreatePostViewModel {
             _ = try await postService.create(
                 shopName: shopName.trimmingCharacters(in: .whitespacesAndNewlines),
                 shopAddress: shopAddress.trimmingCharacters(in: .whitespacesAndNewlines),
+                coordinate: coordinate,
                 caption: caption.isEmpty ? nil : caption,
                 rate: rating,
                 images: uploads

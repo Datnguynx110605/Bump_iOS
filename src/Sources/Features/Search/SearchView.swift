@@ -126,16 +126,16 @@ private struct ShopResultRow: View {
     var body: some View {
         HStack(spacing: BumpSpacing.ms) {
             RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous)
-                .fill(Color.accentColor.opacity(0.12))
+                .fill(BumpColor.brand.opacity(0.12))
                 .frame(width: 40, height: 40)
                 .overlay {
                     Image(systemName: "cup.and.saucer.fill")
                         .font(.footnote)
-                        .foregroundStyle(Color.accentColor)
+                        .foregroundStyle(BumpColor.brand)
                 }
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(shop.name)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(BumpColor.textPrimary)
@@ -161,7 +161,7 @@ private struct AccountResultRow: View {
     var body: some View {
         HStack(spacing: BumpSpacing.ms) {
             AvatarView(url: account.avatar?.url, size: 40)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(account.name.value)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(BumpColor.textPrimary)

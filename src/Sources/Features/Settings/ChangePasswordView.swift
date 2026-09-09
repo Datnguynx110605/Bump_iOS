@@ -28,12 +28,12 @@ struct ChangePasswordView: View {
                 SecureField("Confirm new password", text: $confirmPassword)
                     .textContentType(.newPassword)
             } footer: {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                     if newPassword.isEmpty || PasswordRule.isValid(newPassword) {
                         Text("10-40 characters.")
                     } else {
                         Text("10-40 characters (currently \(newPassword.count)).")
-                            .foregroundStyle(.red)
+                            .foregroundStyle(BumpColor.danger)
                     }
                     if !confirmPassword.isEmpty {
                         Text(newPassword == confirmPassword ? "Passwords match." : "Passwords don't match.")

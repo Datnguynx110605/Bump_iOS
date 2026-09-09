@@ -31,8 +31,8 @@ struct RootView: View {
         }
         .environment(\.locale, languagePreference.locale)
         .preferredColorScheme(appearancePreference.appearance.colorScheme)
-        .animation(.easeInOut(duration: 0.25), value: authSession.isAuthenticated)
-        .animation(BumpMotion.standard, value: hasSeenIntro)
+        .bumpAnimation(BumpMotion.standard, value: authSession.isAuthenticated)
+        .bumpAnimation(BumpMotion.standard, value: hasSeenIntro)
         .onChange(of: authSession.isAuthenticated, initial: true) { _, isAuthenticated in
             if isAuthenticated {
                 if scenePhase == .active { environment.notificationHubClient.start() }

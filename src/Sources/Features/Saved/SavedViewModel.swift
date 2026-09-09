@@ -110,10 +110,6 @@ final class SavedViewModel {
         }
     }
 
-    func removeSavedPost(_ id: UUID) {
-        posts.removeAll { $0.id == id }
-    }
-
     func removeSavedShop(_ id: UUID) {
         shops.removeAll { $0.id == id }
     }

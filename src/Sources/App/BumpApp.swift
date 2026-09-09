@@ -17,7 +17,7 @@ struct BumpApp: App {
                 .environment(environment.authSession)
                 .environment(LanguagePreference.shared)
                 .environment(AppearancePreference.shared)
-                .tint(Color.accentColor)
+                .tint(BumpColor.brand)
         }
     }
 }

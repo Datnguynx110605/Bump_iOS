@@ -30,11 +30,11 @@ struct AvatarView: View {
 
     private var placeholder: some View {
         Circle()
-            .fill(Color.accentColor.opacity(0.14))
+            .fill(BumpColor.brand.opacity(0.14))
             .overlay {
                 Image(systemName: "person.fill")
                     .font(.system(size: size * 0.42))
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(BumpColor.brand)
             }
     }
 }

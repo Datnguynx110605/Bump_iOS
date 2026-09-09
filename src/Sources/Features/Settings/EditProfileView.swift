@@ -31,14 +31,14 @@ struct EditProfileView: View {
                             ZStack {
                                 AvatarView(url: account?.avatar?.url, size: 88)
                                 if isUploadingAvatar {
-                                    Color.black.opacity(0.3).clipShape(Circle()).frame(width: 88, height: 88)
+                                    BumpColor.overlayScrim.clipShape(Circle()).frame(width: 88, height: 88)
                                     ProgressView().tint(.white)
                                 }
                             }
                             .overlay(alignment: .bottomTrailing) {
                                 Image(systemName: "camera.circle.fill")
                                     .font(.title2)
-                                    .foregroundStyle(.white, Color.accentColor)
+                                    .foregroundStyle(.white, BumpColor.brandFill)
                             }
                         }
                         .accessibilityLabel(String(localized: "Change profile photo"))

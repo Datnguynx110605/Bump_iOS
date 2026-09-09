@@ -160,7 +160,7 @@ private struct ProfileHeaderView: View {
     }
 
     private func statTile(count: Int?, label: String) -> some View {
-        VStack(spacing: 2) {
+        VStack(spacing: BumpSpacing.xs) {
             Text(count.map(String.init) ?? "–")
                 .font(.title3.weight(.bold))
                 .foregroundStyle(BumpColor.textPrimary)

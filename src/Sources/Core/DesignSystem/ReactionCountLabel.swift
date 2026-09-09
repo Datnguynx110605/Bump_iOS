@@ -51,7 +51,7 @@ struct BumpToggleIconButton: View {
     let onImage: String
     let offImage: String
     let label: String
-    var activeColor: Color = Color.accentColor
+    var activeColor: Color = BumpColor.brand
     var size: CGFloat = BumpIconSize.medium
     let action: () -> Void
 

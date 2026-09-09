@@ -70,12 +70,6 @@ struct AccountService {
         let _: EmptyResponse = try await api.send(.multipart(path: "api/v1/Account/me/avatar", form: form))
     }
 
-    func removeAvatar(url: String) async throws {
-        let _: EmptyResponse = try await api.send(.plain(
-            path: "api/v1/Account/me/avatar", method: .delete, query: [URLQueryItem(name: "url", value: url)]
-        ))
-    }
-
     func deleteAccount() async throws {
         let _: EmptyResponse = try await api.send(.plain(path: "api/v1/Account/me", method: .delete))
     }

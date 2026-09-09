@@ -3,28 +3,29 @@ import Foundation
 struct PostService {
     let api: APIClient
 
-    func create(shopName: String, shopAddress: String, caption: String?, rate: Int, images: [ImageUpload]) async throws -> PostDto {
+    func create(
+        shopName: String,
+        shopAddress: String,
+        coordinate: PostCoordinate?,
+        caption: String?,
+        rate: Int,
+        images: [ImageUpload]
+    ) async throws -> PostDto {
         var form = MultipartFormData()
         form.addField(name: "shopName", value: shopName)
         form.addField(name: "shopAddress", value: shopAddress)
+        // The server rejects a half-supplied pair ("Latitude and longitude must be
+        // provided together"), so both fields are added or neither is.
+        if let coordinate {
+            form.addField(name: "latitude", value: String(coordinate.latitude))
+            form.addField(name: "longitude", value: String(coordinate.longitude))
+        }
         if let caption { form.addField(name: "caption", value: caption) }
         form.addField(name: "rate", value: String(rate))
         for image in images {
             form.addFile(name: "images", filename: image.filename, mimeType: image.mimeType, fileData: image.data)
         }
         return try await api.send(.multipart(path: "api/v1/Post", form: form))
-    }
-
-    func changeCaption(postId: UUID, caption: String) async throws {
-        let _: EmptyResponse = try await api.send(.json(
-            path: "api/v1/Post/\(postId)/caption", method: .put, body: ChangeCaptionRequest(caption: caption)
-        ))
-    }
-
-    func changeRate(postId: UUID, rate: Int) async throws {
-        let _: EmptyResponse = try await api.send(.json(
-            path: "api/v1/Post/\(postId)/rate", method: .put, body: ChangeRateRequest(rate: rate)
-        ))
     }
 
     func delete(postId: UUID) async throws {
@@ -47,18 +48,16 @@ struct PostService {
         try await api.send(.plain(path: "api/v1/Post/shop/\(shopId)", query: .cursor(cursor, pageSize: pageSize)))
     }
 
+    /// The personalized feed: posts from accounts the viewer follows or has reacted to.
+    /// Replaces the removed `/latest` and `/most-reacted` endpoints.
+    func related(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<PostFeedItemDto> {
+        try await api.send(.plain(path: "api/v1/Post/related", query: .cursor(cursor, pageSize: pageSize)))
+    }
+
     func search(keyword: String, cursor: String?, pageSize: Int = 20) async throws -> CursorPage<PostFeedItemDto> {
         try await api.send(.plain(
             path: "api/v1/Post/search",
             query: [URLQueryItem(name: "keyword", value: keyword)] + .cursor(cursor, pageSize: pageSize)
         ))
-    }
-
-    func latest(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<PostFeedItemDto> {
-        try await api.send(.plain(path: "api/v1/Post/latest", query: .cursor(cursor, pageSize: pageSize)))
-    }
-
-    func mostReacted(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<PostFeedItemDto> {
-        try await api.send(.plain(path: "api/v1/Post/most-reacted", query: .cursor(cursor, pageSize: pageSize)))
     }
 }

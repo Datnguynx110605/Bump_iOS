@@ -33,7 +33,11 @@ struct CreatePostView: View {
         }
         .task {
             if viewModel == nil {
-                viewModel = CreatePostViewModel(postService: environment.postService, shopService: environment.shopService)
+                viewModel = CreatePostViewModel(
+                    postService: environment.postService,
+                    shopService: environment.shopService,
+                    locationProvider: environment.locationProvider
+                )
             }
         }
         .onChange(of: viewModel?.didSubmit) { _, didSubmit in
@@ -53,7 +57,7 @@ private struct CreatePostForm: View {
             Section {
                 SquarePhotoAttachmentPicker(images: $viewModel.selectedImages, maxCount: 6) {
                     Label("Add Photos", systemImage: "photo.on.rectangle")
-                        .foregroundStyle(Color.accentColor)
+                        .foregroundStyle(BumpColor.brand)
                         .frame(minHeight: BumpHitTarget.min)
                 }
                 if !viewModel.selectedImages.isEmpty {
@@ -75,9 +79,9 @@ private struct CreatePostForm: View {
                     } label: {
                         HStack(spacing: BumpSpacing.s) {
                             Image(systemName: "mappin.circle.fill")
-                                .foregroundStyle(Color.accentColor)
+                                .foregroundStyle(BumpColor.brand)
                                 .accessibilityHidden(true)
-                            VStack(alignment: .leading, spacing: 1) {
+                            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                                 Text(shop.name)
                                     .font(.subheadline.weight(.medium))
                                     .foregroundStyle(BumpColor.textPrimary)
@@ -93,6 +97,7 @@ private struct CreatePostForm: View {
                     .accessibilityHint(String(localized: "Fills in this shop"))
                 }
                 TextField("Address", text: $viewModel.shopAddress)
+                LocationAttachRow(viewModel: viewModel)
             }
 
             Section("Your Rating") {
@@ -118,28 +123,66 @@ private struct CreatePostForm: View {
             HStack(spacing: BumpSpacing.s) {
                 ForEach(Array(viewModel.selectedImages.enumerated()), id: \.offset) { index, data in
                     if let uiImage = UIImage(data: data) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 72, height: 72)
-                            .clipShape(RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous))
-                            .overlay(alignment: .topTrailing) {
-                                Button {
-                                    viewModel.selectedImages.remove(at: index)
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .font(.body)
-                                        .foregroundStyle(.white, .black.opacity(0.55))
-                                        .padding(3)
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel(String(localized: "Remove photo"))
-                            }
+                        AttachmentThumbnail(image: uiImage, size: 72) {
+                            viewModel.selectedImages.remove(at: index)
+                        }
                     }
                 }
             }
             .padding(BumpSpacing.m)
         }
         .scrollIndicators(.hidden)
+    }
+}
+
+/// Optional place pin for the post's shop. Sending a coordinate is what lets a
+/// brand-new shop appear in the nearby list, so the copy says that rather than asking
+/// for permission with no stated payoff.
+private struct LocationAttachRow: View {
+    let viewModel: CreatePostViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+            if viewModel.coordinate != nil {
+                HStack(spacing: BumpSpacing.s) {
+                    Image(systemName: "mappin.circle.fill")
+                        .foregroundStyle(BumpColor.success)
+                        .accessibilityHidden(true)
+                    Text("Location attached")
+                        .font(.subheadline)
+                        .foregroundStyle(BumpColor.textPrimary)
+                    Spacer(minLength: 0)
+                    Button("Remove") { viewModel.clearLocation() }
+                        .buttonStyle(.bumpText)
+                }
+                .frame(minHeight: BumpHitTarget.min)
+            } else {
+                Button {
+                    Task { await viewModel.attachLocation() }
+                } label: {
+                    HStack(spacing: BumpSpacing.s) {
+                        if viewModel.isLocating {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "location.circle.fill")
+                                .foregroundStyle(BumpColor.brand)
+                                .accessibilityHidden(true)
+                        }
+                        Text("Use my current location")
+                            .foregroundStyle(BumpColor.brand)
+                        Spacer(minLength: 0)
+                    }
+                    .frame(minHeight: BumpHitTarget.min)
+                    .contentShape(Rectangle())
+                }
+                .disabled(viewModel.isLocating)
+
+                if viewModel.locationDenied {
+                    FieldHint(text: String(localized: "Location is off. Turn it on in Settings to pin this shop."), tone: .error)
+                } else {
+                    FieldHint(text: String(localized: "Optional. Helps this shop show up in nearby searches."))
+                }
+            }
+        }
     }
 }

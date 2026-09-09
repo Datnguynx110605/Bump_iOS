@@ -19,10 +19,6 @@ struct FollowService {
         try await api.send(.plain(path: "api/v1/Follow/following/\(accountId)", query: .cursor(cursor, pageSize: pageSize)))
     }
 
-    func myFollowers(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<FollowerDto> {
-        try await api.send(.plain(path: "api/v1/Follow/me/follower", query: .cursor(cursor, pageSize: pageSize)))
-    }
-
     func myFollowing(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<FollowingDto> {
         try await api.send(.plain(path: "api/v1/Follow/me/following", query: .cursor(cursor, pageSize: pageSize)))
     }

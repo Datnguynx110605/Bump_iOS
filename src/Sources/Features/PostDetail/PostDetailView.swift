@@ -128,7 +128,7 @@ private struct PostDetailContent: View {
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(BumpColor.textSecondary)
                         .padding(.horizontal, BumpSpacing.s)
-                        .padding(.vertical, 2)
+                        .padding(.vertical, BumpSpacing.xs)
                         .background(BumpColor.surfaceTertiary, in: Capsule())
                 }
             }
@@ -230,23 +230,9 @@ private struct PostDetailContent: View {
             HStack(spacing: BumpSpacing.s) {
                 ForEach(Array(viewModel.selectedCommentImages.enumerated()), id: \.offset) { index, data in
                     if let uiImage = UIImage(data: data) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 56, height: 56)
-                            .clipShape(RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous))
-                            .overlay(alignment: .topTrailing) {
-                                Button {
-                                    viewModel.selectedCommentImages.remove(at: index)
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .font(.body)
-                                        .foregroundStyle(.white, .black.opacity(0.55))
-                                        .padding(2)
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel(String(localized: "Remove photo"))
-                            }
+                        AttachmentThumbnail(image: uiImage, size: 56) {
+                            viewModel.selectedCommentImages.remove(at: index)
+                        }
                     }
                 }
             }
@@ -380,7 +366,7 @@ private struct PostHeaderSection: View {
         VStack(alignment: .leading, spacing: BumpSpacing.s) {
             NavigationLink(value: AppRoute.shop(post.shopId)) {
                 HStack(alignment: .firstTextBaseline, spacing: BumpSpacing.s) {
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                         Text(shop?.name ?? String(localized: "Loading shop…"))
                             .font(.headline)
                             .foregroundStyle(BumpColor.textPrimary)

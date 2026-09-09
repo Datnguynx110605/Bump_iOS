@@ -92,7 +92,7 @@ struct PostRowView: View {
         HStack(spacing: BumpSpacing.xs) {
             Image(systemName: "mappin.circle.fill")
                 .font(.footnote)
-                .foregroundStyle(Color.accentColor)
+                .foregroundStyle(BumpColor.brand)
                 .accessibilityHidden(true)
 
             Text(shop?.name ?? String(localized: "Loading shop…"))

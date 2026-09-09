@@ -35,16 +35,16 @@ struct BumpSecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.subheadline.weight(.semibold))
-            .foregroundStyle(isProminent ? Color.accentColor : BumpColor.textPrimary)
+            .foregroundStyle(isProminent ? BumpColor.brand : BumpColor.textPrimary)
             .frame(maxWidth: .infinity, minHeight: BumpHitTarget.min)
             .padding(.horizontal, BumpSpacing.m)
             .background(
                 RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous)
-                    .fill(isProminent ? Color.accentColor.opacity(0.12) : BumpColor.surfaceTertiary)
+                    .fill(isProminent ? BumpColor.brand.opacity(0.12) : BumpColor.surfaceTertiary)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous)
-                    .strokeBorder(isProminent ? Color.accentColor.opacity(0.35) : BumpColor.border, lineWidth: 1)
+                    .strokeBorder(isProminent ? BumpColor.brand.opacity(0.35) : BumpColor.border, lineWidth: 1)
             )
             .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.4)
             .bumpAnimation(BumpMotion.quick, value: configuration.isPressed)
@@ -59,7 +59,7 @@ struct BumpTextButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.subheadline.weight(.medium))
-            .foregroundStyle(Color.accentColor)
+            .foregroundStyle(BumpColor.brand)
             .frame(minHeight: BumpHitTarget.min)
             .contentShape(Rectangle())
             .opacity(isEnabled ? (configuration.isPressed ? 0.55 : 1) : 0.4)

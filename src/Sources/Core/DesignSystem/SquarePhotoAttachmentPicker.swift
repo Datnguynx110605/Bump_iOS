@@ -119,3 +119,38 @@ private struct PhotoCropFlow: View {
         dismiss()
     }
 }
+
+/// The attachment strip's cell, shared by post creation and comment composition so the two
+/// copies can't drift — they had already diverged on the remove button's padding.
+///
+/// The remove glyph keeps its corner position and size, but its tappable region is expanded
+/// to `BumpHitTarget.min` rather than the ~20pt the glyph alone covered. Nothing underneath
+/// is tappable, so the larger target has no taps to steal.
+struct AttachmentThumbnail: View {
+    let image: UIImage
+    let size: CGFloat
+    let onRemove: () -> Void
+
+    var body: some View {
+        Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .frame(width: size, height: size)
+            .clipShape(RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous))
+            .overlay(alignment: .topTrailing) {
+                Button(action: onRemove) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.body)
+                        // Deliberately darker than `overlayScrim`: this backs a white glyph
+                        // over an arbitrary photo, where the job is legibility rather than
+                        // the flat dimming that token is tuned for.
+                        .foregroundStyle(.white, .black.opacity(0.55))
+                        .padding(BumpSpacing.xs)
+                        .frame(width: BumpHitTarget.min, height: BumpHitTarget.min, alignment: .topTrailing)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: "Remove photo"))
+            }
+    }
+}

@@ -91,7 +91,7 @@ private struct NotificationRow: View {
                     }
                 }
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(notification.title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(BumpColor.textPrimary)

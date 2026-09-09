@@ -42,7 +42,7 @@ struct IntroWalkthroughView: View {
             HStack(spacing: BumpSpacing.s) {
                 ForEach(pages.indices, id: \.self) { index in
                     Capsule()
-                        .fill(index == pageIndex ? Color.accentColor : BumpColor.fill)
+                        .fill(index == pageIndex ? BumpColor.brand : BumpColor.fill)
                         .frame(width: index == pageIndex ? 20 : 6, height: 6)
                         .bumpAnimation(BumpMotion.quick, value: pageIndex)
                 }
@@ -76,12 +76,12 @@ private struct IntroPageView: View {
         VStack(spacing: BumpSpacing.l) {
             Spacer(minLength: BumpSpacing.l)
             Circle()
-                .fill(Color.accentColor.opacity(0.12))
+                .fill(BumpColor.brand.opacity(0.12))
                 .frame(width: discSize, height: discSize)
                 .overlay {
                     Image(systemName: page.icon)
                         .font(.system(size: iconSize))
-                        .foregroundStyle(Color.accentColor)
+                        .foregroundStyle(BumpColor.brand)
                 }
                 .accessibilityHidden(true)
             VStack(spacing: BumpSpacing.s) {

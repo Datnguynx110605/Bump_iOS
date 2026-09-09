@@ -28,7 +28,7 @@ struct ChangeEmailView: View {
                         .autocorrectionDisabled()
                 } footer: {
                     if !email.isEmpty && !EmailRule.isValid(email) {
-                        Text("Enter a valid email address.").foregroundStyle(.red)
+                        Text("Enter a valid email address.").foregroundStyle(BumpColor.danger)
                     } else {
                         Text("The address must already have an account with Bump — this flow moves your login to an existing address, it can't register a brand-new one.")
                     }

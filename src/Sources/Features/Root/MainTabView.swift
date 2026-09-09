@@ -1,13 +1,13 @@
 import SwiftUI
 
 private enum MainTab: Hashable {
-    case feed, search, create, notifications, profile
+    case home, search, create, notifications, profile
 }
 
 struct MainTabView: View {
     @Environment(AuthSession.self) private var authSession
     @Environment(AppEnvironment.self) private var environment
-    @State private var selectedTab: MainTab = .feed
+    @State private var selectedTab: MainTab = .home
     @State private var showingCreatePost = false
     @State private var notificationsPath = NavigationPath()
 
@@ -26,8 +26,8 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: selectedTabBinding) {
-            Tab("Feed", systemImage: "house.fill", value: MainTab.feed) {
-                FeedView()
+            Tab("Home", systemImage: "house.fill", value: MainTab.home) {
+                HomeView { selectedTab = .search }
             }
             Tab("Search", systemImage: "magnifyingglass", value: MainTab.search) {
                 SearchView()
