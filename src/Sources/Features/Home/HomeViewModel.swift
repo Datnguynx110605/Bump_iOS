@@ -23,6 +23,9 @@ final class HomeViewModel {
 
     private var nextCursor: String?
     private var hasMore = true
+    /// Newest post the screen has shown. The freshness probe compares against it, so a
+    /// reload only happens when the feed genuinely changed.
+    private var topPostId: UUID?
 
     private let postService: PostService
     private let shopService: ShopService
@@ -56,8 +59,9 @@ final class HomeViewModel {
             posts = page.items
             nextCursor = page.nextCursor
             hasMore = page.hasMore
+            topPostId = page.items.first?.id
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 
@@ -66,6 +70,28 @@ final class HomeViewModel {
     func refreshAll() async {
         await reload()
         if nearby != .needsPermission { await loadNearby() }
+    }
+
+    /// The automatic path, run on every revisit, foreground and tick.
+    ///
+    /// One single-item request answers "is the top of the feed still the same post?", and
+    /// only a different answer costs a full reload. That keeps an idle screen close to
+    /// free and, more importantly, keeps a scrolled list from jumping every minute for
+    /// content that has not changed.
+    ///
+    /// The nearby strip stays out of this on purpose: refreshing it means a fresh GPS fix,
+    /// and the top-rated shops within five kilometres do not change often enough to pay
+    /// for one every minute. Pull-to-refresh still updates it.
+    func refreshIfStale() async {
+        guard !isLoading else { return }
+        // An empty feed here means the first load was cancelled or failed — the tab switch
+        // that cancelled it is exactly the case this screen used to get stuck on.
+        guard !posts.isEmpty else {
+            await reload()
+            return
+        }
+        guard let page = try? await postService.related(cursor: nil, pageSize: 1) else { return }
+        if page.items.first?.id != topPostId { await reload() }
     }
 
     func loadNearby() async {
@@ -82,7 +108,9 @@ final class HomeViewModel {
             let page = try await shopService.bestAround(coordinate)
             nearby = .loaded(page.items)
         } catch {
-            nearby = .failed
+            // Leaving a tab mid-load cancels the request; that is not a failed lookup and
+            // must not replace the carousel with an error card.
+            if !error.isCancellation { nearby = .failed }
         }
     }
 

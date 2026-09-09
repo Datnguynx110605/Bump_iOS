@@ -34,12 +34,11 @@ final class APIClient {
             return (data, http)
         }
 
-        do {
-            try await authSession.refreshTokens()
-        } catch {
-            await authSession.signOut()
-            throw APIError.unauthenticated
-        }
+        // No catch-all sign-out here: `refreshTokens()` already ends the session when the
+        // server rejects the token, and everything else it can throw — offline, cancelled,
+        // a 503 — is a failure to *ask*, not an answer. Signing out on those is how a
+        // subway ride or a tab switch used to log someone out.
+        try await authSession.refreshTokens()
 
         let retryToken = await authSession.accessToken
         let retryRequest = try buildRequest(endpoint, accessToken: retryToken)
@@ -61,7 +60,10 @@ final class APIClient {
         } catch let error as APIError {
             throw error
         } catch {
-            throw APIError.network(error)
+            // A cancelled request is not a network failure. Keeping the distinction here,
+            // at the one place errors enter the app, is what stops a tab switch mid-load
+            // from painting an offline banner over a healthy server.
+            throw error.isCancellation ? APIError.cancelled : APIError.network(error)
         }
     }
 

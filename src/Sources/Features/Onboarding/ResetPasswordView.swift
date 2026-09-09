@@ -78,7 +78,7 @@ struct ResetPasswordView: View {
             let tokens = try await environment.authService.login(email: email, password: newPassword)
             authSession.setTokens(accessToken: tokens.accessToken, refreshToken: tokens.refreshToken)
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 }

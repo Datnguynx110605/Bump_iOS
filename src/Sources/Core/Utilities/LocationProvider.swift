@@ -1,5 +1,7 @@
+import Contacts
 import CoreLocation
 import Foundation
+import MapKit
 import Observation
 
 /// A latitude/longitude pair, always carried as a unit.
@@ -158,5 +160,77 @@ private final class Delegate: NSObject, CLLocationManagerDelegate {
 
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         MainActor.assumeIsolated { finishLocation(nil) }
+    }
+}
+
+/// A place MapKit knows about at a coordinate. Purely a naming aid for the post form:
+/// Bump's own shop rows are searched separately, so this only has to supply the two
+/// strings the form asks for plus the pin they belong to.
+struct NearbyPlace: Identifiable, Equatable {
+    let id = UUID()
+    let name: String
+    let address: String
+    let coordinate: PostCoordinate
+}
+
+/// Turns a raw fix into something a human can put in a form.
+///
+/// Attaching a location used to hand the server a coordinate and nothing else, which left
+/// the person standing in the shop still typing its name and address by hand. MapKit
+/// answers both questions at that point — which businesses are here, and what the street
+/// address is — with no key, no dependency, and no server work.
+@MainActor
+enum PlaceLookup {
+    /// Tight on purpose: this is "which shop am I standing in", not "what is in this
+    /// neighbourhood". A wide radius buries the right answer under a list.
+    private static let poiRadius: CLLocationDistance = 200
+    /// A busy street corner answers with fifty places; nobody scrolls a form section that
+    /// long, and MapKit returns them nearest-first, so the tail is the wrong part anyway.
+    private static let maxPlaces = 10
+
+    static func places(around coordinate: PostCoordinate) async -> [NearbyPlace] {
+        let request = MKLocalPointsOfInterestRequest(
+            center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude),
+            radius: poiRadius
+        )
+        guard let response = try? await MKLocalSearch(request: request).start() else { return [] }
+        // A POI without a name is not something anyone can pick out of a list.
+        let places = response.mapItems.compactMap { item -> NearbyPlace? in
+            guard let name = item.name, let address = formatted(item.placemark) else { return nil }
+            return NearbyPlace(name: name, address: address, coordinate: PostCoordinate(item.placemark.coordinate))
+        }
+        return Array(places.prefix(maxPlaces))
+    }
+
+    /// The street address of the point itself, for a shop MapKit has never heard of.
+    static func address(of coordinate: PostCoordinate) async -> String? {
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        guard let placemark = try? await CLGeocoder().reverseGeocodeLocation(location).first else { return nil }
+        return formatted(placemark)
+    }
+
+    /// The other direction: a pin for an address somebody typed rather than picked.
+    ///
+    /// A shop entered by hand carries no coordinate, and the server stores that as no
+    /// `Location` at all — the 2dsphere index is sparse, so the row is skipped and the
+    /// shop can never come back from `GET /Shop/around` however well it is rated.
+    /// Geocoding the typed address puts the pin on the shop rather than on whoever
+    /// happened to be posting about it.
+    static func coordinate(of address: String) async -> PostCoordinate? {
+        guard !address.isEmpty else { return nil }
+        guard let placemark = try? await CLGeocoder().geocodeAddressString(address).first,
+              let location = placemark.location else { return nil }
+        return PostCoordinate(location.coordinate)
+    }
+
+    /// `CNPostalAddressFormatter` writes a mailing label, so the line breaks are flattened
+    /// into the single line the form field and the server's 200-character limit expect.
+    private static func formatted(_ placemark: CLPlacemark) -> String? {
+        guard let postalAddress = placemark.postalAddress else { return nil }
+        let address = CNPostalAddressFormatter()
+            .string(from: postalAddress)
+            .split(separator: "\n")
+            .joined(separator: ", ")
+        return address.isEmpty ? nil : address
     }
 }

@@ -47,7 +47,7 @@ struct RecoverAccountConfirmView: View {
             try await environment.accountService.recoverAccount(registrationToken: registrationToken)
             path = [.login]
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 }

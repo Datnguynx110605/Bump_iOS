@@ -77,7 +77,7 @@ final class FollowListViewModel {
             }
         } catch {
             if !append {
-                errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+                errorMessage = APIError.userMessage(for: error)
             }
         }
     }

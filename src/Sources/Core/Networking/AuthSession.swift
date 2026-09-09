@@ -80,12 +80,22 @@ final class AuthSession {
         do {
             (data, response) = try await session.data(for: request)
         } catch {
-            throw APIError.network(error)
+            throw error.isCancellation ? APIError.cancelled : APIError.network(error)
         }
 
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            signOut()
-            throw APIError.unauthenticated
+        guard let http = response as? HTTPURLResponse else {
+            throw APIError.network(URLError(.badServerResponse))
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            // Only the server saying "this refresh token is no longer valid" ends the
+            // session. A 500 from a crashed worker or a 503 from a container that is still
+            // booting says nothing about the token, and signing out there logs people out
+            // of a perfectly good session because the backend hiccuped.
+            if http.statusCode == 401 || http.statusCode == 403 {
+                signOut()
+                throw APIError.unauthenticated
+            }
+            throw APIError.server(status: http.statusCode, message: "Something went wrong (\(http.statusCode)).")
         }
 
         let tokens = try APICoding.decoder.decode(AuthTokensResponse.self, from: data)

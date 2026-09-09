@@ -54,7 +54,7 @@ final class PostDetailViewModel {
             isReacted = item.isReacted
             isSaved = item.isSaved
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 
@@ -120,7 +120,7 @@ final class PostDetailViewModel {
             SoundEffect.sent.play()
             await loadPost()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't post your comment.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't post your comment."))
         }
     }
 
@@ -131,7 +131,7 @@ final class PostDetailViewModel {
             topCommentId = comments.first?.id
             await loadPost()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't delete that comment.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't delete that comment."))
         }
     }
 
@@ -140,7 +140,7 @@ final class PostDetailViewModel {
             try await postService.delete(postId: postId)
             didDelete = true
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't delete this post.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't delete this post."))
         }
     }
 }

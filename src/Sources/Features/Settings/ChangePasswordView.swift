@@ -78,7 +78,7 @@ struct ChangePasswordView: View {
             try await environment.accountService.changePassword(current: currentPassword, new: newPassword)
             didSave = true
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't update your password.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't update your password."))
         }
     }
 }

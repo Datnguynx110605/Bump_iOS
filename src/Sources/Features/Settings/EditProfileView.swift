@@ -108,7 +108,7 @@ struct EditProfileView: View {
             name = me.name.value
             bio = me.bio ?? ""
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 
@@ -128,7 +128,7 @@ struct EditProfileView: View {
             environment.feedRefreshSignal.bump()
             dismiss()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't save your changes.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't save your changes."))
         }
     }
 
@@ -151,7 +151,7 @@ struct EditProfileView: View {
             environment.accountCache.store(updated)
             environment.feedRefreshSignal.bump()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't update your photo.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't update your photo."))
         }
     }
 }

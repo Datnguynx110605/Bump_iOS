@@ -77,24 +77,17 @@ private struct CreatePostForm: View {
                     Button {
                         viewModel.selectShop(shop)
                     } label: {
-                        HStack(spacing: BumpSpacing.s) {
-                            Image(systemName: "mappin.circle.fill")
-                                .foregroundStyle(BumpColor.brand)
-                                .accessibilityHidden(true)
-                            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
-                                Text(shop.name)
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(BumpColor.textPrimary)
-                                Text(shop.address)
-                                    .font(.caption)
-                                    .foregroundStyle(BumpColor.textSecondary)
-                            }
-                            Spacer(minLength: 0)
-                        }
-                        .frame(minHeight: BumpHitTarget.min)
-                        .contentShape(Rectangle())
+                        PlaceSuggestionRow(name: shop.name, detail: shop.address, icon: "mappin.circle.fill")
                     }
                     .accessibilityHint(String(localized: "Fills in this shop"))
+                }
+                ForEach(viewModel.nearbyPlaces) { place in
+                    Button {
+                        viewModel.selectPlace(place)
+                    } label: {
+                        PlaceSuggestionRow(name: place.name, detail: place.address, icon: "storefront.fill")
+                    }
+                    .accessibilityHint(String(localized: "Fills in this place"))
                 }
                 TextField("Address", text: $viewModel.shopAddress)
                 LocationAttachRow(viewModel: viewModel)
@@ -135,9 +128,35 @@ private struct CreatePostForm: View {
     }
 }
 
-/// Optional place pin for the post's shop. Sending a coordinate is what lets a
-/// brand-new shop appear in the nearby list, so the copy says that rather than asking
-/// for permission with no stated payoff.
+/// One tappable place, whether it came from Bump's own shop list or from the map.
+private struct PlaceSuggestionRow: View {
+    let name: String
+    let detail: String
+    let icon: String
+
+    var body: some View {
+        HStack(spacing: BumpSpacing.s) {
+            Image(systemName: icon)
+                .foregroundStyle(BumpColor.brand)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+                Text(name)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(BumpColor.textPrimary)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(BumpColor.textSecondary)
+            }
+            Spacer(minLength: 0)
+        }
+        .frame(minHeight: BumpHitTarget.min)
+        .contentShape(Rectangle())
+    }
+}
+
+/// Fills the shop fields from where the user is standing, and pins the post while it is
+/// at it. The pin is what lets a brand-new shop appear in the nearby list, but naming the
+/// place is the part the user actually feels, so the copy leads with that.
 private struct LocationAttachRow: View {
     let viewModel: CreatePostViewModel
 
@@ -156,6 +175,9 @@ private struct LocationAttachRow: View {
                         .buttonStyle(.bumpText)
                 }
                 .frame(minHeight: BumpHitTarget.min)
+                if viewModel.locationIssue == .noPlaces {
+                    FieldHint(text: String(localized: "No places found here. Type the shop name yourself."))
+                }
             } else {
                 Button {
                     Task { await viewModel.attachLocation() }
@@ -177,10 +199,13 @@ private struct LocationAttachRow: View {
                 }
                 .disabled(viewModel.isLocating)
 
-                if viewModel.locationDenied {
+                switch viewModel.locationIssue {
+                case .denied:
                     FieldHint(text: String(localized: "Location is off. Turn it on in Settings to pin this shop."), tone: .error)
-                } else {
-                    FieldHint(text: String(localized: "Optional. Helps this shop show up in nearby searches."))
+                case .noFix:
+                    FieldHint(text: String(localized: "Couldn't get your location. Try again."), tone: .error)
+                default:
+                    FieldHint(text: String(localized: "Optional. Fills in nearby shops and pins this one for nearby searches."))
                 }
             }
         }

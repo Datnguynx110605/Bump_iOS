@@ -99,7 +99,7 @@ struct ChangeEmailView: View {
             try await environment.emailService.sendForVerify(email: email)
             step = .enterOtp
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't send the code.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't send the code."))
         }
     }
 
@@ -112,7 +112,7 @@ struct ChangeEmailView: View {
             try await environment.accountService.changeEmail(registrationToken: registrationToken)
             didSave = true
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't update your email.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't update your email."))
         }
     }
 }

@@ -21,6 +21,7 @@ struct HomeView: View {
             Group {
                 if let viewModel {
                     HomeListView(viewModel: viewModel, onDiscover: onDiscover)
+                        .autoRefresh(every: .seconds(60)) { await viewModel.refreshIfStale() }
                 } else {
                     LoadingView()
                 }

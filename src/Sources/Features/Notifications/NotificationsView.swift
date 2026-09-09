@@ -10,6 +10,7 @@ struct NotificationsView: View {
             Group {
                 if let viewModel {
                     NotificationsListView(viewModel: viewModel)
+                        .autoRefresh(every: .seconds(60)) { await viewModel.refreshIfStale() }
                 } else {
                     LoadingView()
                 }

@@ -10,6 +10,7 @@ final class NotificationsViewModel {
 
     private var nextCursor: String?
     private var hasMore = true
+    private var topNotificationId: UUID?
     private let notificationService: NotificationService
 
     init(notificationService: NotificationService) {
@@ -24,6 +25,22 @@ final class NotificationsViewModel {
     func prepend(_ notification: NotificationSummaryDto) {
         guard !notifications.contains(where: { $0.id == notification.id }) else { return }
         notifications.insert(notification, at: 0)
+        topNotificationId = notification.id
+    }
+
+    /// The live hub pushes new notifications straight into the list, but only while it is
+    /// connected: anything that arrives during a dropped connection, a backgrounded app or
+    /// a signed-out socket is missed. This is the catch-up — a single-item probe on every
+    /// revisit and tick, reloading only when the newest notification is not the one already
+    /// at the top.
+    func refreshIfStale() async {
+        guard !isLoading else { return }
+        guard !notifications.isEmpty else {
+            await reload()
+            return
+        }
+        guard let page = try? await notificationService.mine(cursor: nil, pageSize: 1) else { return }
+        if page.items.first?.id != topNotificationId { await reload() }
     }
 
     func reload() async {
@@ -35,8 +52,9 @@ final class NotificationsViewModel {
             notifications = page.items
             nextCursor = page.nextCursor
             hasMore = page.hasMore
+            topNotificationId = page.items.first?.id
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 

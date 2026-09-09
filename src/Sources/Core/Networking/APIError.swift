@@ -6,9 +6,15 @@ enum APIError: Error, LocalizedError {
     case server(status: Int, message: String)
     case rateLimited(retryAfterSeconds: Int?)
     case unauthenticated
+    /// The app cancelled its own request — a tab switch, a dismissed screen, a
+    /// pull-to-refresh the user scrolled away from. Nothing failed, so this case carries
+    /// no message and must never reach the screen. See `userMessage(for:)`.
+    case cancelled
 
     var errorDescription: String? {
         switch self {
+        case .cancelled:
+            return nil
         case .network:
             return String(localized: "Couldn't connect. Check your connection and try again.")
         case .decoding:
@@ -26,6 +32,21 @@ enum APIError: Error, LocalizedError {
     var requiresReauthentication: Bool {
         if case .unauthenticated = self { return true }
         return false
+    }
+
+    /// The one place that turns a thrown error into something a screen may show.
+    ///
+    /// Returns nil for cancellation, which is the whole point: SwiftUI cancels the
+    /// `.task` behind a screen the moment it leaves the hierarchy, so switching tabs or
+    /// popping a view mid-load used to surface "Couldn't connect. Check your connection"
+    /// on a perfectly healthy server — and on an empty list that error takes over the
+    /// whole screen. A nil here leaves the banner off and the screen retries on its own.
+    static func userMessage(
+        for error: Error,
+        fallback: @autoclosure () -> String = String(localized: "Something went wrong.")
+    ) -> String? {
+        guard !error.isCancellation else { return nil }
+        return (error as? LocalizedError)?.errorDescription ?? fallback()
     }
 
     /// Known backend messages that read as engineering internals rather than
@@ -57,5 +78,17 @@ struct ProblemDetailsPayload: Decodable {
             return messages.joined(separator: "\n")
         }
         return detail ?? title ?? String(localized: "Something went wrong.")
+    }
+}
+
+extension Error {
+    /// True when this is the app cancelling its own work rather than a failure worth
+    /// reporting. Both spellings occur: structured concurrency throws `CancellationError`,
+    /// while a cancelled `URLSessionTask` reports `URLError.cancelled`.
+    var isCancellation: Bool {
+        if self is CancellationError { return true }
+        if let apiError = self as? APIError, case .cancelled = apiError { return true }
+        if let urlError = self as? URLError, urlError.code == .cancelled { return true }
+        return false
     }
 }

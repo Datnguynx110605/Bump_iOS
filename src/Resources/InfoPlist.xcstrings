@@ -46,6 +46,18 @@
           }
         }
       }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "Privacy - Location When In Use Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Bump uses your location to tag the shop you're posting about and to find top-rated shops near you."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

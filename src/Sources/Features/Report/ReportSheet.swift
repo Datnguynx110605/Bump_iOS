@@ -54,7 +54,7 @@ struct ReportSheet: View {
             _ = try await environment.reportService.submit(target: target, reason: reason.trimmingCharacters(in: .whitespacesAndNewlines))
             didSubmit = true
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't submit your report.")
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't submit your report."))
         }
     }
 }

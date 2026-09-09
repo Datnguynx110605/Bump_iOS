@@ -64,7 +64,7 @@ struct RecoveryEmailView: View {
             try await environment.emailService.sendForVerify(email: email)
             path.append(.recoveryOtpVerify(purpose: purpose, email: email))
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 }

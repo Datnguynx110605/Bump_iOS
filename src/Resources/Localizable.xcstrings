@@ -655,6 +655,22 @@
         }
       }
     },
+    "Couldn't get your location. Try again.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't get your location. Try again."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không lấy được vị trí của bạn. Hãy thử lại."
+          }
+        }
+      }
+    },
     "Couldn't post your comment.": {
       "localizations": {
         "en": {
@@ -1134,6 +1150,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nhập mã của bạn"
+          }
+        }
+      }
+    },
+    "Fills in this place": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fills in this place"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Điền thông tin địa điểm này"
           }
         }
       }
@@ -1731,6 +1763,22 @@
         }
       }
     },
+    "No places found here. Type the shop name yourself.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No places found here. Type the shop name yourself."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tìm thấy địa điểm nào ở đây. Hãy tự nhập tên quán."
+          }
+        }
+      }
+    },
     "No posts found": {
       "localizations": {
         "en": {
@@ -1924,18 +1972,18 @@
         }
       }
     },
-    "Optional. Helps this shop show up in nearby searches.": {
+    "Optional. Fills in nearby shops and pins this one for nearby searches.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. Helps this shop show up in nearby searches."
+            "value": "Optional. Fills in nearby shops and pins this one for nearby searches."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Không bắt buộc. Giúp quán này xuất hiện trong tìm kiếm lân cận."
+            "value": "Không bắt buộc. Điền các quán gần bạn và ghim quán này cho tìm kiếm lân cận."
           }
         }
       }

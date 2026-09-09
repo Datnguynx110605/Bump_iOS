@@ -96,7 +96,7 @@ struct SettingsView: View {
             try await environment.accountService.deleteAccount()
             authSession.signOut()
         } catch {
-            deleteError = (error as? LocalizedError)?.errorDescription ?? String(localized: "Couldn't delete your account.")
+            deleteError = APIError.userMessage(for: error, fallback: String(localized: "Couldn't delete your account."))
         }
     }
 }

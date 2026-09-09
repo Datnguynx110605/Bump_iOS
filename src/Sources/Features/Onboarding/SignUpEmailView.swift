@@ -63,7 +63,7 @@ struct SignUpEmailView: View {
             try await environment.emailService.sendForRegister(email: email)
             path.append(.otpVerify(email: email))
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 }

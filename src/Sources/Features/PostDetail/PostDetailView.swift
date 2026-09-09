@@ -8,16 +8,15 @@ struct PostDetailView: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(AuthSession.self) private var authSession
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: PostDetailViewModel?
     @State private var showingReportSheet = false
     @State private var showingDeleteConfirm = false
-    @State private var isVisible = false
 
     var body: some View {
         Group {
             if let viewModel {
                 PostDetailContent(viewModel: viewModel, showingReportSheet: $showingReportSheet)
+                    .autoRefresh(every: commentPollInterval) { await viewModel.checkForNewComments() }
                     .onChange(of: viewModel.didDelete) { _, didDelete in
                         if didDelete {
                             environment.feedRefreshSignal.bump()
@@ -37,16 +36,6 @@ struct PostDetailView: View {
                 )
             }
             await viewModel?.loadIfNeeded()
-        }
-        .onAppear { isVisible = true }
-        .onDisappear { isVisible = false }
-        .task(id: "\(isVisible)-\(scenePhase == .active)") {
-            guard isVisible, scenePhase == .active else { return }
-            while !Task.isCancelled {
-                try? await Task.sleep(for: commentPollInterval)
-                if Task.isCancelled { return }
-                await viewModel?.checkForNewComments()
-            }
         }
         .navigationTitle("Post")
         .navigationBarTitleDisplayMode(.inline)

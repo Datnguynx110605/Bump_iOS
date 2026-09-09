@@ -87,7 +87,7 @@ struct RecoveryOtpVerifyView: View {
                 path.append(.recoverAccountConfirm(email: email, registrationToken: registrationToken))
             }
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 
@@ -97,7 +97,7 @@ struct RecoveryOtpVerifyView: View {
             try await environment.emailService.sendForVerify(email: email)
             startCooldown()
         } catch {
-            errorMessage = (error as? LocalizedError)?.errorDescription ?? String(localized: "Something went wrong.")
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 
