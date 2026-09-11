@@ -46,6 +46,14 @@ private struct SearchResultsView: View {
         environment.blockStore.visible(viewModel.accounts) { $0.id }
     }
 
+    /// True exactly when `shopDirectory` is what the screen is showing. Keying the
+    /// loader on this rather than on `scope` covers both ways in — tapping the Shops
+    /// segment, and clearing the query while already on it, which changes no scope at all.
+    private var showsDirectory: Bool {
+        viewModel.scope == .shops
+            && viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             Picker("Scope", selection: $viewModel.scope) {
@@ -58,20 +66,71 @@ private struct SearchResultsView: View {
             .padding(.vertical, BumpSpacing.s)
 
             if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                EmptyStateView(
-                    icon: "magnifyingglass",
-                    title: String(localized: "Search Bump"),
-                    message: String(localized: "Find shops, posts, or people.")
-                )
+                // The Shops scope has a whole directory to show before anyone types, so
+                // it opens onto that instead of a prompt. Posts and people have no
+                // equivalent browse endpoint, so they keep the prompt.
+                if showsDirectory {
+                    shopDirectory
+                } else {
+                    EmptyStateView(
+                        icon: "magnifyingglass",
+                        title: String(localized: "Search Bump"),
+                        message: String(localized: "Find shops, posts, or people.")
+                    )
+                }
             } else if viewModel.isLoading && isCurrentScopeEmpty {
                 LoadingView()
             } else if let errorMessage = viewModel.errorMessage, isCurrentScopeEmpty {
-                ErrorStateView(message: errorMessage) { Task { await viewModel.runSearch() } }
+                ErrorStateView(message: errorMessage) { viewModel.retrySearch() }
             } else {
                 results
             }
         }
         .background(BumpColor.surface)
+        .task(id: showsDirectory) {
+            guard showsDirectory else { return }
+            await viewModel.loadDirectoryIfNeeded()
+        }
+    }
+
+    @ViewBuilder
+    private var shopDirectory: some View {
+        if viewModel.directory.isEmpty {
+            if viewModel.isLoadingDirectory {
+                LoadingView()
+            } else if let directoryError = viewModel.directoryError {
+                // A failed lookup is not an empty directory, and saying "No shops yet"
+                // here would tell the user something untrue about the app.
+                ErrorStateView(message: directoryError) {
+                    Task { await viewModel.retryDirectory() }
+                }
+            } else {
+                EmptyStateView(
+                    icon: "storefront",
+                    title: String(localized: "No shops yet"),
+                    message: String(localized: "Shops appear here once someone posts about them. Be the first.")
+                )
+            }
+        } else {
+            List {
+                Section {
+                    ForEach(viewModel.directory) { shop in
+                        NavigationLink(value: AppRoute.shop(shop.id)) {
+                            ShopResultRow(shop: shop)
+                        }
+                        .listRowBackground(BumpColor.surface)
+                        .task { await viewModel.loadMoreDirectoryIfNeeded(current: shop) }
+                    }
+                } header: {
+                    Text("All Shops")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(BumpColor.textPrimary)
+                        .textCase(nil)
+                }
+            }
+            .listStyle(.plain)
+            .bumpScrollBackground()
+        }
     }
 
     private var isCurrentScopeEmpty: Bool {

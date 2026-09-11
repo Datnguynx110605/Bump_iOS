@@ -24,7 +24,12 @@ final class SearchViewModel {
     var scope: SearchScope = .posts {
         didSet {
             guard oldValue != scope else { return }
-            Task { await runSearch() }
+            // Goes through the same cancellable slot as typing, without the debounce: a
+            // scope tap is one discrete event, not a burst. Running it as a detached
+            // `Task` left the last keystroke's pending task alive, so it woke 350ms later
+            // and re-ran the identical search — two requests against a limit of twenty a
+            // minute, and whichever landed second overwrote the other's results.
+            scheduleSearch(debounced: false)
         }
     }
 
@@ -33,6 +38,23 @@ final class SearchViewModel {
     var accounts: [AccountSummaryDto] = []
     var isLoading = false
     var errorMessage: String?
+
+    /// The shop directory shown in the Shops scope before a keyword is typed. Kept apart
+    /// from `shops` so switching to Shops, searching, then clearing the field restores the
+    /// directory instead of leaving the last result set behind.
+    var directory: [ShopSummaryDto] = []
+    var isLoadingDirectory = false
+    /// Non-nil only for a genuine failure. Without it a failed load rendered "No shops
+    /// yet", which tells the user the app has no shops when the request simply failed —
+    /// the same distinction `HomeViewModel.NearbyState` draws between `.failed` and an
+    /// empty result.
+    var directoryError: String?
+    private var directoryCursor: String?
+    private var directoryHasMore = true
+    /// Separate from `isLoadingMore`: the directory and the Shops search results can both
+    /// be live in this view model, and a shared flag lets one refuse the other's page.
+    private var isLoadingMoreDirectory = false
+    private var hasLoadedDirectory = false
     /// Guards against the `.task` on the last row firing again before the previous page
     /// lands. Without it, a page appends more than once and `ForEach` ends up with
     /// duplicate ids. Every other paginated view model in the app already has this.
@@ -56,7 +78,14 @@ final class SearchViewModel {
         self.accountService = accountService
     }
 
-    private func scheduleSearch() {
+    /// The one place a search is started. Every entry point — typing, a scope tap, the
+    /// error state's retry — routes through here so there is a single in-flight task to
+    /// cancel; anything that starts its own detached `Task` can neither be cancelled nor
+    /// cancel what is already pending.
+    ///
+    /// `debounced` is false for the discrete taps, which should act immediately but must
+    /// still clear whatever the last keystroke scheduled.
+    private func scheduleSearch(debounced: Bool = true) {
         searchTask?.cancel()
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
@@ -64,10 +93,18 @@ final class SearchViewModel {
             return
         }
         searchTask = Task {
-            try? await Task.sleep(for: .milliseconds(350))
+            if debounced {
+                try? await Task.sleep(for: .milliseconds(350))
+            }
             guard !Task.isCancelled else { return }
             await runSearch()
         }
+    }
+
+    /// Retry behind the error state. Named rather than letting the view call `runSearch`
+    /// directly, so a retry cannot start an untracked request either.
+    func retrySearch() {
+        scheduleSearch(debounced: false)
     }
 
     private func clearResults() {
@@ -77,7 +114,50 @@ final class SearchViewModel {
         errorMessage = nil
     }
 
-    func runSearch() async {
+    /// Loads the first page of the shop directory, once. Safe to call from `.task` on
+    /// every appearance of the Shops scope.
+    func loadDirectoryIfNeeded() async {
+        guard !hasLoadedDirectory else { return }
+        await loadDirectory()
+    }
+
+    /// The retry behind the directory's error state, which has to bypass the once-only
+    /// guard that `loadDirectoryIfNeeded` honours.
+    func retryDirectory() async {
+        await loadDirectory()
+    }
+
+    private func loadDirectory() async {
+        hasLoadedDirectory = true
+        isLoadingDirectory = true
+        directoryError = nil
+        defer { isLoadingDirectory = false }
+        do {
+            let page = try await shopService.all(cursor: nil)
+            directory = page.items
+            directoryCursor = page.nextCursor
+            directoryHasMore = page.hasMore
+        } catch {
+            // Release the guard so the next appearance tries again rather than pinning an
+            // empty directory for the life of the screen. `userMessage(for:)` is nil for a
+            // cancelled request, so leaving a tab mid-load retries silently instead of
+            // painting an error over a healthy server.
+            hasLoadedDirectory = false
+            directoryError = APIError.userMessage(for: error)
+        }
+    }
+
+    func loadMoreDirectoryIfNeeded(current: ShopSummaryDto) async {
+        guard directoryHasMore, !isLoadingMoreDirectory, directory.isNearEnd(current) else { return }
+        isLoadingMoreDirectory = true
+        defer { isLoadingMoreDirectory = false }
+        guard let page = try? await shopService.all(cursor: directoryCursor) else { return }
+        directory.append(contentsOf: page.items)
+        directoryCursor = page.nextCursor
+        directoryHasMore = page.hasMore
+    }
+
+    private func runSearch() async {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { clearResults(); return }
         isLoading = true

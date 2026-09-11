@@ -31,6 +31,12 @@ final class ReactionStore {
         if liked { likedCommentIds.insert(id) } else { likedCommentIds.remove(id) }
     }
 
+    /// Clears state on sign-out so the next account doesn't inherit this one's likes.
+    func reset() {
+        likedPostIds = []
+        likedCommentIds = []
+    }
+
     @discardableResult
     func togglePost(_ id: UUID) async -> ReactionToggleResult {
         let wasLiked = likedPostIds.contains(id)

@@ -90,10 +90,15 @@ final class CreatePostViewModel {
         locationIssue = nil
     }
 
+    /// Mirrors `CreatePostValidator` on the server. Checked here because `submit()`
+    /// uploads every attached photo before the command is validated, so a caption two
+    /// characters over the limit used to cost a full multi-megabyte upload and come back
+    /// as a 400.
     var isValid: Bool {
-        !shopName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            && !shopAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            && rating >= 0
+        ShopFieldRule.isValid(shopName)
+            && ShopFieldRule.isValid(shopAddress)
+            && FreeTextRule.isValid(caption)
+            && (1...5).contains(rating)
     }
 
     func searchShops(keyword: String) {

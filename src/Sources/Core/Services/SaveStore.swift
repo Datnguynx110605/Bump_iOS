@@ -22,6 +22,14 @@ final class SaveStore {
         if saved { savedShopIds.insert(id) } else { savedShopIds.remove(id) }
     }
 
+    /// Clears state on sign-out so the next account doesn't inherit this one's bookmarks.
+    /// Saved *shops* have no per-row correction from a feed payload the way posts do, so
+    /// without this they survive a sign-out intact.
+    func reset() {
+        savedPostIds = []
+        savedShopIds = []
+    }
+
     @discardableResult
     func togglePost(_ id: UUID) async -> Bool {
         let wasSaved = savedPostIds.contains(id)

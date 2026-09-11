@@ -295,6 +295,22 @@
         }
       }
     },
+    "Address is too long (max %lld characters).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Address is too long (max %lld characters)."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Địa chỉ quá dài (tối đa %lld ký tự)."
+          }
+        }
+      }
+    },
     "Alerts": {
       "localizations": {
         "en": {
@@ -307,6 +323,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thông báo"
+          }
+        }
+      }
+    },
+    "All Shops": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All Shops"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả quán"
           }
         }
       }
@@ -1771,6 +1803,22 @@
         }
       }
     },
+    "Log out of Bump?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log out of Bump?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đăng xuất khỏi Bump?"
+          }
+        }
+      }
+    },
     "Looks good.": {
       "localizations": {
         "en": {
@@ -2136,6 +2184,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không tìm thấy cửa hàng nào"
+          }
+        }
+      }
+    },
+    "No shops yet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No shops yet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có quán nào"
           }
         }
       }
@@ -3125,6 +3189,22 @@
         }
       }
     },
+    "Shop name is too long (max %lld characters).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shop name is too long (max %lld characters)."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên quán quá dài (tối đa %lld ký tự)."
+          }
+        }
+      }
+    },
     "Shops": {
       "localizations": {
         "en": {
@@ -3137,6 +3217,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cửa hàng"
+          }
+        }
+      }
+    },
+    "Shops appear here once someone posts about them. Be the first.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shops appear here once someone posts about them. Be the first."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các quán sẽ xuất hiện ở đây khi có người đăng bài về chúng. Hãy là người đầu tiên."
           }
         }
       }

@@ -73,6 +73,12 @@ private struct CreatePostForm: View {
             Section("Shop") {
                 TextField("Shop name", text: $viewModel.shopName)
                     .onChange(of: viewModel.shopName) { _, newValue in viewModel.searchShops(keyword: newValue) }
+                if ShopFieldRule.isTooLong(viewModel.shopName) {
+                    FieldHint(
+                        text: String(localized: "Shop name is too long (max \(ShopFieldRule.maxLength) characters)."),
+                        tone: .error
+                    )
+                }
                 ForEach(viewModel.shopSuggestions) { shop in
                     Button {
                         viewModel.selectShop(shop)
@@ -90,6 +96,12 @@ private struct CreatePostForm: View {
                     .accessibilityHint(String(localized: "Fills in this place"))
                 }
                 TextField("Address", text: $viewModel.shopAddress)
+                if ShopFieldRule.isTooLong(viewModel.shopAddress) {
+                    FieldHint(
+                        text: String(localized: "Address is too long (max \(ShopFieldRule.maxLength) characters)."),
+                        tone: .error
+                    )
+                }
                 LocationAttachRow(viewModel: viewModel)
             }
 
@@ -101,6 +113,14 @@ private struct CreatePostForm: View {
             Section("Caption") {
                 TextField("What made this place worth a Bump?", text: $viewModel.caption, axis: .vertical)
                     .lineLimit(3...8)
+                // Same counter the edit sheets already show, so the ceiling appears
+                // while typing rather than as a 400 after every photo has uploaded.
+                if let remaining = FreeTextRule.remaining(viewModel.caption) {
+                    FieldHint(
+                        text: String(localized: "\(remaining) characters left"),
+                        tone: remaining < 0 ? .error : .neutral
+                    )
+                }
             }
 
             if let errorMessage = viewModel.errorMessage {

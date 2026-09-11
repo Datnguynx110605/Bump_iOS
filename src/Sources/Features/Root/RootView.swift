@@ -43,6 +43,9 @@ struct RootView: View {
                 environment.notificationHubClient.stop()
                 environment.followStore.reset()
                 environment.blockStore.reset()
+                environment.reactionStore.reset()
+                environment.saveStore.reset()
+                environment.accountCache.reset()
             }
         }
         .onChange(of: scenePhase) { _, newPhase in

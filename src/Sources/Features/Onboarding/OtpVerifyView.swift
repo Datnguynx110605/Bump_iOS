@@ -32,6 +32,10 @@ struct OtpVerifyView: View {
                     .kerning(6)
                     .multilineTextAlignment(.center)
                     .keyboardType(.numberPad)
+                    // Lets iOS surface the emailed code above the keyboard instead of
+                    // making the user transcribe six digits by hand (WCAG 2.2 AA,
+                    // Accessible Authentication).
+                    .textContentType(.oneTimeCode)
                     .focused($isFocused)
                     .onChange(of: otp) { _, newValue in
                         otp = String(newValue.filter(\.isNumber).prefix(6))
@@ -49,8 +53,8 @@ struct OtpVerifyView: View {
                 Task { await resend() }
             } label: {
                 Text(resendCooldown > 0 ? "Resend code (\(resendCooldown)s)" : "Resend code")
-                    .font(.subheadline.weight(.medium))
             }
+            .buttonStyle(.bumpText)
             .disabled(resendCooldown > 0)
 
             Spacer()

@@ -294,6 +294,12 @@ private struct NewCommentsPill: View {
 
 private struct PostHeaderSection: View {
     let post: PostSummaryDto
+    /// Kept as properties, not just `init` arguments: neither flag lives on
+    /// `PostSummaryDto`, so `onChange(of: post)` can never see them move. Without
+    /// something to observe, a refresh updated the like count while the heart and
+    /// bookmark kept rendering whatever they showed on first build.
+    let isReacted: Bool
+    let isSavedByViewer: Bool
     @Environment(AppEnvironment.self) private var environment
     @State private var shop: ShopDto?
     @State private var displayedLikeCount: Int
@@ -302,6 +308,8 @@ private struct PostHeaderSection: View {
 
     init(post: PostSummaryDto, isReacted: Bool, isSaved: Bool) {
         self.post = post
+        self.isReacted = isReacted
+        self.isSavedByViewer = isSaved
         _displayedLikeCount = State(initialValue: post.reactionAmount.value)
         _isLiked = State(initialValue: isReacted)
         _isSaved = State(initialValue: isSaved)
@@ -386,10 +394,18 @@ private struct PostHeaderSection: View {
             environment.saveStore.setSaved(post: post.id, isSaved)
             if shop == nil { shop = await environment.shopCache.shop(post.shopId) }
         }
-        // Pull-to-refresh replaces the post but not this view's identity, so the counts
-        // seeded in `init` have to be re-read explicitly.
+        // Pull-to-refresh replaces the post but not this view's identity, so everything
+        // seeded in `init` has to be re-read explicitly.
         .onChange(of: post) { _, newPost in
             displayedLikeCount = newPost.reactionAmount.value
+        }
+        .onChange(of: isReacted) { _, newValue in
+            isLiked = newValue
+            environment.reactionStore.setLiked(post: post.id, newValue)
+        }
+        .onChange(of: isSavedByViewer) { _, newValue in
+            isSaved = newValue
+            environment.saveStore.setSaved(post: post.id, newValue)
         }
     }
 

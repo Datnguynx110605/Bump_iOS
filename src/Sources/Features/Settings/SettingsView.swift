@@ -7,6 +7,7 @@ struct SettingsView: View {
     @Environment(LanguagePreference.self) private var languagePreference
     @Environment(AppearancePreference.self) private var appearancePreference
     @State private var showingDeleteConfirm = false
+    @State private var showingLogOutConfirm = false
     @State private var deleteError: String?
     @AppStorage(NotificationPreference.key) private var notificationsEnabled = true
 
@@ -67,7 +68,7 @@ struct SettingsView: View {
 
                 Section {
                     Button("Log Out", role: .destructive) {
-                        authSession.signOut()
+                        showingLogOutConfirm = true
                     }
                     Button("Delete Account", role: .destructive) {
                         showingDeleteConfirm = true
@@ -83,6 +84,15 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                }
+            }
+            .confirmationDialog(
+                "Log out of Bump?",
+                isPresented: $showingLogOutConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Log Out", role: .destructive) {
+                    authSession.signOut()
                 }
             }
             .confirmationDialog(

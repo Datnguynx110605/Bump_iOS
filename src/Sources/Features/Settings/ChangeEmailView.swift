@@ -37,6 +37,9 @@ struct ChangeEmailView: View {
                 Section {
                     TextField("6-digit code", text: $otp)
                         .keyboardType(.numberPad)
+                        // Same reason as the onboarding OTP fields: let iOS offer the
+                        // code rather than requiring manual transcription.
+                        .textContentType(.oneTimeCode)
                         .onChange(of: otp) { _, newValue in
                             otp = String(newValue.filter(\.isNumber).prefix(6))
                         }

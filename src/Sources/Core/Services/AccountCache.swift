@@ -28,4 +28,11 @@ final class AccountCache {
     func store(_ account: AccountSummaryDto) {
         accounts[account.id] = account
     }
+
+    /// Dropped on sign-out: the viewer's own profile is in here, and the next account
+    /// would otherwise see the previous one's name and avatar on its own rows.
+    func reset() {
+        accounts = [:]
+        inFlight = [:]
+    }
 }

@@ -125,8 +125,14 @@ private struct ProfileHeaderView: View {
     let isOwnProfile: Bool
     let onEditProfile: () -> Void
     @Environment(AppEnvironment.self) private var environment
-    @State private var isFollowing = false
     @State private var isTogglingFollow = false
+
+    /// Read straight off the `@Observable` store rather than copied into `@State`.
+    /// `FollowStore.primeIfNeeded()` runs concurrently from `RootView` at sign-in, so a
+    /// profile opened before priming finished used to show "Follow" for someone already
+    /// followed and never correct itself. The store already applies the optimistic
+    /// toggle and its rollback, so there is nothing a local copy adds.
+    private var isFollowing: Bool { environment.followStore.isFollowing(viewModel.accountId) }
 
     var body: some View {
         VStack(spacing: BumpSpacing.m) {
@@ -175,17 +181,16 @@ private struct ProfileHeaderView: View {
             }
         }
         .padding(.horizontal, BumpSpacing.l)
-        .task { isFollowing = environment.followStore.isFollowing(viewModel.accountId) }
     }
 
     private func toggleFollow() async {
         isTogglingFollow = true
         defer { isTogglingFollow = false }
+        let wasFollowing = isFollowing
         let nowFollowing = await environment.followStore.toggle(viewModel.accountId)
-        if nowFollowing && !isFollowing {
+        if nowFollowing && !wasFollowing {
             HapticFeedback.reacted()
         }
-        isFollowing = nowFollowing
     }
 
     private func statTile(count: Int?, label: String) -> some View {

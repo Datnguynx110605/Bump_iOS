@@ -16,6 +16,13 @@ struct ShopService {
         ]))
     }
 
+    /// The full shop directory, newest first. Backs the Shops tab of Search before a
+    /// keyword is typed, so that scope opens onto something browsable instead of a
+    /// prompt to type.
+    func all(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<ShopSummaryDto> {
+        try await api.send(.plain(path: "api/v1/Shop", query: .cursor(cursor, pageSize: pageSize)))
+    }
+
     func search(keyword: String, cursor: String?, pageSize: Int = 20) async throws -> CursorPage<ShopSummaryDto> {
         try await api.send(.plain(
             path: "api/v1/Shop/search",
