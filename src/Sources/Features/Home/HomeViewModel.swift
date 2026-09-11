@@ -115,7 +115,7 @@ final class HomeViewModel {
     }
 
     func loadMoreIfNeeded(currentItem: PostFeedItemDto) async {
-        guard hasMore, !isLoadingMore, posts.last?.id == currentItem.id else { return }
+        guard hasMore, !isLoadingMore, posts.isNearEnd(currentItem) else { return }
         isLoadingMore = true
         defer { isLoadingMore = false }
         do {

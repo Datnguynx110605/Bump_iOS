@@ -48,6 +48,14 @@ struct HomeView: View {
 private struct HomeListView: View {
     let viewModel: HomeViewModel
     let onDiscover: () -> Void
+    @Environment(AppEnvironment.self) private var environment
+
+    /// Blocking is queued server-side, so the page already on screen still contains the
+    /// blocked author's posts until the consumer runs and the cache signature changes.
+    /// Dropping them here is what makes "Block" look like it did something.
+    private var visiblePosts: [PostFeedItemDto] {
+        environment.blockStore.visible(viewModel.posts) { $0.post.accountId }
+    }
 
     var body: some View {
         if viewModel.isLoading && viewModel.posts.isEmpty {
@@ -58,7 +66,7 @@ private struct HomeListView: View {
             List {
                 NearbySection(viewModel: viewModel)
 
-                if viewModel.posts.isEmpty {
+                if visiblePosts.isEmpty {
                     EmptyStateView(
                         icon: "person.2.fill",
                         title: String(localized: "Your feed is quiet"),
@@ -69,7 +77,7 @@ private struct HomeListView: View {
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                 } else {
-                    ForEach(viewModel.posts) { item in
+                    ForEach(visiblePosts) { item in
                         PostRowView(item: item)
                             .listRowSeparator(.hidden)
                             .listRowBackground(Color.clear)

@@ -59,7 +59,7 @@ final class NotificationsViewModel {
     }
 
     func loadMoreIfNeeded(current: NotificationSummaryDto) async {
-        guard hasMore, !isLoadingMore, notifications.last?.id == current.id else { return }
+        guard hasMore, !isLoadingMore, notifications.isNearEnd(current) else { return }
         isLoadingMore = true
         defer { isLoadingMore = false }
         do {

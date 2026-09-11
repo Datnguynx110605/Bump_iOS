@@ -7,6 +7,8 @@ struct ProfileView: View {
     @State private var viewModel: ProfileViewModel?
     @State private var showingSettings = false
     @State private var showingReportSheet = false
+    @State private var showingBlockConfirm = false
+    @Environment(\.dismiss) private var dismiss
 
     private var isOwnProfile: Bool { accountId == authSession.accountId }
 
@@ -75,6 +77,18 @@ struct ProfileView: View {
                 } else {
                     Menu {
                         Button("Report Account", systemImage: "flag") { showingReportSheet = true }
+                        if environment.blockStore.isBlocked(accountId) {
+                            Button("Unblock Account", systemImage: "hand.raised.slash") {
+                                Task {
+                                    await environment.blockStore.unblock(accountId)
+                                    environment.feedRefreshSignal.bump()
+                                }
+                            }
+                        } else {
+                            Button("Block Account", systemImage: "hand.raised", role: .destructive) {
+                                showingBlockConfirm = true
+                            }
+                        }
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
@@ -87,6 +101,21 @@ struct ProfileView: View {
         }
         .sheet(isPresented: $showingReportSheet) {
             ReportSheet(target: .account(accountId))
+        }
+        .confirmationDialog(
+            "Block this account? You won't see their posts or comments, and they won't see yours.",
+            isPresented: $showingBlockConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Block", role: .destructive) {
+                Task {
+                    await environment.blockStore.block(accountId)
+                    environment.feedRefreshSignal.bump()
+                    // This profile answers 404 for a blocked account, so staying here would
+                    // replace it with an error screen the moment anything reloads.
+                    dismiss()
+                }
+            }
         }
     }
 }

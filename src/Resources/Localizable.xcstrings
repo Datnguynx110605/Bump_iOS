@@ -18,6 +18,22 @@
         }
       }
     },
+    "%lld characters left": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld characters left"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn %lld ký tự"
+          }
+        }
+      }
+    },
     "%lld out of %lld stars": {
       "localizations": {
         "en": {
@@ -162,6 +178,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Người dùng"
+          }
+        }
+      }
+    },
+    "Accounts you block are hidden from your feed, search, and comments. They show up here so you can undo it.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accounts you block are hidden from your feed, search, and comments. They show up here so you can undo it."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài khoản bạn chặn sẽ bị ẩn khỏi bảng tin, tìm kiếm và bình luận. Chúng hiện ở đây để bạn có thể bỏ chặn."
           }
         }
       }
@@ -345,6 +377,102 @@
         }
       }
     },
+    "Block": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chặn"
+          }
+        }
+      }
+    },
+    "Block Account": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block Account"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chặn tài khoản"
+          }
+        }
+      }
+    },
+    "Block Author": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block Author"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chặn người đăng"
+          }
+        }
+      }
+    },
+    "Block this account? You won't see their posts or comments, and they won't see yours.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block this account? You won't see their posts or comments, and they won't see yours."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chặn tài khoản này? Bạn sẽ không thấy bài viết và bình luận của họ, và họ cũng không thấy của bạn."
+          }
+        }
+      }
+    },
+    "Blocked %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blocked %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chặn %@"
+          }
+        }
+      }
+    },
+    "Blocked Accounts": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blocked Accounts"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài khoản đã chặn"
+          }
+        }
+      }
+    },
     "Browse real photos and ratings from people who've actually been there.": {
       "localizations": {
         "en": {
@@ -510,6 +638,22 @@
         }
       }
     },
+    "Comment": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comment"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bình luận"
+          }
+        }
+      }
+    },
     "Comments": {
       "localizations": {
         "en": {
@@ -526,7 +670,16 @@
         }
       }
     },
-    "Comments you leave on posts show up here.": {},
+    "Comments you leave on posts show up here.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bình luận bạn để lại trên bài viết sẽ hiện ở đây."
+          }
+        }
+      }
+    },
     "Confirm new password": {
       "localizations": {
         "en": {
@@ -687,6 +840,22 @@
         }
       }
     },
+    "Couldn't remove your photo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't remove your photo."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thể xoá ảnh của bạn."
+          }
+        }
+      }
+    },
     "Couldn't save your changes.": {
       "localizations": {
         "en": {
@@ -747,6 +916,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không thể gửi báo cáo của bạn."
+          }
+        }
+      }
+    },
+    "Couldn't unblock that account.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't unblock that account."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thể bỏ chặn tài khoản đó."
           }
         }
       }
@@ -1003,6 +1188,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xong"
+          }
+        }
+      }
+    },
+    "Edit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa"
+          }
+        }
+      }
+    },
+    "Edit Comment": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Comment"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa bình luận"
+          }
+        }
+      }
+    },
+    "Edit Post": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Post"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa bài viết"
           }
         }
       }
@@ -1699,6 +1932,22 @@
         }
       }
     },
+    "No blocked accounts": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No blocked accounts"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa chặn tài khoản nào"
+          }
+        }
+      }
+    },
     "No comments yet": {
       "localizations": {
         "en": {
@@ -2086,6 +2335,22 @@
         }
       }
     },
+    "Photos can't be changed after posting.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos can't be changed after posting."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thể thay đổi ảnh sau khi đã đăng."
+          }
+        }
+      }
+    },
     "Pick a username and password.": {
       "localizations": {
         "en": {
@@ -2156,6 +2421,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bài đăng"
+          }
+        }
+      }
+    },
+    "Privacy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quyền riêng tư"
           }
         }
       }
@@ -2287,6 +2568,22 @@
         }
       }
     },
+    "Remove Photo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Photo"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá ảnh"
+          }
+        }
+      }
+    },
     "Remove from saved": {
       "extractionState": "manual",
       "localizations": {
@@ -2317,6 +2614,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xóa ảnh"
+          }
+        }
+      }
+    },
+    "Remove your profile photo?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove your profile photo?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá ảnh đại diện của bạn?"
           }
         }
       }
@@ -2540,6 +2853,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bộ lọc mục đã lưu"
+          }
+        }
+      }
+    },
+    "Say something nice": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Say something nice"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nói điều gì đó dễ thương"
           }
         }
       }
@@ -3117,6 +3446,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bật vị trí trong Cài đặt để xem những quán được đánh giá cao gần bạn."
+          }
+        }
+      }
+    },
+    "Unblock": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unblock"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ chặn"
+          }
+        }
+      }
+    },
+    "Unblock %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unblock %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ chặn %@"
+          }
+        }
+      }
+    },
+    "Unblock Account": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unblock Account"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ chặn tài khoản"
           }
         }
       }

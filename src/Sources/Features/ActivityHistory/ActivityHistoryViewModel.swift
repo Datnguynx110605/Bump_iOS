@@ -26,8 +26,13 @@ final class ActivityHistoryViewModel {
     }
 
     func loadMoreIfNeeded(current: CommentSummaryDto) async {
-        guard hasMore, !isLoadingMore, comments.last?.id == current.id else { return }
+        guard hasMore, !isLoadingMore, comments.isNearEnd(current) else { return }
         await load(cursor: nextCursor, append: true)
+    }
+
+    func updateComment(_ comment: CommentSummaryDto, content: String) {
+        guard let index = comments.firstIndex(where: { $0.id == comment.id }) else { return }
+        comments[index] = comment.withContent(content)
     }
 
     func deleteComment(_ comment: CommentSummaryDto) async {

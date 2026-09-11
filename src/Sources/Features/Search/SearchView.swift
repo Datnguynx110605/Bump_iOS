@@ -34,6 +34,17 @@ struct SearchView: View {
 
 private struct SearchResultsView: View {
     @Bindable var viewModel: SearchViewModel
+    @Environment(AppEnvironment.self) private var environment
+
+    /// Search pages are cached per keyword and the block is queued, so a just-blocked
+    /// author can still come back in results. Same reason as the feed.
+    private var visiblePosts: [PostFeedItemDto] {
+        environment.blockStore.visible(viewModel.posts) { $0.post.accountId }
+    }
+
+    private var visibleAccounts: [AccountSummaryDto] {
+        environment.blockStore.visible(viewModel.accounts) { $0.id }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -65,9 +76,9 @@ private struct SearchResultsView: View {
 
     private var isCurrentScopeEmpty: Bool {
         switch viewModel.scope {
-        case .posts: return viewModel.posts.isEmpty
+        case .posts: return visiblePosts.isEmpty
         case .shops: return viewModel.shops.isEmpty
-        case .accounts: return viewModel.accounts.isEmpty
+        case .accounts: return visibleAccounts.isEmpty
         }
     }
 
@@ -75,12 +86,12 @@ private struct SearchResultsView: View {
     private var results: some View {
         switch viewModel.scope {
         case .posts:
-            if viewModel.posts.isEmpty {
+            if visiblePosts.isEmpty {
                 EmptyStateView(icon: "photo", title: String(localized: "No posts found"))
             } else {
                 ScrollView {
                     LazyVStack(spacing: BumpSpacing.m) {
-                        ForEach(viewModel.posts) { item in
+                        ForEach(visiblePosts) { item in
                             PostRowView(item: item)
                                 .task { await viewModel.loadMorePostsIfNeeded(current: item) }
                         }
@@ -103,10 +114,10 @@ private struct SearchResultsView: View {
                 .bumpScrollBackground()
             }
         case .accounts:
-            if viewModel.accounts.isEmpty {
+            if visibleAccounts.isEmpty {
                 EmptyStateView(icon: "person.2", title: String(localized: "No people found"))
             } else {
-                List(viewModel.accounts) { account in
+                List(visibleAccounts) { account in
                     NavigationLink(value: AppRoute.account(account.id)) {
                         AccountResultRow(account: account)
                     }

@@ -34,7 +34,7 @@ final class ReactorsListViewModel {
     }
 
     func loadMoreIfNeeded(current: ReactionDto) async {
-        guard hasMore, !isLoadingMore, reactors.last?.id == current.id else { return }
+        guard hasMore, !isLoadingMore, reactors.isNearEnd(current) else { return }
         await load(cursor: nextCursor, append: true)
     }
 

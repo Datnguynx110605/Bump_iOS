@@ -28,6 +28,18 @@ struct PostService {
         return try await api.send(.multipart(path: "api/v1/Post", form: form))
     }
 
+    func changeCaption(postId: UUID, caption: String) async throws {
+        let _: EmptyResponse = try await api.send(.json(
+            path: "api/v1/Post/\(postId)/caption", method: .put, body: ChangeCaptionRequest(caption: caption)
+        ))
+    }
+
+    func changeRate(postId: UUID, rate: Int) async throws {
+        let _: EmptyResponse = try await api.send(.json(
+            path: "api/v1/Post/\(postId)/rate", method: .put, body: ChangeRateRequest(rate: rate)
+        ))
+    }
+
     func delete(postId: UUID) async throws {
         let _: EmptyResponse = try await api.send(.plain(path: "api/v1/Post/\(postId)", method: .delete))
     }

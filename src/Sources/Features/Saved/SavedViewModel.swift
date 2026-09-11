@@ -68,7 +68,7 @@ final class SavedViewModel {
     }
 
     func loadMorePostsIfNeeded(current: PostSummaryDto) async {
-        guard hasMorePosts, !isLoadingMorePosts, posts.last?.id == current.id else { return }
+        guard hasMorePosts, !isLoadingMorePosts, posts.isNearEnd(current) else { return }
         isLoadingMorePosts = true
         defer { isLoadingMorePosts = false }
         do {
@@ -97,7 +97,7 @@ final class SavedViewModel {
     }
 
     func loadMoreShopsIfNeeded(current: ShopSummaryDto) async {
-        guard hasMoreShops, !isLoadingMoreShops, shops.last?.id == current.id else { return }
+        guard hasMoreShops, !isLoadingMoreShops, shops.isNearEnd(current) else { return }
         isLoadingMoreShops = true
         defer { isLoadingMoreShops = false }
         do {

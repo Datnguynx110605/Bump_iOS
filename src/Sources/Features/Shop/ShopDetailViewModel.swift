@@ -62,7 +62,7 @@ final class ShopDetailViewModel {
     }
 
     func loadMorePostsIfNeeded(current: PostSummaryDto) async {
-        guard hasMore, !isLoadingMorePosts, posts.last?.id == current.id else { return }
+        guard hasMore, !isLoadingMorePosts, posts.isNearEnd(current) else { return }
         isLoadingMorePosts = true
         defer { isLoadingMorePosts = false }
         do {

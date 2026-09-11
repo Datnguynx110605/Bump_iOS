@@ -4,6 +4,15 @@ struct SavedView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var viewModel: SavedViewModel?
 
+    /// The server filters this list too, but blocking is queued: between the `202` and the
+    /// consumer writing `Blocks`, `BlockedAccountSet` still returns the old set and a page
+    /// can come back carrying the author just blocked. Same window the feed and search
+    /// cover — it matters more here because `GET /Post/{id}` answers 404 for a hidden
+    /// author, so a stale row dead-ends on an error screen rather than just lingering.
+    private func visiblePosts(_ viewModel: SavedViewModel) -> [PostSummaryDto] {
+        environment.blockStore.visible(viewModel.posts) { $0.accountId }
+    }
+
     var body: some View {
         Group {
             if let viewModel {
@@ -45,7 +54,7 @@ struct SavedView: View {
             LoadingView()
         } else if let errorMessage = viewModel.errorMessage, viewModel.posts.isEmpty {
             ErrorStateView(message: errorMessage) { Task { await viewModel.loadPosts() } }
-        } else if viewModel.posts.isEmpty {
+        } else if visiblePosts(viewModel).isEmpty {
             EmptyStateView(
                 icon: "bookmark.fill",
                 title: String(localized: "No saved posts yet"),
@@ -53,7 +62,7 @@ struct SavedView: View {
             )
         } else {
             ScrollView {
-                PostThumbnailGrid(posts: viewModel.posts) { post in
+                PostThumbnailGrid(posts: visiblePosts(viewModel)) { post in
                     Task { await viewModel.loadMorePostsIfNeeded(current: post) }
                 }
             }

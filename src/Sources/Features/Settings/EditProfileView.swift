@@ -16,6 +16,7 @@ struct EditProfileView: View {
     @State private var isUploadingAvatar = false
     @State private var croppingImage: UIImage?
     @State private var showingCrop = false
+    @State private var showingRemovePhotoConfirm = false
 
     private var isNameValid: Bool { AccountNameRule.isValid(name) }
 
@@ -45,6 +46,15 @@ struct EditProfileView: View {
                         Spacer()
                     }
                     .listRowBackground(Color.clear)
+
+                    if account?.avatar != nil {
+                        Button("Remove Photo", role: .destructive) {
+                            showingRemovePhotoConfirm = true
+                        }
+                        .frame(maxWidth: .infinity)
+                        .disabled(isUploadingAvatar)
+                        .listRowBackground(Color.clear)
+                    }
                 }
 
                 Section("Username") {
@@ -84,6 +94,15 @@ struct EditProfileView: View {
         .task { await load() }
         .onChange(of: photoPickerItem) { _, newValue in
             Task { await loadForCropping(newValue) }
+        }
+        .confirmationDialog(
+            "Remove your profile photo?",
+            isPresented: $showingRemovePhotoConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Remove Photo", role: .destructive) {
+                Task { await removeAvatar() }
+            }
         }
         .fullScreenCover(isPresented: $showingCrop) {
             if let croppingImage {
@@ -129,6 +148,21 @@ struct EditProfileView: View {
             dismiss()
         } catch {
             errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't save your changes."))
+        }
+    }
+
+    private func removeAvatar() async {
+        isUploadingAvatar = true
+        errorMessage = nil
+        defer { isUploadingAvatar = false }
+        do {
+            try await environment.accountService.removeAvatar()
+            let updated = try await environment.accountService.me()
+            account = updated
+            environment.accountCache.store(updated)
+            environment.feedRefreshSignal.bump()
+        } catch {
+            errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't remove your photo."))
         }
     }
 

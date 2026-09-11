@@ -56,7 +56,7 @@ final class FollowListViewModel {
     }
 
     func loadMoreIfNeeded(current: FollowListRow) async {
-        guard hasMore, !isLoadingMore, rows.last?.id == current.id else { return }
+        guard hasMore, !isLoadingMore, rows.isNearEnd(current) else { return }
         await load(cursor: nextCursor, append: true)
     }
 

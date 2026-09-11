@@ -22,9 +22,11 @@ final class AppEnvironment {
     let notificationService: NotificationService
     let reportService: ReportService
     let saveService: SaveService
+    let blockService: BlockService
     let reactionStore: ReactionStore
     let followStore: FollowStore
     let saveStore: SaveStore
+    let blockStore: BlockStore
     let shopCache: ShopCache
     let accountCache: AccountCache
 
@@ -37,6 +39,7 @@ final class AppEnvironment {
         let followService = FollowService(api: api)
         let shopService = ShopService(api: api)
         let saveService = SaveService(api: api)
+        let blockService = BlockService(api: api)
 
         self.authSession = authSession
         self.api = api
@@ -52,11 +55,14 @@ final class AppEnvironment {
         self.notificationService = NotificationService(api: api)
         self.reportService = ReportService(api: api)
         self.saveService = saveService
+        self.blockService = blockService
         // Stores and caches share the service instances above rather than constructing a
         // second copy of each.
+        let followStore = FollowStore(followService: followService)
         self.reactionStore = ReactionStore(reactionService: reactionService)
-        self.followStore = FollowStore(followService: followService)
+        self.followStore = followStore
         self.saveStore = SaveStore(saveService: saveService)
+        self.blockStore = BlockStore(blockService: blockService, followStore: followStore)
         self.shopCache = ShopCache(shopService: shopService)
         self.accountCache = AccountCache(accountService: accountService)
 

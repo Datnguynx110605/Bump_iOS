@@ -46,3 +46,11 @@ struct PostFeedItemDto: Decodable, Identifiable, Equatable {
 
     var id: UUID { post.id }
 }
+
+struct ChangeCaptionRequest: Encodable {
+    let caption: String
+}
+
+struct ChangeRateRequest: Encodable {
+    let rate: Int
+}

@@ -3,16 +3,24 @@ import SwiftUI
 struct CommentRowView: View {
     let comment: CommentSummaryDto
     var onDelete: (() -> Void)? = nil
+    /// Called with the saved text so the owning list can update in place rather than
+    /// refetching the whole page behind the sheet.
+    var onEdited: ((String) -> Void)? = nil
     @Environment(AppEnvironment.self) private var environment
     @Environment(AuthSession.self) private var authSession
     @State private var displayedLikeCount: Int
     @State private var isLiked = false
     @State private var showingReportSheet = false
+    @State private var showingEditSheet = false
+    @State private var showingBlockConfirm = false
     @ScaledMetric private var menuIconSize: CGFloat = BumpIconSize.small
 
-    init(comment: CommentSummaryDto, onDelete: (() -> Void)? = nil) {
+    private var isMine: Bool { comment.accountId == authSession.accountId }
+
+    init(comment: CommentSummaryDto, onDelete: (() -> Void)? = nil, onEdited: ((String) -> Void)? = nil) {
         self.comment = comment
         self.onDelete = onDelete
+        self.onEdited = onEdited
         _displayedLikeCount = State(initialValue: comment.reactionAmount.value)
     }
 
@@ -67,10 +75,18 @@ struct CommentRowView: View {
                 Spacer()
 
                 Menu {
-                    if comment.accountId == authSession.accountId, let onDelete {
-                        Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
+                    if isMine {
+                        if onEdited != nil {
+                            Button("Edit", systemImage: "pencil") { showingEditSheet = true }
+                        }
+                        if let onDelete {
+                            Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
+                        }
                     } else {
                         Button("Report", systemImage: "flag") { showingReportSheet = true }
+                        Button("Block Author", systemImage: "hand.raised", role: .destructive) {
+                            showingBlockConfirm = true
+                        }
                     }
                 } label: {
                     Image(systemName: "ellipsis")
@@ -85,6 +101,21 @@ struct CommentRowView: View {
         .task { isLiked = environment.reactionStore.isLiked(comment: comment.id) }
         .sheet(isPresented: $showingReportSheet) {
             ReportSheet(target: .comment(comment.id))
+        }
+        .sheet(isPresented: $showingEditSheet) {
+            EditCommentSheet(comment: comment) { onEdited?($0) }
+        }
+        .confirmationDialog(
+            "Block this account? You won't see their posts or comments, and they won't see yours.",
+            isPresented: $showingBlockConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Block", role: .destructive) {
+                Task {
+                    await environment.blockStore.block(comment.accountId)
+                    environment.feedRefreshSignal.bump()
+                }
+            }
         }
     }
 }

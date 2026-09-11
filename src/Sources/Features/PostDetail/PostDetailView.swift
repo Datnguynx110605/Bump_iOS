@@ -11,6 +11,8 @@ struct PostDetailView: View {
     @State private var viewModel: PostDetailViewModel?
     @State private var showingReportSheet = false
     @State private var showingDeleteConfirm = false
+    @State private var showingEditSheet = false
+    @State private var showingBlockConfirm = false
 
     var body: some View {
         Group {
@@ -43,6 +45,9 @@ struct PostDetailView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     if let post = viewModel?.post, post.accountId == authSession.accountId {
+                        Button("Edit Post", systemImage: "pencil") {
+                            showingEditSheet = true
+                        }
                         Button("Delete Post", systemImage: "trash", role: .destructive) {
                             showingDeleteConfirm = true
                         }
@@ -50,10 +55,16 @@ struct PostDetailView: View {
                         Button("Report Post", systemImage: "flag") {
                             showingReportSheet = true
                         }
+                        if viewModel?.post != nil {
+                            Button("Block Author", systemImage: "hand.raised", role: .destructive) {
+                                showingBlockConfirm = true
+                            }
+                        }
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+                .accessibilityLabel(String(localized: "More actions"))
             }
         }
         .confirmationDialog("Delete this post?", isPresented: $showingDeleteConfirm, titleVisibility: .visible) {
@@ -61,8 +72,27 @@ struct PostDetailView: View {
                 Task { await viewModel?.deletePost() }
             }
         }
+        .confirmationDialog(
+            "Block this account? You won't see their posts or comments, and they won't see yours.",
+            isPresented: $showingBlockConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Block", role: .destructive) {
+                guard let authorId = viewModel?.post?.accountId else { return }
+                Task {
+                    await environment.blockStore.block(authorId)
+                    environment.feedRefreshSignal.bump()
+                    dismiss()
+                }
+            }
+        }
         .sheet(isPresented: $showingReportSheet) {
             ReportSheet(target: .post(postId))
+        }
+        .sheet(isPresented: $showingEditSheet) {
+            if let post = viewModel?.post {
+                EditPostSheet(post: post) { await viewModel?.loadPost() }
+            }
         }
     }
 }
@@ -106,8 +136,18 @@ private struct PostDetailContent: View {
         }
     }
 
+    /// A block takes effect server-side only once the queued consumer has run, so a
+    /// comment from someone just blocked is still in the page the screen is holding.
+    /// Hiding it here is what makes the action feel like it happened.
+    private var visibleComments: [CommentSummaryDto] {
+        environment.blockStore.visible(viewModel.comments) { $0.accountId }
+    }
+
     @ViewBuilder
     private var commentsSection: some View {
+        // Filtered once per body pass. Read straight from `visibleComments` inside the
+        // ForEach and the whole list gets re-filtered on every row's divider check.
+        let comments = visibleComments
         VStack(alignment: .leading, spacing: BumpSpacing.m) {
             HStack(spacing: BumpSpacing.s) {
                 Text("Comments")
@@ -127,7 +167,7 @@ private struct PostDetailContent: View {
                 ProgressView()
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, BumpSpacing.l)
-            } else if viewModel.comments.isEmpty {
+            } else if comments.isEmpty {
                 Text("No comments yet. Say something nice.")
                     .font(.subheadline)
                     .foregroundStyle(BumpColor.textSecondary)
@@ -135,17 +175,21 @@ private struct PostDetailContent: View {
                     .padding(.vertical, BumpSpacing.m)
             } else {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(viewModel.comments) { comment in
-                        CommentRowView(comment: comment, onDelete: {
-                            Task {
-                                await viewModel.deleteComment(comment)
-                                environment.feedRefreshSignal.bump()
-                            }
-                        })
+                    ForEach(comments) { comment in
+                        CommentRowView(
+                            comment: comment,
+                            onDelete: {
+                                Task {
+                                    await viewModel.deleteComment(comment)
+                                    environment.feedRefreshSignal.bump()
+                                }
+                            },
+                            onEdited: { viewModel.updateComment(comment, content: $0) }
+                        )
                         .padding(.vertical, BumpSpacing.ms)
                         .task { await viewModel.loadMoreCommentsIfNeeded(current: comment) }
 
-                        if comment.id != viewModel.comments.last?.id {
+                        if comment.id != comments.last?.id {
                             Divider()
                         }
                     }

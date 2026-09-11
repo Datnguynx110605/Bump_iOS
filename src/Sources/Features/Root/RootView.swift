@@ -38,9 +38,11 @@ struct RootView: View {
                 if scenePhase == .active { environment.notificationHubClient.start() }
                 if NotificationPreference.isEnabled { LocalNotificationScheduler.requestAuthorizationIfNeeded() }
                 Task { await environment.followStore.primeIfNeeded() }
+                Task { await environment.blockStore.primeIfNeeded() }
             } else {
                 environment.notificationHubClient.stop()
                 environment.followStore.reset()
+                environment.blockStore.reset()
             }
         }
         .onChange(of: scenePhase) { _, newPhase in

@@ -20,9 +20,11 @@ struct ActivityHistoryView: View {
                 } else {
                     List {
                         ForEach(viewModel.comments) { comment in
-                            CommentRowView(comment: comment, onDelete: {
-                                Task { await viewModel.deleteComment(comment) }
-                            })
+                            CommentRowView(
+                                comment: comment,
+                                onDelete: { Task { await viewModel.deleteComment(comment) } },
+                                onEdited: { viewModel.updateComment(comment, content: $0) }
+                            )
                             .listRowBackground(BumpColor.surface)
                             .task { await viewModel.loadMoreIfNeeded(current: comment) }
                         }

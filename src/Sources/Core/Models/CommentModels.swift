@@ -17,4 +17,21 @@ struct CommentSummaryDto: Decodable, Identifiable, Equatable {
     let images: [ImageDto]
     let reactionAmount: Wrapped<Int>
     let createdAt: Date
+
+    /// Applies an edit locally. `PUT /Comment/{id}` returns no body, so the row is
+    /// updated from the text that was sent rather than by refetching the page.
+    func withContent(_ content: String) -> CommentSummaryDto {
+        CommentSummaryDto(
+            id: id,
+            accountId: accountId,
+            content: content,
+            images: images,
+            reactionAmount: reactionAmount,
+            createdAt: createdAt
+        )
+    }
+}
+
+struct ChangeContentRequest: Encodable {
+    let content: String
 }

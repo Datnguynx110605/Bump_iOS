@@ -101,7 +101,7 @@ final class SearchViewModel {
     }
 
     func loadMorePostsIfNeeded(current: PostFeedItemDto) async {
-        guard postsHasMore, !isLoadingMore, posts.last?.id == current.id else { return }
+        guard postsHasMore, !isLoadingMore, posts.isNearEnd(current) else { return }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         isLoadingMore = true
@@ -111,7 +111,7 @@ final class SearchViewModel {
     }
 
     func loadMoreShopsIfNeeded(current: ShopSummaryDto) async {
-        guard shopsHasMore, !isLoadingMore, shops.last?.id == current.id else { return }
+        guard shopsHasMore, !isLoadingMore, shops.isNearEnd(current) else { return }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         isLoadingMore = true
@@ -121,7 +121,7 @@ final class SearchViewModel {
     }
 
     func loadMoreAccountsIfNeeded(current: AccountSummaryDto) async {
-        guard accountsHasMore, !isLoadingMore, accounts.last?.id == current.id else { return }
+        guard accountsHasMore, !isLoadingMore, accounts.isNearEnd(current) else { return }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         isLoadingMore = true

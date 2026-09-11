@@ -144,7 +144,7 @@ struct AttachmentThumbnail: View {
                         // Deliberately darker than `overlayScrim`: this backs a white glyph
                         // over an arbitrary photo, where the job is legibility rather than
                         // the flat dimming that token is tuned for.
-                        .foregroundStyle(.white, .black.opacity(0.55))
+                        .foregroundStyle(.white, BumpColor.overlayChrome)
                         .padding(BumpSpacing.xs)
                         .frame(width: BumpHitTarget.min, height: BumpHitTarget.min, alignment: .topTrailing)
                         .contentShape(Rectangle())

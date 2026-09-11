@@ -37,6 +37,12 @@ final class FollowStore {
         }
     }
 
+    /// Drops a follow the app knows the server has already severed — blocking cuts the
+    /// edge in both directions, and no unfollow request is sent for it.
+    func forget(_ accountId: UUID) {
+        followingIds.remove(accountId)
+    }
+
     /// Clears state on sign-out so the next account doesn't inherit this one's follows.
     func reset() {
         followingIds = []

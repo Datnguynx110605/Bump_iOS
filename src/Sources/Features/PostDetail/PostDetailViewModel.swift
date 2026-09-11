@@ -82,7 +82,7 @@ final class PostDetailViewModel {
     }
 
     func loadMoreCommentsIfNeeded(current: CommentSummaryDto) async {
-        guard hasMoreComments, !isLoadingMoreComments, comments.last?.id == current.id else { return }
+        guard hasMoreComments, !isLoadingMoreComments, comments.isNearEnd(current) else { return }
         isLoadingMoreComments = true
         defer { isLoadingMoreComments = false }
         do {
@@ -122,6 +122,11 @@ final class PostDetailViewModel {
         } catch {
             errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't post your comment."))
         }
+    }
+
+    func updateComment(_ comment: CommentSummaryDto, content: String) {
+        guard let index = comments.firstIndex(where: { $0.id == comment.id }) else { return }
+        comments[index] = comment.withContent(content)
     }
 
     func deleteComment(_ comment: CommentSummaryDto) async {

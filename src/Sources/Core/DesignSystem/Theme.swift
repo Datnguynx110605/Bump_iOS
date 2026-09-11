@@ -83,6 +83,11 @@ enum BumpColor {
     /// stay visible in both themes rather than fading out in one.
     static let border = Color.adaptive(light: UIColor(white: 0.87, alpha: 1), dark: UIColor(white: 0.20, alpha: 1))
     static let overlayScrim = Color.black.opacity(0.45)
+    /// Backing for small controls and badges that sit directly on a photo (page dots,
+    /// a remove button, an image counter). Heavier than `overlayScrim` on purpose: a
+    /// modal scrim covers the whole screen, while these are small shapes that have to
+    /// clear 3:1 against whatever pixel happens to be under them.
+    static let overlayChrome = Color.black.opacity(0.55)
 }
 
 /// Icon point sizes. Call sites wrap these in `@ScaledMetric` so glyphs grow with

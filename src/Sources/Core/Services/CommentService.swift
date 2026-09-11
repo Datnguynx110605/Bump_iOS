@@ -13,6 +13,12 @@ struct CommentService {
         return try await api.send(.multipart(path: "api/v1/Comment", form: form))
     }
 
+    func changeContent(commentId: UUID, content: String) async throws {
+        let _: EmptyResponse = try await api.send(.json(
+            path: "api/v1/Comment/\(commentId)", method: .put, body: ChangeContentRequest(content: content)
+        ))
+    }
+
     func delete(commentId: UUID) async throws {
         let _: EmptyResponse = try await api.send(.plain(path: "api/v1/Comment/\(commentId)", method: .delete))
     }

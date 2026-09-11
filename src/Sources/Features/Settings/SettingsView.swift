@@ -30,6 +30,12 @@ struct SettingsView: View {
                     }
                 }
 
+                Section("Privacy") {
+                    NavigationLink { BlockedAccountsView() } label: {
+                        Label("Blocked Accounts", systemImage: "hand.raised")
+                    }
+                }
+
                 Section("Activity") {
                     NavigationLink { ActivityHistoryView() } label: {
                         Label("Activity History", systemImage: "clock.arrow.circlepath")

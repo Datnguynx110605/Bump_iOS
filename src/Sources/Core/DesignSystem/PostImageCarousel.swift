@@ -81,7 +81,7 @@ struct PostImageCarousel: View {
             .foregroundStyle(.white)
             .padding(.vertical, BumpSpacing.xs)
             .padding(.horizontal, BumpSpacing.s)
-            .background(.black.opacity(0.55), in: Capsule())
+            .background(BumpColor.overlayChrome, in: Capsule())
             .padding(BumpSpacing.s)
             .accessibilityHidden(true)
     }
