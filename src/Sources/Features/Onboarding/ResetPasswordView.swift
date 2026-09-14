@@ -22,7 +22,7 @@ struct ResetPasswordView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: BumpSpacing.l) {
+        AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Set a new password")
                     .font(.largeTitle.bold())
@@ -53,9 +53,7 @@ struct ResetPasswordView: View {
             if let errorMessage {
                 InlineErrorBanner(message: errorMessage)
             }
-
-            Spacer()
-
+        } action: {
             Button {
                 Task { await resetPassword() }
             } label: {
@@ -64,8 +62,6 @@ struct ResetPasswordView: View {
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(!isValid || isLoading)
         }
-        .padding(.horizontal, BumpSpacing.l)
-        .padding(.bottom, BumpSpacing.l)
         .navigationBarTitleDisplayMode(.inline)
     }
 

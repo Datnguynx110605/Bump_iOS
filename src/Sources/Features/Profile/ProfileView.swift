@@ -15,33 +15,41 @@ struct ProfileView: View {
     var body: some View {
         Group {
             if let viewModel {
-                ScrollView {
-                    VStack(spacing: BumpSpacing.l) {
-                        ProfileHeaderView(
-                            viewModel: viewModel,
-                            isOwnProfile: isOwnProfile,
-                            onEditProfile: { showingSettings = true }
-                        )
-
-                        Divider()
-
-                        if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
-                            EmptyStateView(
-                                icon: "camera.fill",
-                                title: isOwnProfile ? String(localized: "Share your first post") : String(localized: "No posts yet"),
-                                message: isOwnProfile ? String(localized: "Rate a coffee shop or restaurant and it shows up here.") : nil
+                // A failed account load used to leave the redacted placeholder header in
+                // place above "No posts yet" — which tells the viewer this account has
+                // nothing to show when in fact the request failed. Same distinction
+                // `HomeViewModel.NearbyState` draws between `.failed` and an empty result.
+                if viewModel.account == nil, let errorMessage = viewModel.errorMessage {
+                    ErrorStateView(message: errorMessage) { Task { await viewModel.refresh() } }
+                } else {
+                    ScrollView {
+                        VStack(spacing: BumpSpacing.l) {
+                            ProfileHeaderView(
+                                viewModel: viewModel,
+                                isOwnProfile: isOwnProfile,
+                                onEditProfile: { showingSettings = true }
                             )
-                            .frame(height: 220)
-                        } else {
-                            PostThumbnailGrid(posts: viewModel.posts) { post in
-                                Task { await viewModel.loadMorePostsIfNeeded(current: post) }
+
+                            Divider()
+
+                            if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
+                                EmptyStateView(
+                                    icon: "camera.fill",
+                                    title: isOwnProfile ? String(localized: "Share your first post") : String(localized: "No posts yet"),
+                                    message: isOwnProfile ? String(localized: "Rate a coffee shop or restaurant and it shows up here.") : nil
+                                )
+                                .frame(height: 220)
+                            } else {
+                                PostThumbnailGrid(posts: viewModel.posts) { post in
+                                    Task { await viewModel.loadMorePostsIfNeeded(current: post) }
+                                }
                             }
                         }
+                        .padding(.top, BumpSpacing.m)
                     }
-                    .padding(.top, BumpSpacing.m)
+                    .background(BumpColor.surface)
+                    .refreshable { await viewModel.refresh() }
                 }
-                .background(BumpColor.surface)
-                .refreshable { await viewModel.refresh() }
             } else {
                 LoadingView()
             }

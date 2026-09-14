@@ -90,6 +90,16 @@ final class CreatePostViewModel {
         locationIssue = nil
     }
 
+    /// Whether closing the sheet would throw away work. Cropped photos are the expensive
+    /// part — each one cost the user a pick, a pinch and a confirm — so the check leads
+    /// with them, but a typed shop name or caption is worth just as much a confirmation.
+    var hasUnsavedWork: Bool {
+        !selectedImages.isEmpty
+            || !shopName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            || !shopAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            || !caption.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     /// Mirrors `CreatePostValidator` on the server. Checked here because `submit()`
     /// uploads every attached photo before the command is validated, so a caption two
     /// characters over the limit used to cost a full multi-megabyte upload and come back

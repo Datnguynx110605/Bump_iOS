@@ -10,12 +10,26 @@ struct ReportSheet: View {
     @State private var errorMessage: String?
     @State private var didSubmit = false
 
+    /// Mirrors the server's reason validator (non-empty, 2000 max) so an over-length
+    /// report is caught here rather than after a round trip.
+    private var canSubmit: Bool {
+        !reason.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && FreeTextRule.isValid(reason)
+            && !isSubmitting
+    }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section("Why are you reporting this?") {
                     TextField("Describe the issue", text: $reason, axis: .vertical)
                         .lineLimit(4...8)
+                    if let remaining = FreeTextRule.remaining(reason) {
+                        FieldHint(
+                            text: String(localized: "\(remaining) characters left"),
+                            tone: remaining < 0 ? .error : .neutral
+                        )
+                    }
                 }
                 if let errorMessage {
                     InlineErrorBanner(message: errorMessage)
@@ -35,7 +49,7 @@ struct ReportSheet: View {
                     } label: {
                         if isSubmitting { ProgressView() } else { Text("Submit") }
                     }
-                    .disabled(reason.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSubmitting)
+                    .disabled(!canSubmit)
                 }
             }
             .alert("Report submitted", isPresented: $didSubmit) {

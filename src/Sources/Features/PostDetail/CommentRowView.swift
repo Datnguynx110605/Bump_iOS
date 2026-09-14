@@ -99,6 +99,13 @@ struct CommentRowView: View {
             }
         }
         .task { isLiked = environment.reactionStore.isLiked(comment: comment.id) }
+        // `displayedLikeCount` is seeded in `init`, and SwiftUI keys this row on the
+        // comment id — which doesn't change across a pull-to-refresh — so without this the
+        // count stays at whatever it was when the row was first built. The same defect was
+        // fixed for posts in `PostRowView`; comments kept it.
+        .onChange(of: comment) { _, newComment in
+            displayedLikeCount = newComment.reactionAmount.value
+        }
         .sheet(isPresented: $showingReportSheet) {
             ReportSheet(target: .comment(comment.id))
         }

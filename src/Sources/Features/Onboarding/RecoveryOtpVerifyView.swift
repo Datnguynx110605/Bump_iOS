@@ -16,7 +16,7 @@ struct RecoveryOtpVerifyView: View {
     private var isValid: Bool { otp.count == 6 }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: BumpSpacing.l) {
+        AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Enter your code")
                     .font(.largeTitle.bold())
@@ -57,9 +57,7 @@ struct RecoveryOtpVerifyView: View {
             }
             .buttonStyle(.bumpText)
             .disabled(resendCooldown > 0)
-
-            Spacer()
-
+        } action: {
             Button {
                 Task { await verify() }
             } label: {
@@ -68,8 +66,6 @@ struct RecoveryOtpVerifyView: View {
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(!isValid || isLoading)
         }
-        .padding(.horizontal, BumpSpacing.l)
-        .padding(.bottom, BumpSpacing.l)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             isFocused = true

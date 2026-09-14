@@ -32,6 +32,11 @@ final class ImageDecodeCache {
     }
 }
 
+/// ponytail: one automatic retry; a failure that outlives both attempts stays until the
+/// row is recycled. Per-request backoff belongs in the image layer, not here.
+private let imageLoadAttempts = 2
+private let imageRetryDelay: Duration = .seconds(2)
+
 enum CachedImagePhase {
     case empty
     case success(Image)
@@ -78,16 +83,33 @@ struct CachedAsyncImage<Content: View>: View {
     private func load() async {
         guard let url else { return }
         let key = cacheKey
-        if ImageDecodeCache.shared.image(for: key) != nil { return }
 
-        guard let image = await Self.downsample(url: url, maxPixelSize: maxPixelSize) else {
-            if !Task.isCancelled { phase = .failure }
+        // A cache hit has to be *assigned*, not just returned on. `phase` is `@State`
+        // keyed on the view's identity, and a recycled row (an avatar whose account just
+        // changed its photo) arrives holding the previous URL's `.success`. Returning
+        // early left that stale image on screen for the new URL, permanently.
+        if let cached = ImageDecodeCache.shared.image(for: key) {
+            phase = .success(Image(uiImage: cached))
             return
         }
-        ImageDecodeCache.shared.store(image, for: key)
-        if !Task.isCancelled {
-            phase = .success(Image(uiImage: image))
+        phase = .empty
+
+        // `.task(id: cacheKey)` only re-fires when the key changes, so a row that stays
+        // on screen never re-ran this — one dropped request painted a broken-photo glyph
+        // that survived pull-to-refresh and the network coming back.
+        for attempt in 0..<imageLoadAttempts {
+            if attempt > 0 {
+                try? await Task.sleep(for: imageRetryDelay)
+                guard !Task.isCancelled else { return }
+            }
+            if let image = await Self.downsample(url: url, maxPixelSize: maxPixelSize) {
+                ImageDecodeCache.shared.store(image, for: key)
+                if !Task.isCancelled { phase = .success(Image(uiImage: image)) }
+                return
+            }
+            guard !Task.isCancelled else { return }
         }
+        phase = .failure
     }
 
     private static func downsample(url: URL, maxPixelSize: CGFloat) async -> UIImage? {

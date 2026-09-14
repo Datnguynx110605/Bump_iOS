@@ -10,7 +10,7 @@ struct RecoverAccountConfirmView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: BumpSpacing.l) {
+        AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Recover your account")
                     .font(.largeTitle.bold())
@@ -23,9 +23,7 @@ struct RecoverAccountConfirmView: View {
             if let errorMessage {
                 InlineErrorBanner(message: errorMessage)
             }
-
-            Spacer()
-
+        } action: {
             Button {
                 Task { await recover() }
             } label: {
@@ -34,8 +32,6 @@ struct RecoverAccountConfirmView: View {
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(isLoading)
         }
-        .padding(.horizontal, BumpSpacing.l)
-        .padding(.bottom, BumpSpacing.l)
         .navigationBarTitleDisplayMode(.inline)
     }
 

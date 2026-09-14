@@ -49,7 +49,13 @@ final class KeychainTokenStore {
             kSecAttrService as String: service,
             kSecAttrAccount as String: account
         ]
-        let attributes: [String: Any] = [kSecValueData as String: data]
+        // Carried on the update path too: `SecItemUpdate` leaves attributes it isn't
+        // given alone, so without this an existing install keeps the weaker
+        // backup-restorable accessibility it was first written with, for good.
+        let attributes: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
 
         let status = SecItemCopyMatching(query as CFDictionary, nil)
         if status == errSecSuccess {
@@ -57,7 +63,10 @@ final class KeychainTokenStore {
         } else {
             var newItem = query
             newItem[kSecValueData as String] = data
-            newItem[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
+            // `…ThisDeviceOnly` keeps the pair out of encrypted backups and iCloud
+            // Keychain, so a restored backup cannot carry a live session onto a second
+            // device. Still `AfterFirstUnlock`, so a background refresh still reads it.
+            newItem[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
             SecItemAdd(newItem as CFDictionary, nil)
         }
     }

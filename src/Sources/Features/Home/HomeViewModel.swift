@@ -44,9 +44,12 @@ final class HomeViewModel {
             : .loading
     }
 
+    /// The two halves are guarded independently on purpose. Sharing one `posts.isEmpty`
+    /// guard meant a nearby load cancelled by a tab switch — which leaves `nearby` on
+    /// `.loading` — could never be retried, because the next visit returned early on the
+    /// posts it had already fetched. The section spun a spinner for the life of the app.
     func loadInitialIfNeeded() async {
-        guard posts.isEmpty else { return }
-        await reload()
+        if posts.isEmpty { await reload() }
         if nearby == .loading { await loadNearby() }
     }
 

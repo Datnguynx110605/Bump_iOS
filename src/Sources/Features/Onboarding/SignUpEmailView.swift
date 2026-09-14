@@ -12,7 +12,7 @@ struct SignUpEmailView: View {
     private var isValid: Bool { EmailRule.isValid(email) }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: BumpSpacing.l) {
+        AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("What's your email?")
                     .font(.largeTitle.bold())
@@ -38,9 +38,7 @@ struct SignUpEmailView: View {
             if let errorMessage {
                 InlineErrorBanner(message: errorMessage)
             }
-
-            Spacer()
-
+        } action: {
             Button {
                 Task { await sendCode() }
             } label: {
@@ -49,8 +47,6 @@ struct SignUpEmailView: View {
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(!isValid || isLoading)
         }
-        .padding(.horizontal, BumpSpacing.l)
-        .padding(.bottom, BumpSpacing.l)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { isFocused = true }
     }

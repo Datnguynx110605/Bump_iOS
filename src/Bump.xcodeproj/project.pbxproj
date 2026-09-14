@@ -27,6 +27,7 @@
 		2A612F320AAC676779B91B38 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9370927AFA89777964C38F5 /* EditProfileView.swift */; };
 		2E2F275F37D42679C696017B /* ReactorsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CE6E8E84B7ED2F5D0ECA02 /* ReactorsListViewModel.swift */; };
 		2F3B4A849F597E1AABE26DA6 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D846CBCC8887A78FF9AE338 /* WelcomeView.swift */; };
+		A11F0RMLAY0UT0000000001 /* AuthFormLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11F0RMLAY0UT0000000002 /* AuthFormLayout.swift */; };
 		2FAAE7309BA31EE714639481 /* UIImage+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B7F6DEDD1B34DC468DB26 /* UIImage+Orientation.swift */; };
 		307A0469DDE73F95790E6024 /* CommentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3594662C05F3F19567D718DF /* CommentService.swift */; };
 		31265380D15459248102ACD3 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E5C2B553DCE27157C162F2 /* Validation.swift */; };
@@ -145,6 +146,7 @@
 		2BA8B90AB77837FBE38610BC /* BlockedAccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedAccountsView.swift; sourceTree = "<group>"; };
 		2D24565905F7226C769EC1F3 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		2D846CBCC8887A78FF9AE338 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		A11F0RMLAY0UT0000000002 /* AuthFormLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFormLayout.swift; sourceTree = "<group>"; };
 		2DF94A733096F0DDF8D2CE66 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F42991A6F22F83F692A12F5 /* SquarePhotoAttachmentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquarePhotoAttachmentPicker.swift; sourceTree = "<group>"; };
 		300A8F53A08E6A47BD00535B /* PostThumbnailGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostThumbnailGrid.swift; sourceTree = "<group>"; };
@@ -340,6 +342,7 @@
 		33913D090F8603C1348B6DC4 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				A11F0RMLAY0UT0000000002 /* AuthFormLayout.swift */,
 				2D24565905F7226C769EC1F3 /* CreateAccountView.swift */,
 				6F46ECA5C2F5618572CCFCE2 /* LoginView.swift */,
 				64B0A7385BB9DC592C8A5542 /* OnboardingFlowView.swift */,
@@ -774,6 +777,7 @@
 				2FAAE7309BA31EE714639481 /* UIImage+Orientation.swift in Sources */,
 				31265380D15459248102ACD3 /* Validation.swift in Sources */,
 				2F3B4A849F597E1AABE26DA6 /* WelcomeView.swift in Sources */,
+				A11F0RMLAY0UT0000000001 /* AuthFormLayout.swift in Sources */,
 				A375271F107A06556551076F /* Wrapped.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

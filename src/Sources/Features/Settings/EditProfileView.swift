@@ -19,6 +19,7 @@ struct EditProfileView: View {
     @State private var showingRemovePhotoConfirm = false
 
     private var isNameValid: Bool { AccountNameRule.isValid(name) }
+    private var canSave: Bool { isNameValid && FreeTextRule.isValid(bio) && !isSaving && !isLoading }
 
     var body: some View {
         Form {
@@ -70,6 +71,15 @@ struct EditProfileView: View {
                 Section("Bio") {
                     TextField("Tell people about yourself", text: $bio, axis: .vertical)
                         .lineLimit(3...6)
+                    // Same 2000-character ceiling and same counter as the sign-up bio and
+                    // the caption fields. Without it an over-length bio stayed saveable
+                    // and came back a 400 after the round trip.
+                    if let remaining = FreeTextRule.remaining(bio) {
+                        FieldHint(
+                            text: String(localized: "\(remaining) characters left"),
+                            tone: remaining < 0 ? .error : .neutral
+                        )
+                    }
                 }
 
                 if let errorMessage {
@@ -88,7 +98,7 @@ struct EditProfileView: View {
                 } label: {
                     if isSaving { ProgressView() } else { Text("Save") }
                 }
-                .disabled(!isNameValid || isSaving || isLoading)
+                .disabled(!canSave)
             }
         }
         .task { await load() }

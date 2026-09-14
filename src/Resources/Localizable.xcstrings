@@ -1160,6 +1160,40 @@
         }
       }
     },
+    "Discard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ"
+          }
+        }
+      }
+    },
+    "Discard this post?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard this post?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ bài viết này?"
+          }
+        }
+      }
+    },
     "Discover Shops & People": {
       "localizations": {
         "en": {
@@ -1587,6 +1621,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Email hoặc mật khẩu không đúng."
+          }
+        }
+      }
+    },
+    "Keep Editing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep Editing"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếp tục chỉnh sửa"
           }
         }
       }
@@ -2378,6 +2429,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ảnh"
+          }
+        }
+      }
+    },
+    "Photo %lld of %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo %lld of %lld"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ảnh %lld trên %lld"
           }
         }
       }

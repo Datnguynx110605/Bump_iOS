@@ -64,6 +64,24 @@ struct PostImageCarousel: View {
                 ? String(localized: "\(imageURLs.count) photos")
                 : String(localized: "Photo")
         )
+        // Paging was swipe-only, and `children: .ignore` collapses the whole carousel into
+        // one element — so every photo after the first was unreachable to VoiceOver on
+        // every multi-photo post and comment. WCAG 2.2 AA requires a non-drag alternative
+        // for an author-controlled drag; an adjustable action is the one VoiceOver already
+        // knows how to drive, and it announces where in the set the user is.
+        .accessibilityValue(
+            imageURLs.count > 1
+                ? String(localized: "Photo \(pageIndex + 1) of \(imageURLs.count)")
+                : ""
+        )
+        .accessibilityAdjustableAction { direction in
+            guard imageURLs.count > 1 else { return }
+            switch direction {
+            case .increment: currentIndex = min(pageIndex + 1, imageURLs.count - 1)
+            case .decrement: currentIndex = max(pageIndex - 1, 0)
+            default: break
+            }
+        }
     }
 
     /// A feed photo is drawn at roughly full screen width; one fixed decode size keeps a

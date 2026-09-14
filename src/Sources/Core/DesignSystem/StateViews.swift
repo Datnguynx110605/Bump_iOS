@@ -10,8 +10,13 @@ struct LoadingView: View {
 }
 
 /// Shared empty state. The icon sits in a soft accent disc so an empty screen still
-/// reads as designed rather than broken, and the whole block is one accessibility
+/// reads as designed rather than broken, and the title/message pair is one accessibility
 /// element so VoiceOver announces it as a single message.
+///
+/// The combine stops at the text. Applied to the whole stack — as it was — it absorbed
+/// the action button into the same element, and an absorbed button is not focusable, so
+/// `HomeView`'s "Discover Shops & People" was the one way off an empty feed and VoiceOver
+/// could not reach it. `ErrorStateView` below has the same shape and never combined.
 struct EmptyStateView: View {
     let icon: String
     let title: String
@@ -45,6 +50,7 @@ struct EmptyStateView: View {
                         .multilineTextAlignment(.center)
                 }
             }
+            .accessibilityElement(children: .combine)
 
             if let actionTitle, let action {
                 Button(actionTitle, action: action)
@@ -55,7 +61,6 @@ struct EmptyStateView: View {
         }
         .padding(BumpSpacing.l)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityElement(children: .combine)
     }
 }
 

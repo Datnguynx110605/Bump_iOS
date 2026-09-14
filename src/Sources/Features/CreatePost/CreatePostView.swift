@@ -5,6 +5,9 @@ struct CreatePostView: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreatePostViewModel?
+    @State private var showingDiscardConfirm = false
+
+    private var hasUnsavedWork: Bool { viewModel?.hasUnsavedWork == true }
 
     var body: some View {
         NavigationStack {
@@ -19,7 +22,9 @@ struct CreatePostView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") {
+                        if hasUnsavedWork { showingDiscardConfirm = true } else { dismiss() }
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -45,6 +50,20 @@ struct CreatePostView: View {
                 environment.feedRefreshSignal.bump()
                 dismiss()
             }
+        }
+        // Composing a post is the most expensive thing in the app — up to six photos, each
+        // picked and cropped by hand. Cancel and a downward swipe both threw all of it away
+        // without asking, which is the situation the Log Out confirmation already covers
+        // for a far cheaper action. The swipe is blocked rather than confirmed because a
+        // sheet dismissal has no point at which to interpose a dialog.
+        .interactiveDismissDisabled(hasUnsavedWork)
+        .confirmationDialog(
+            "Discard this post?",
+            isPresented: $showingDiscardConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Discard", role: .destructive) { dismiss() }
+            Button("Keep Editing", role: .cancel) {}
         }
     }
 }

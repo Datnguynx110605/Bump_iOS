@@ -76,6 +76,16 @@ private struct HomeListView: View {
                     )
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
+                    // `isNearEnd` uses a window precisely so a filtered *row* still pages,
+                    // but when every post in every loaded page is from a blocked author
+                    // the `ForEach` renders nothing at all, and the paging trigger goes
+                    // with it — the feed stops here for good while the server still has
+                    // pages. Keyed on the loaded count so it drains page after page until
+                    // a visible post arrives or the server runs out.
+                    .task(id: viewModel.posts.count) {
+                        guard let last = viewModel.posts.last else { return }
+                        await viewModel.loadMoreIfNeeded(currentItem: last)
+                    }
                 } else {
                     ForEach(visiblePosts) { item in
                         PostRowView(item: item)

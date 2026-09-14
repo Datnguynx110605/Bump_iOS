@@ -13,7 +13,7 @@ struct LoginView: View {
     private var isValid: Bool { EmailRule.isValid(email) && !password.isEmpty }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: BumpSpacing.l) {
+        AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Welcome back")
                     .font(.largeTitle.bold())
@@ -56,9 +56,7 @@ struct LoginView: View {
             if let errorMessage {
                 InlineErrorBanner(message: errorMessage)
             }
-
-            Spacer()
-
+        } action: {
             Button {
                 Task { await login() }
             } label: {
@@ -67,9 +65,6 @@ struct LoginView: View {
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(!isValid || isLoading)
         }
-        .padding(.horizontal, BumpSpacing.l)
-        .padding(.bottom, BumpSpacing.l)
-        .background(BumpColor.surface)
         .navigationBarTitleDisplayMode(.inline)
     }
 

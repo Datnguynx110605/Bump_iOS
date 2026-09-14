@@ -28,16 +28,27 @@ struct ChangePasswordView: View {
                 SecureField("Confirm new password", text: $confirmPassword)
                     .textContentType(.newPassword)
             } footer: {
+                // Both hints go through `FieldHint`. The match hint used raw `.green` /
+                // `.red` — system `.green` measures about 1.4:1 on a light card, and the
+                // tone rested on color alone. The length hint was already on a semantic
+                // token but still color-only, and mixing a bare `Text` with a `FieldHint`
+                // in one footer reads as two different components. `ResetPasswordView`,
+                // the onboarding twin of this screen, has used `FieldHint` for both all
+                // along; this brings the pair in line with it.
                 VStack(alignment: .leading, spacing: BumpSpacing.xs) {
-                    if newPassword.isEmpty || PasswordRule.isValid(newPassword) {
-                        Text("10-40 characters.")
-                    } else {
-                        Text("10-40 characters (currently \(newPassword.count)).")
-                            .foregroundStyle(BumpColor.danger)
-                    }
+                    FieldHint(
+                        text: newPassword.isEmpty || PasswordRule.isValid(newPassword)
+                            ? String(localized: "10-40 characters.")
+                            : String(localized: "10-40 characters (currently \(newPassword.count))."),
+                        tone: newPassword.isEmpty || PasswordRule.isValid(newPassword) ? .neutral : .error
+                    )
                     if !confirmPassword.isEmpty {
-                        Text(newPassword == confirmPassword ? "Passwords match." : "Passwords don't match.")
-                            .foregroundStyle(newPassword == confirmPassword ? .green : .red)
+                        FieldHint(
+                            text: newPassword == confirmPassword
+                                ? String(localized: "Passwords match.")
+                                : String(localized: "Passwords don't match."),
+                            tone: newPassword == confirmPassword ? .success : .error
+                        )
                     }
                 }
             }
