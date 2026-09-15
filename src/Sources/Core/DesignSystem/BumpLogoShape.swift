@@ -4,8 +4,8 @@ import SwiftUI
 /// asset catalog so the icon renderer and the in-app mark are driven by one source —
 /// `Tools/RenderAppIcon.swift` compiles this very file.
 enum BumpBrandPalette {
-    static let gradientStart = Color(.sRGB, red: 1.000, green: 0.545, blue: 0.400, opacity: 1)
-    static let gradientEnd = Color(.sRGB, red: 0.902, green: 0.267, blue: 0.153, opacity: 1)
+    static let gradientStart = Color(.sRGB, red: 0.788, green: 0.482, blue: 0.290, opacity: 1)
+    static let gradientEnd = Color(.sRGB, red: 0.231, green: 0.141, blue: 0.082, opacity: 1)
 
     static var gradient: LinearGradient {
         LinearGradient(
@@ -16,13 +16,14 @@ enum BumpBrandPalette {
     }
 }
 
-/// Bump's brand mark: a location pin with a coffee cup and saucer punched out of its
-/// head. The pin says "a place"; the cup says "which kind of place" — a plain pin on its
-/// own reads as a maps app and says nothing about coffee shops or restaurants.
+/// Bump's brand mark: a location pin with a five-point star punched out of its head. The
+/// pin says "a place"; the star says "worth rating" — the app's one repeated motif across
+/// every post, shop, and profile (`RatingStarsView`), and a claim that holds for any kind
+/// of spot rather than one narrower than the app itself (a coffee cup, say).
 ///
-/// Every hole is a subpath of one `Path`, so the whole mark renders as a single filled
-/// shape with the even-odd rule and can be tinted, scaled, or animated as one unit.
-/// **Fill with `FillStyle(eoFill: true)`** — the nested subpaths are meaningless without it.
+/// The star is a subpath of the same `Path` as the pin, so the whole mark renders as one
+/// filled shape with the even-odd rule and can be tinted, scaled, or animated as one unit.
+/// **Fill with `FillStyle(eoFill: true)`** — the nested subpath is meaningless without it.
 struct BumpLogoShape: Shape {
     /// The drawn mark spans y ∈ [0.080, 0.895] of its frame and only 0.57 of its width,
     /// so sizing by the frame makes it look far smaller than it is. Tiles size against
@@ -37,10 +38,7 @@ struct BumpLogoShape: Shape {
 
         var path = Path()
         addPin(to: &path, cx: cx, cy: cy, u: u, minY: rect.minY)
-        // Nudged off the head's exact centre: the handle throws the cup group's visual
-        // mass to the right, and the group's own centre sits above `cy` because the
-        // saucer hangs below the body.
-        addCup(to: &path, cx: cx - 0.016 * u, cy: cy + 0.018 * u, u: u)
+        addStar(to: &path, cx: cx, cy: cy + 0.010 * u, u: u)
         return path
     }
 
@@ -88,72 +86,30 @@ struct BumpLogoShape: Shape {
         path.closeSubpath()
     }
 
-    // MARK: - Cup cutout
+    // MARK: - Star cutout
 
-    /// Cup body, saucer, and handle, all as cutouts.
-    ///
-    /// The handle is a closed "C" whose four endpoints sit exactly **on** the cup's
-    /// straight right edge, so the two holes meet without their areas overlapping.
-    /// Punching it as a plain ring instead — outer circle plus inner circle — makes the
-    /// overlap with the cup XOR back to solid under the even-odd rule and fuses the two
-    /// into a blob.
-    private func addCup(to path: inout Path, cx: CGFloat, cy: CGFloat, u: CGFloat) {
-        let topY = cy - 0.120 * u
-        let bottomY = cy + 0.038 * u
-        let topHalf = 0.100 * u
-        let bottomHalf = 0.070 * u
-        let corner = 0.024 * u
+    /// A five-point star, centred in the pin's head, as a single cutout. Straight edges
+    /// rather than rounded points — at icon sizes a rounded star reads as a blob, while a
+    /// crisp star silhouette matches the `star.fill` glyph used for ratings everywhere
+    /// else in the app.
+    private func addStar(to path: inout Path, cx: CGFloat, cy: CGFloat, u: CGFloat) {
+        let outerRadius = 0.130 * u
+        let innerRadius = outerRadius * 0.46
+        let points = 5
+        let step = Double.pi / Double(points)
+        // Point-up: the first vertex sits straight above centre.
+        let start = -Double.pi / 2
 
-        /// Half-width of the tapering cup body at a given y — the handle attaches to this
-        /// edge, so both shapes read the same taper.
-        func halfWidth(atY y: CGFloat) -> CGFloat {
-            let t = (y - topY) / (bottomY - topY)
-            return topHalf + t * (bottomHalf - topHalf)
+        func vertex(_ index: Int) -> CGPoint {
+            let radius = index.isMultiple(of: 2) ? outerRadius : innerRadius
+            let angle = start + Double(index) * step
+            return CGPoint(x: cx + radius * cos(angle), y: cy + radius * sin(angle))
         }
 
-        path.move(to: CGPoint(x: cx - topHalf, y: topY))
-        path.addLine(to: CGPoint(x: cx + topHalf, y: topY))
-        path.addLine(to: CGPoint(x: cx + bottomHalf, y: bottomY - corner))
-        path.addQuadCurve(
-            to: CGPoint(x: cx + bottomHalf - corner, y: bottomY),
-            control: CGPoint(x: cx + bottomHalf, y: bottomY)
-        )
-        path.addLine(to: CGPoint(x: cx - bottomHalf + corner, y: bottomY))
-        path.addQuadCurve(
-            to: CGPoint(x: cx - bottomHalf, y: bottomY - corner),
-            control: CGPoint(x: cx - bottomHalf, y: bottomY)
-        )
-        path.closeSubpath()
-
-        // Saucer: a capsule just below the cup, so it stays a saucer rather than a slab
-        // at small sizes.
-        let saucerHalf = 0.142 * u
-        let saucerTop = cy + 0.052 * u
-        let saucerHeight = 0.038 * u
-        path.addRoundedRect(
-            in: CGRect(x: cx - saucerHalf, y: saucerTop, width: saucerHalf * 2, height: saucerHeight),
-            cornerSize: CGSize(width: saucerHeight / 2, height: saucerHeight / 2)
-        )
-
-        let outerTopY = cy - 0.085 * u
-        let outerBotY = cy + 0.000 * u
-        let innerTopY = cy - 0.064 * u
-        let innerBotY = cy - 0.021 * u
-        let outerBulge = cx + 0.205 * u
-        let innerBulge = cx + 0.160 * u
-
-        path.move(to: CGPoint(x: cx + halfWidth(atY: outerTopY), y: outerTopY))
-        path.addCurve(
-            to: CGPoint(x: cx + halfWidth(atY: outerBotY), y: outerBotY),
-            control1: CGPoint(x: outerBulge, y: outerTopY),
-            control2: CGPoint(x: outerBulge, y: outerBotY)
-        )
-        path.addLine(to: CGPoint(x: cx + halfWidth(atY: innerBotY), y: innerBotY))
-        path.addCurve(
-            to: CGPoint(x: cx + halfWidth(atY: innerTopY), y: innerTopY),
-            control1: CGPoint(x: innerBulge, y: innerBotY),
-            control2: CGPoint(x: innerBulge, y: innerTopY)
-        )
+        path.move(to: vertex(0))
+        for index in 1..<(points * 2) {
+            path.addLine(to: vertex(index))
+        }
         path.closeSubpath()
     }
 }

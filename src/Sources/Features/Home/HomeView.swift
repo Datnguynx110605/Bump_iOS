@@ -125,6 +125,7 @@ private struct NearbySection: View {
         } header: {
             Label("Top Rated Nearby", systemImage: "location.fill")
                 .font(.subheadline.weight(.semibold))
+                .fontDesign(.rounded)
                 .foregroundStyle(BumpColor.textPrimary)
                 .textCase(nil)
                 .padding(.horizontal, BumpSpacing.m)

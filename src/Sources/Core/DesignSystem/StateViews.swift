@@ -5,6 +5,7 @@ struct LoadingView: View {
         ProgressView()
             .controlSize(.large)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(BumpColor.surface)
             .accessibilityLabel(String(localized: "Loading"))
     }
 }
@@ -42,6 +43,7 @@ struct EmptyStateView: View {
             VStack(spacing: BumpSpacing.xs) {
                 Text(title)
                     .font(.headline)
+                    .fontDesign(.rounded)
                     .foregroundStyle(BumpColor.textPrimary)
                 if let message {
                     Text(message)
@@ -61,6 +63,7 @@ struct EmptyStateView: View {
         }
         .padding(BumpSpacing.l)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(BumpColor.surface)
     }
 }
 
@@ -102,6 +105,7 @@ struct ErrorStateView: View {
         }
         .padding(BumpSpacing.l)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(BumpColor.surface)
     }
 }
 

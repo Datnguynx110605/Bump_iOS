@@ -19,6 +19,18 @@ packages:
     url: https://github.com/moozzyk/SignalR-Client-Swift
     from: 0.9.4
 targets:
+  BumpUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: UITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bump.client.uitests
+        SWIFT_VERSION: "5.0"
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Bump
   Bump:
     type: application
     platform: iOS
@@ -62,7 +74,12 @@ schemes:
     build:
       targets:
         Bump: all
+        BumpUITests: [test]
     run:
       config: Debug
+    test:
+      config: Debug
+      targets:
+        - BumpUITests
     archive:
       config: Release

@@ -16,10 +16,11 @@ struct BumpPrimaryButtonStyle: ButtonStyle {
                 configuration.label
             }
         }
-        .font(.headline)
+        .font(.headline.weight(.semibold))
+        .fontDesign(.rounded)
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, minHeight: BumpHitTarget.min)
-        .background(BumpColor.brandFill, in: RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous))
+        .background(BumpColor.brandFill, in: Capsule())
         .opacity(isEnabled ? (configuration.isPressed ? 0.85 : 1) : 0.4)
         .scaleEffect(configuration.isPressed ? 0.98 : 1)
         .bumpAnimation(BumpMotion.quick, value: configuration.isPressed)
@@ -35,15 +36,16 @@ struct BumpSecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.subheadline.weight(.semibold))
+            .fontDesign(.rounded)
             .foregroundStyle(isProminent ? BumpColor.brand : BumpColor.textPrimary)
             .frame(maxWidth: .infinity, minHeight: BumpHitTarget.min)
             .padding(.horizontal, BumpSpacing.m)
             .background(
-                RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous)
+                Capsule()
                     .fill(isProminent ? BumpColor.brand.opacity(0.12) : BumpColor.surfaceTertiary)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous)
+                Capsule()
                     .strokeBorder(isProminent ? BumpColor.brand.opacity(0.35) : BumpColor.border, lineWidth: 1)
             )
             .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.4)
@@ -59,6 +61,7 @@ struct BumpTextButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.subheadline.weight(.medium))
+            .fontDesign(.rounded)
             .foregroundStyle(BumpColor.brand)
             .frame(minHeight: BumpHitTarget.min)
             .contentShape(Rectangle())
@@ -123,8 +126,11 @@ extension TextFieldStyle where Self == BumpTextFieldStyle {
 // MARK: - Containers
 
 extension View {
-    /// The app's one card treatment: padded, rounded, on `surfaceSecondary`, with the
-    /// hairline that keeps it separated from the page in light mode.
+    /// The app's one card treatment: padded, generously rounded, on `surfaceSecondary`,
+    /// lifted off the page with a soft shadow. The hairline stays underneath the shadow —
+    /// dark mode has no light source to cast one against a black background, so the
+    /// border keeps carrying card/page separation there while the shadow does the work
+    /// in light mode.
     func bumpCard(padding: CGFloat = BumpSpacing.m) -> some View {
         self
             .padding(padding)
@@ -133,6 +139,7 @@ extension View {
                 RoundedRectangle(cornerRadius: BumpRadius.card, style: .continuous)
                     .strokeBorder(BumpColor.border, lineWidth: 1)
             )
+            .shadow(color: .black.opacity(0.05), radius: 14, x: 0, y: 6)
     }
 
     /// Replaces the system grouped background on `List`/`Form` with the app's page

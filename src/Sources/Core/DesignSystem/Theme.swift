@@ -16,9 +16,9 @@ enum BumpSpacing {
 }
 
 enum BumpRadius {
-    static let small: CGFloat = 8
-    static let control: CGFloat = 12
-    static let card: CGFloat = 16
+    static let small: CGFloat = 10
+    static let control: CGFloat = 14
+    static let card: CGFloat = 20
 }
 
 /// Apple's minimum comfortable tap area. Icon-only controls are visually smaller than
@@ -39,19 +39,19 @@ extension Color {
 /// Semantic colors layered on top of system colors so every screen stays consistent and
 /// adapts automatically to light/dark mode.
 ///
-/// Light mode uses a faintly warm off-white page with pure-white cards, so content cards
-/// lift off the background instead of sinking into it — the usual arrangement for a
-/// photo feed, and warmer than flat system gray for a food app. Dark mode commits to
-/// true black rather than the system's elevated grays, for a cleaner OLED look.
+/// Light mode is a warm, off-white paper tone with pure-white cards lifted on top of it —
+/// calmer than flat system gray, and warm rather than cool for a food/coffee-spot app.
+/// Dark mode mirrors that warmth with a deep espresso instead of the system's elevated
+/// grays: never a true, cold black, but still dark enough for comfortable night use.
 enum BumpColor {
     /// Page background, behind everything.
-    static let surface = Color.adaptive(light: UIColor(red: 0.980, green: 0.973, blue: 0.965, alpha: 1), dark: .black)
+    static let surface = Color.adaptive(light: UIColor(red: 0.980, green: 0.961, blue: 0.929, alpha: 1), dark: UIColor(red: 0.109, green: 0.082, blue: 0.071, alpha: 1))
     /// Cards and raised content sitting on `surface`.
-    static let surfaceSecondary = Color.adaptive(light: .white, dark: UIColor(white: 0.075, alpha: 1))
+    static let surfaceSecondary = Color.adaptive(light: .white, dark: UIColor(red: 0.165, green: 0.125, blue: 0.098, alpha: 1))
     /// One level above a card: composer bars, selected rows, inline wells.
-    static let surfaceTertiary = Color.adaptive(light: UIColor(white: 0.957, alpha: 1), dark: UIColor(white: 0.13, alpha: 1))
+    static let surfaceTertiary = Color.adaptive(light: UIColor(red: 0.945, green: 0.914, blue: 0.867, alpha: 1), dark: UIColor(red: 0.200, green: 0.157, blue: 0.129, alpha: 1))
     /// Neutral placeholder block behind images that haven't decoded yet.
-    static let fill = Color.adaptive(light: UIColor(white: 0.925, alpha: 1), dark: UIColor(white: 0.16, alpha: 1))
+    static let fill = Color.adaptive(light: UIColor(red: 0.914, green: 0.875, blue: 0.820, alpha: 1), dark: UIColor(red: 0.239, green: 0.192, blue: 0.157, alpha: 1))
 
     static let textPrimary = Color.primary
     static let textSecondary = Color.secondary
@@ -60,14 +60,21 @@ enum BumpColor {
     /// nowhere else on the row) belongs on `textSecondary`.
     static let textTertiary = Color(.tertiaryLabel)
 
-    /// Accent for tinted text, icons, and strokes. Deliberately light so it still reads
-    /// against true black in dark mode — which also means it is *too* light to sit behind
-    /// white text. Filled controls use `brandFill` instead.
-    static let brand = Color.accentColor
-    /// Filled surfaces that carry white text or glyphs. 4.9:1 against white, so a
-    /// `.headline` label on it clears the 4.5:1 body threshold that `Color.accentColor`
-    /// misses in both appearances (3.05:1 light, 2.46:1 dark).
-    static let brandFill = Color(.sRGB, red: 0.788, green: 0.259, blue: 0.122, opacity: 1)
+    /// Accent for tinted text, icons, and strokes: a deep coffee brown in light mode, and
+    /// a lighter warm caramel in dark mode so it still clears 4.5:1 against the espresso
+    /// surface below — the same brown would go muddy-on-muddy there. Filled controls use
+    /// `brandFill` instead.
+    ///
+    /// A literal color, not `Color.accentColor` — `AccentColor.colorset` still carries the
+    /// same value for the few OS chrome spots that read it directly, but `Color.accentColor`
+    /// proved to intermittently resolve to the system default blue instead of the asset in
+    /// this project, so every in-app reference goes through this token instead.
+    static let brand = Color.adaptive(light: UIColor(red: 0.290, green: 0.184, blue: 0.133, alpha: 1), dark: UIColor(red: 0.859, green: 0.643, blue: 0.420, alpha: 1))
+    /// Filled surfaces that carry white text or glyphs. Adaptive for the same reason as
+    /// `brand`: the light-mode coffee brown reads as almost-black against the espresso
+    /// card in dark mode, so dark mode steps up to a lighter roast that still clears
+    /// 4.5:1 for white text (5.1:1) while staying visually distinct from the card under it.
+    static let brandFill = Color.adaptive(light: UIColor(red: 0.290, green: 0.184, blue: 0.133, alpha: 1), dark: UIColor(red: 0.588, green: 0.388, blue: 0.247, alpha: 1))
 
     // Status colors are tuned to clear 4.5:1 against the surface they appear on —
     // white cards in light mode, true black in dark. `rating` is the exception: it tints
@@ -81,7 +88,7 @@ enum BumpColor {
     static let separator = Color(.separator)
     /// Hairline around cards. Carries the light-mode card/page separation, so it must
     /// stay visible in both themes rather than fading out in one.
-    static let border = Color.adaptive(light: UIColor(white: 0.87, alpha: 1), dark: UIColor(white: 0.20, alpha: 1))
+    static let border = Color.adaptive(light: UIColor(red: 0.871, green: 0.824, blue: 0.761, alpha: 1), dark: UIColor(red: 0.333, green: 0.267, blue: 0.227, alpha: 1))
     static let overlayScrim = Color.black.opacity(0.45)
     /// Backing for small controls and badges that sit directly on a photo (page dots,
     /// a remove button, an image counter). Heavier than `overlayScrim` on purpose: a

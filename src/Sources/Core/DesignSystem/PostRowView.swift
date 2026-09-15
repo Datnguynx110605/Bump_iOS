@@ -37,6 +37,7 @@ struct PostRowView: View {
             RoundedRectangle(cornerRadius: BumpRadius.card, style: .continuous)
                 .strokeBorder(BumpColor.border, lineWidth: 1)
         )
+        .shadow(color: .black.opacity(0.05), radius: 14, x: 0, y: 6)
         .task {
             environment.reactionStore.setLiked(post: post.id, isLiked)
             environment.saveStore.setSaved(post: post.id, isSaved)
