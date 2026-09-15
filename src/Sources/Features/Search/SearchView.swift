@@ -48,7 +48,7 @@ private struct SearchResultsView: View {
 
     /// True exactly when `shopDirectory` is what the screen is showing. Keying the
     /// loader on this rather than on `scope` covers both ways in — tapping the Shops
-    /// segment, and clearing the query while already on it, which changes no scope at all.
+    /// chip, and clearing the query while already on it, which changes no scope at all.
     private var showsDirectory: Bool {
         viewModel.scope == .shops
             && viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -56,14 +56,7 @@ private struct SearchResultsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("Scope", selection: $viewModel.scope) {
-                ForEach(SearchScope.allCases) { scope in
-                    Text(scope.displayName).tag(scope)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal, BumpSpacing.m)
-            .padding(.vertical, BumpSpacing.s)
+            scopeChips
 
             if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 // The Shops scope has a whole directory to show before anyone types, so
@@ -74,22 +67,76 @@ private struct SearchResultsView: View {
                 } else {
                     EmptyStateView(
                         icon: "magnifyingglass",
-                        title: String(localized: "Search Bump"),
-                        message: String(localized: "Find shops, posts, or people.")
+                        title: "What are you after?",
+                        message: "Search a shop, a post, or someone worth following."
                     )
                 }
             } else if viewModel.isLoading && isCurrentScopeEmpty {
-                LoadingView()
+                loadingForCurrentScope
             } else if let errorMessage = viewModel.errorMessage, isCurrentScopeEmpty {
                 ErrorStateView(message: errorMessage) { viewModel.retrySearch() }
             } else {
                 results
             }
         }
-        .background(BumpColor.surface)
+        .bumpPage()
         .task(id: showsDirectory) {
             guard showsDirectory else { return }
             await viewModel.loadDirectoryIfNeeded()
+        }
+    }
+
+    /// Pill chips instead of a segmented control.
+    ///
+    /// A `.segmented` picker draws its own bordered, inset track — a small floating
+    /// container, which is the one thing this design language doesn't do. Chips carry the
+    /// same "pick one of three" meaning with nothing but a fill, and they scroll if a
+    /// translation makes the three labels wider than the screen.
+    private var scopeChips: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: BumpSpacing.s) {
+                ForEach(SearchScope.allCases) { scope in
+                    BumpChip(
+                        title: scope.titleKey,
+                        isSelected: viewModel.scope == scope
+                    ) {
+                        guard viewModel.scope != scope else { return }
+                        HapticFeedback.selected()
+                        viewModel.scope = scope
+                    }
+                }
+            }
+            .padding(.horizontal, BumpSpacing.m)
+            .padding(.vertical, BumpSpacing.s)
+        }
+        .scrollIndicators(.hidden)
+        // The chip row is a single set of alternatives, so VoiceOver should walk it as
+        // one group of tabs rather than three unrelated buttons on the page.
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(String(localized: "Search in"))
+    }
+
+    /// Results wait in the shape they'll arrive in: post results are feed rows, shops and
+    /// people are list rows.
+    @ViewBuilder
+    private var loadingForCurrentScope: some View {
+        switch viewModel.scope {
+        case .posts:
+            ScrollView { BumpSkeletonList(count: 2) }.bumpPage()
+        case .shops, .accounts:
+            VStack(spacing: 0) {
+                ForEach(0..<6, id: \.self) { _ in
+                    HStack(spacing: BumpSpacing.ms) {
+                        BumpSkeletonBlock(width: 44, height: 44, cornerRadius: BumpRadius.small)
+                        BumpSkeletonBlock(width: 180, height: 12)
+                        Spacer()
+                    }
+                    .padding(.horizontal, BumpSpacing.m)
+                    .padding(.vertical, BumpSpacing.ms)
+                }
+                Spacer()
+            }
+            .bumpPage()
         }
     }
 
@@ -97,7 +144,7 @@ private struct SearchResultsView: View {
     private var shopDirectory: some View {
         if viewModel.directory.isEmpty {
             if viewModel.isLoadingDirectory {
-                LoadingView()
+                loadingForCurrentScope
             } else if let directoryError = viewModel.directoryError {
                 // A failed lookup is not an empty directory, and saying "No shops yet"
                 // here would tell the user something untrue about the app.
@@ -107,31 +154,35 @@ private struct SearchResultsView: View {
             } else {
                 EmptyStateView(
                     icon: "storefront",
-                    title: String(localized: "No shops yet"),
-                    message: String(localized: "Shops appear here once someone posts about them. Be the first.")
+                    title: "No shops yet",
+                    message: "Shops show up here the moment someone posts about one. Be the first."
                 )
             }
         } else {
-            List {
-                Section {
+            ScrollView {
+                LazyVStack(spacing: 0, pinnedViews: []) {
+                    BumpSectionHeader("Every shop on Bump")
+                        .padding(.top, BumpSpacing.s)
+                        .padding(.bottom, BumpSpacing.ms)
+
                     ForEach(viewModel.directory) { shop in
                         NavigationLink(value: AppRoute.shop(shop.id)) {
                             ShopResultRow(shop: shop)
                         }
-                        .listRowBackground(BumpColor.surface)
+                        .buttonStyle(.bumpSurface)
                         .task { await viewModel.loadMoreDirectoryIfNeeded(current: shop) }
+
+                        BumpDivider(inset: Self.rowDividerInset)
                     }
-                } header: {
-                    Text("All Shops")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(BumpColor.textPrimary)
-                        .textCase(nil)
                 }
             }
-            .listStyle(.plain)
-            .bumpScrollBackground()
+            .bumpPage()
         }
     }
+
+    /// Dividers start after the leading thumbnail rather than at the screen edge, so the
+    /// column of icons reads as one continuous rail down the list.
+    private static let rowDividerInset: CGFloat = BumpSpacing.m + 44 + BumpSpacing.ms
 
     private var isCurrentScopeEmpty: Bool {
         switch viewModel.scope {
@@ -146,72 +197,97 @@ private struct SearchResultsView: View {
         switch viewModel.scope {
         case .posts:
             if visiblePosts.isEmpty {
-                EmptyStateView(icon: "photo", title: String(localized: "No posts found"))
+                EmptyStateView(
+                    icon: "photo",
+                    title: "No posts match that",
+                    message: "Try a shorter word, or search shops instead."
+                )
             } else {
                 ScrollView {
-                    LazyVStack(spacing: BumpSpacing.m) {
+                    LazyVStack(spacing: 0) {
                         ForEach(visiblePosts) { item in
                             PostRowView(item: item)
                                 .task { await viewModel.loadMorePostsIfNeeded(current: item) }
                         }
                     }
-                    .padding(BumpSpacing.m)
                 }
+                .bumpPage()
             }
         case .shops:
             if viewModel.shops.isEmpty {
-                EmptyStateView(icon: "storefront", title: String(localized: "No shops found"))
+                EmptyStateView(
+                    icon: "storefront",
+                    title: "No shops match that",
+                    message: "Check the spelling, or try the name of the street."
+                )
             } else {
-                List(viewModel.shops) { shop in
-                    NavigationLink(value: AppRoute.shop(shop.id)) {
-                        ShopResultRow(shop: shop)
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(viewModel.shops) { shop in
+                            NavigationLink(value: AppRoute.shop(shop.id)) {
+                                ShopResultRow(shop: shop)
+                            }
+                            .buttonStyle(.bumpSurface)
+                            .task { await viewModel.loadMoreShopsIfNeeded(current: shop) }
+
+                            BumpDivider(inset: Self.rowDividerInset)
+                        }
                     }
-                    .listRowBackground(BumpColor.surface)
-                    .task { await viewModel.loadMoreShopsIfNeeded(current: shop) }
                 }
-                .listStyle(.plain)
-                .bumpScrollBackground()
+                .bumpPage()
             }
         case .accounts:
             if visibleAccounts.isEmpty {
-                EmptyStateView(icon: "person.2", title: String(localized: "No people found"))
+                EmptyStateView(
+                    icon: "person.2",
+                    title: "No one by that name",
+                    message: "Usernames are lowercase and have no spaces."
+                )
             } else {
-                List(visibleAccounts) { account in
-                    NavigationLink(value: AppRoute.account(account.id)) {
-                        AccountResultRow(account: account)
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(visibleAccounts) { account in
+                            NavigationLink(value: AppRoute.account(account.id)) {
+                                AccountResultRow(account: account)
+                            }
+                            .buttonStyle(.bumpSurface)
+                            .task { await viewModel.loadMoreAccountsIfNeeded(current: account) }
+
+                            BumpDivider(inset: Self.rowDividerInset)
+                        }
                     }
-                    .listRowBackground(BumpColor.surface)
-                    .task { await viewModel.loadMoreAccountsIfNeeded(current: account) }
                 }
-                .listStyle(.plain)
-                .bumpScrollBackground()
+                .bumpPage()
             }
         }
     }
 }
 
+/// A shop in a list. The leading tile is a tonal square with a light-weight glyph —
+/// the same treatment as an avatar's placeholder, so shops and people sit on one rail
+/// without either looking like the more important kind of result.
 private struct ShopResultRow: View {
     let shop: ShopSummaryDto
 
     var body: some View {
         HStack(spacing: BumpSpacing.ms) {
             RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous)
-                .fill(BumpColor.brand.opacity(0.12))
-                .frame(width: 40, height: 40)
+                .fill(BumpColor.surfaceTertiary)
+                .frame(width: 44, height: 44)
                 .overlay {
-                    Image(systemName: "cup.and.saucer.fill")
-                        .font(.footnote)
+                    Image(systemName: "cup.and.saucer")
+                        .font(.system(size: BumpIconSize.small, weight: .light))
                         .foregroundStyle(BumpColor.brand)
                 }
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(shop.name)
-                    .font(.subheadline.weight(.semibold))
+                    .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
                     .lineLimit(1)
                 Text(shop.address)
-                    .font(.caption)
+                    .font(BumpFont.meta)
                     .foregroundStyle(BumpColor.textSecondary)
                     .lineLimit(1)
             }
@@ -219,8 +295,14 @@ private struct ShopResultRow: View {
             Spacer(minLength: BumpSpacing.s)
 
             RatingStarsView(rating: shop.rate.value)
+
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(BumpColor.textTertiary)
+                .accessibilityHidden(true)
         }
-        .padding(.vertical, BumpSpacing.xs)
+        .padding(.horizontal, BumpSpacing.m)
+        .padding(.vertical, BumpSpacing.ms)
         .accessibilityElement(children: .combine)
     }
 }
@@ -230,21 +312,30 @@ private struct AccountResultRow: View {
 
     var body: some View {
         HStack(spacing: BumpSpacing.ms) {
-            AvatarView(url: account.avatar?.url, size: 40)
-            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+            AvatarView(url: account.avatar?.url, size: 44)
+
+            VStack(alignment: .leading, spacing: 2) {
                 Text(account.name.value)
-                    .font(.subheadline.weight(.semibold))
+                    .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
+                    .lineLimit(1)
                 if let bio = account.bio, !bio.isEmpty {
                     Text(bio)
-                        .font(.caption)
+                        .font(BumpFont.meta)
                         .foregroundStyle(BumpColor.textSecondary)
                         .lineLimit(1)
                 }
             }
+
             Spacer(minLength: 0)
+
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(BumpColor.textTertiary)
+                .accessibilityHidden(true)
         }
-        .padding(.vertical, BumpSpacing.xs)
+        .padding(.horizontal, BumpSpacing.m)
+        .padding(.vertical, BumpSpacing.ms)
         .accessibilityElement(children: .combine)
     }
 }

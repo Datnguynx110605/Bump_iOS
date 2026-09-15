@@ -7,16 +7,16 @@ private struct IntroPage {
 }
 
 /// First-launch walkthrough shown once per device, before login/sign-up. Anyone in a hurry
-/// can tap Skip; everyone else pages through with Next until the final "Get Started" CTA.
+/// can tap Skip; everyone else pages through with Next until the final "Get started" CTA.
 struct IntroWalkthroughView: View {
     let onFinish: () -> Void
 
     @State private var pageIndex = 0
 
     private let pages: [IntroPage] = [
-        IntroPage(icon: "fork.knife.circle.fill", title: String(localized: "Discover great spots"), message: String(localized: "Browse real photos and ratings from people who've actually been there.")),
-        IntroPage(icon: "camera.fill", title: String(localized: "Share what you find"), message: String(localized: "Snap a photo, rate the place, and bump it to your feed in seconds.")),
-        IntroPage(icon: "bubble.left.and.bubble.right.fill", title: String(localized: "Talk about it"), message: String(localized: "React and comment on posts to help others decide where to go next."))
+        IntroPage(icon: "fork.knife", title: String(localized: "Find places worth the trip"), message: String(localized: "Real photos and honest ratings from people who actually went.")),
+        IntroPage(icon: "camera", title: String(localized: "Share what you find"), message: String(localized: "Snap it, rate it, post it. Thirty seconds, start to finish.")),
+        IntroPage(icon: "bubble.left.and.bubble.right", title: String(localized: "Help someone decide"), message: String(localized: "A like or a comment is often all it takes to point a friend somewhere good."))
     ]
 
     var body: some View {
@@ -56,7 +56,7 @@ struct IntroWalkthroughView: View {
                     onFinish()
                 }
             } label: {
-                Text(pageIndex < pages.count - 1 ? "Next" : "Get Started")
+                Text(pageIndex < pages.count - 1 ? "Next" : "Get started")
             }
             .buttonStyle(.bumpPrimary)
             .padding(.horizontal, BumpSpacing.l)
@@ -69,28 +69,25 @@ struct IntroWalkthroughView: View {
 
 private struct IntroPageView: View {
     fileprivate let page: IntroPage
-    @ScaledMetric private var iconSize: CGFloat = BumpIconSize.hero
-    @ScaledMetric private var discSize: CGFloat = 128
+    /// Deliberately oversized. With no disc behind it the glyph has to carry the top
+    /// third of the screen on its own, and a light stroke at this scale reads as an
+    /// illustration rather than as a toolbar icon that wandered into the wrong place.
+    @ScaledMetric private var iconSize: CGFloat = 86
 
     var body: some View {
         VStack(spacing: BumpSpacing.l) {
             Spacer(minLength: BumpSpacing.l)
-            Circle()
-                .fill(BumpColor.brand.opacity(0.12))
-                .frame(width: discSize, height: discSize)
-                .overlay {
-                    Image(systemName: page.icon)
-                        .font(.system(size: iconSize))
-                        .foregroundStyle(BumpColor.brand)
-                }
+            Image(systemName: page.icon)
+                .font(.system(size: iconSize, weight: .ultraLight))
+                .foregroundStyle(BumpColor.brand)
                 .accessibilityHidden(true)
             VStack(spacing: BumpSpacing.s) {
                 Text(page.title)
-                    .font(.title.weight(.bold))
+                    .font(BumpFont.title)
                     .foregroundStyle(BumpColor.textPrimary)
                     .multilineTextAlignment(.center)
                 Text(page.message)
-                    .font(.body)
+                    .font(BumpFont.body)
                     .foregroundStyle(BumpColor.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BumpSpacing.xl)

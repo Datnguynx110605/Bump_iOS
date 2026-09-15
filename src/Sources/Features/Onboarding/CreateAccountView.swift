@@ -19,19 +19,21 @@ struct CreateAccountView: View {
     private var passwordsMatch: Bool { !confirmPassword.isEmpty && password == confirmPassword }
     private var isValid: Bool { isNameValid && isPasswordValid && passwordsMatch && FreeTextRule.isValid(bio) }
 
-    private var passwordHint: String {
-        guard !password.isEmpty, !isPasswordValid else { return String(localized: "10-40 characters.") }
-        return String(localized: "10-40 characters (currently \(password.count)).")
+    /// A `LocalizedStringKey`, matching `FieldHint`'s parameter: built lazily so it
+    /// resolves against the in-app `\.locale` rather than the process locale.
+    private var passwordHint: LocalizedStringKey {
+        guard !password.isEmpty, !isPasswordValid else { return "10-40 characters." }
+        return "10-40 characters (currently \(password.count))."
     }
 
     var body: some View {
         AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Create your profile")
-                    .font(.largeTitle.bold())
+                    .font(BumpFont.display)
                 Text("Pick a username and password.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
 
@@ -44,7 +46,7 @@ struct CreateAccountView: View {
                         name = AccountNameRule.sanitize(newValue)
                     }
                 FieldHint(
-                    text: name.isEmpty ? String(localized: "Lowercase letters and numbers only, no spaces.") : String(localized: "Looks good."),
+                    text: name.isEmpty ? "Lowercase letters and numbers only, no spaces." : "Looks good.",
                     tone: name.isEmpty ? .neutral : .success)
             }
 
@@ -61,7 +63,7 @@ struct CreateAccountView: View {
                     .textContentType(.newPassword)
                 if !confirmPassword.isEmpty {
                     FieldHint(
-                        text: passwordsMatch ? String(localized: "Passwords match.") : String(localized: "Passwords don't match."),
+                        text: passwordsMatch ? "Passwords match." : "Passwords don't match.",
                         tone: passwordsMatch ? .success : .error)
                 }
             }
@@ -76,7 +78,7 @@ struct CreateAccountView: View {
                 // the same near-limit counter the caption and comment fields use.
                 if let remaining = FreeTextRule.remaining(bio) {
                     FieldHint(
-                        text: String(localized: "\(remaining) characters left"),
+                        text: "\(remaining) characters left",
                         tone: remaining < 0 ? .error : .neutral
                     )
                 }
@@ -89,7 +91,7 @@ struct CreateAccountView: View {
             Button {
                 Task { await createAccount() }
             } label: {
-                Text("Create Account")
+                Text("Create account")
             }
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(!isValid || isLoading)

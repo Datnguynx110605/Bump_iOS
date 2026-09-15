@@ -15,10 +15,10 @@ struct SignUpEmailView: View {
         AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("What's your email?")
-                    .font(.largeTitle.bold())
+                    .font(BumpFont.display)
                 Text("We'll send you a 6-digit code to confirm it's you.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
 
@@ -31,7 +31,7 @@ struct SignUpEmailView: View {
                     .autocorrectionDisabled()
                     .focused($isFocused)
                 if !email.isEmpty && !isValid {
-                    FieldHint(text: String(localized: "Enter a valid email address."), tone: .error)
+                    FieldHint(text: "Enter a valid email address.", tone: .error)
                 }
             }
 

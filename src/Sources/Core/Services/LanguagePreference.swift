@@ -15,6 +15,17 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The picker label as a catalogue key, so "System" follows the in-app language
+    /// switch. The two language names are deliberately left untranslated — a language is
+    /// always listed in its own language.
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .system: "System"
+        case .english: "English"
+        case .vietnamese: "Tiếng Việt"
+        }
+    }
+
     fileprivate var locale: Locale? {
         switch self {
         case .system: nil

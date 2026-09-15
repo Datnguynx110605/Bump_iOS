@@ -16,19 +16,21 @@ struct ResetPasswordView: View {
     private var passwordsMatch: Bool { !confirmPassword.isEmpty && newPassword == confirmPassword }
     private var isValid: Bool { isPasswordValid && passwordsMatch }
 
-    private var passwordHint: String {
-        guard !newPassword.isEmpty, !isPasswordValid else { return String(localized: "10-40 characters.") }
-        return String(localized: "10-40 characters (currently \(newPassword.count)).")
+    /// A `LocalizedStringKey`, matching `FieldHint`'s parameter: built lazily so it
+    /// resolves against the in-app `\.locale` rather than the process locale.
+    private var passwordHint: LocalizedStringKey {
+        guard !newPassword.isEmpty, !isPasswordValid else { return "10-40 characters." }
+        return "10-40 characters (currently \(newPassword.count))."
     }
 
     var body: some View {
         AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Set a new password")
-                    .font(.largeTitle.bold())
+                    .font(BumpFont.display)
                 Text("Choose a new password for \(email).")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
 
@@ -45,7 +47,7 @@ struct ResetPasswordView: View {
                     .textContentType(.newPassword)
                 if !confirmPassword.isEmpty {
                     FieldHint(
-                        text: passwordsMatch ? String(localized: "Passwords match.") : String(localized: "Passwords don't match."),
+                        text: passwordsMatch ? "Passwords match." : "Passwords don't match.",
                         tone: passwordsMatch ? .success : .error)
                 }
             }
@@ -57,7 +59,7 @@ struct ResetPasswordView: View {
             Button {
                 Task { await resetPassword() }
             } label: {
-                Text("Reset Password")
+                Text("Reset password")
             }
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(!isValid || isLoading)

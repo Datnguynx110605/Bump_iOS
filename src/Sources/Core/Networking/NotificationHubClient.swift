@@ -37,6 +37,11 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotifi
     }
 
     func start() {
+        #if DEBUG
+        // Demo mode has no server to reach. Without this, SignalR retries the real host
+        // in the background for the whole screenshot session.
+        if DemoMode.isEnabled { return }
+        #endif
         guard connection == nil else { return }
 
         let hubConnection = HubConnectionBuilder(url: baseURL.appendingPathComponent("hubs/notification"))

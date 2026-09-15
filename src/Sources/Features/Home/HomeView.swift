@@ -59,53 +59,65 @@ private struct HomeListView: View {
 
     var body: some View {
         if viewModel.isLoading && viewModel.posts.isEmpty {
-            LoadingView()
+            // A feed has a known shape, so it waits as a skeleton of that shape rather
+            // than as a spinner — the layout doesn't jump when posts land, and the wait
+            // reads as "loading your feed" instead of "loading something".
+            ScrollView {
+                VStack(spacing: 0) {
+                    NearbySection(viewModel: viewModel)
+                    BumpSkeletonList()
+                }
+            }
+            .bumpPage()
         } else if let errorMessage = viewModel.errorMessage, viewModel.posts.isEmpty {
             ErrorStateView(message: errorMessage) { Task { await viewModel.refreshAll() } }
         } else {
-            List {
-                NearbySection(viewModel: viewModel)
+            // A `ScrollView`, not a `List`. `List` decorates every `NavigationLink`
+            // inside a row with its own trailing disclosure chevron, and a feed row holds
+            // three of them — one landed in the middle of the action bar, between the
+            // comment and save buttons. The row already draws its own hairline and bleeds
+            // to both edges, so the only thing `List` still contributed was
+            // `.refreshable`, which `ScrollView` supports directly.
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    NearbySection(viewModel: viewModel)
 
-                if visiblePosts.isEmpty {
-                    EmptyStateView(
-                        icon: "person.2.fill",
-                        title: String(localized: "Your feed is quiet"),
-                        message: String(localized: "Bump fills this with posts from people you follow and places you've reacted to. Find a few to get started."),
-                        actionTitle: String(localized: "Discover Shops & People"),
-                        action: onDiscover
-                    )
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                    // `isNearEnd` uses a window precisely so a filtered *row* still pages,
-                    // but when every post in every loaded page is from a blocked author
-                    // the `ForEach` renders nothing at all, and the paging trigger goes
-                    // with it — the feed stops here for good while the server still has
-                    // pages. Keyed on the loaded count so it drains page after page until
-                    // a visible post arrives or the server runs out.
-                    .task(id: viewModel.posts.count) {
-                        guard let last = viewModel.posts.last else { return }
-                        await viewModel.loadMoreIfNeeded(currentItem: last)
-                    }
-                } else {
-                    ForEach(visiblePosts) { item in
-                        PostRowView(item: item)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
-                            .listRowInsets(EdgeInsets(top: BumpSpacing.s, leading: BumpSpacing.m, bottom: BumpSpacing.s, trailing: BumpSpacing.m))
-                            .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
-                    }
+                    if visiblePosts.isEmpty {
+                        EmptyStateView(
+                            icon: "sparkles",
+                            title: "Your feed is quiet",
+                            message: "Follow a few people and react to the places you like — their posts land here.",
+                            actionTitle: "Find shops & people",
+                            action: onDiscover
+                        )
+                        .frame(minHeight: 380)
+                        // `isNearEnd` uses a window precisely so a filtered *row* still
+                        // pages, but when every post in every loaded page is from a
+                        // blocked author the `ForEach` renders nothing at all, and the
+                        // paging trigger goes with it — the feed stops here for good while
+                        // the server still has pages. Keyed on the loaded count so it
+                        // drains page after page until a visible post arrives or the
+                        // server runs out.
+                        .task(id: viewModel.posts.count) {
+                            guard let last = viewModel.posts.last else { return }
+                            await viewModel.loadMoreIfNeeded(currentItem: last)
+                        }
+                    } else {
+                        ForEach(visiblePosts) { item in
+                            PostRowView(item: item)
+                                .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
+                        }
 
-                    if viewModel.isLoadingMore {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, BumpSpacing.m)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
+                        if viewModel.isLoadingMore {
+                            ProgressView()
+                                .tint(BumpColor.brand)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, BumpSpacing.l)
+                        }
                     }
                 }
             }
-            .listStyle(.plain)
-            .bumpScrollBackground()
+            .bumpPage()
             .refreshable { await viewModel.refreshAll() }
         }
     }
@@ -113,23 +125,23 @@ private struct HomeListView: View {
 
 // MARK: - Nearby
 
+/// The discovery strip above the feed: the highest-rated shops within range, ranked.
+///
+/// Headed by the system's editorial section label rather than a boxed header, and the
+/// strip itself scrolls horizontally with the same full-bleed logic as the feed — the
+/// cards run off the right edge of the screen instead of stopping at a margin, which is
+/// what tells the user there is more to swipe to.
 private struct NearbySection: View {
     let viewModel: HomeViewModel
 
     var body: some View {
-        Section {
+        VStack(alignment: .leading, spacing: BumpSpacing.ms) {
+            BumpSectionHeader("Nearby & highly rated")
+                .padding(.top, BumpSpacing.s)
+
             content
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(top: BumpSpacing.xs, leading: 0, bottom: BumpSpacing.s, trailing: 0))
-        } header: {
-            Label("Top Rated Nearby", systemImage: "location.fill")
-                .font(.subheadline.weight(.semibold))
-                .fontDesign(.rounded)
-                .foregroundStyle(BumpColor.textPrimary)
-                .textCase(nil)
-                .padding(.horizontal, BumpSpacing.m)
-                .listRowInsets(EdgeInsets())
+
+            BumpDivider()
         }
     }
 
@@ -137,26 +149,30 @@ private struct NearbySection: View {
     private var content: some View {
         switch viewModel.nearby {
         case .needsPermission:
-            NearbyNoticeCard(
-                icon: "location.circle.fill",
-                title: String(localized: "See the best spots around you"),
-                message: String(localized: "Share your location and Bump shows the top-rated shops within five kilometres."),
-                actionTitle: String(localized: "Use My Location"),
+            NearbyNotice(
+                icon: "location",
+                title: "See the best spots around you",
+                message: "Share your location and Bump shows the top-rated shops within five kilometres.",
+                actionTitle: "Use my location",
                 tone: .brand
             ) {
                 Task { await viewModel.loadNearby() }
             }
 
         case .loading:
-            ProgressView()
-                .frame(maxWidth: .infinity, minHeight: 96)
+            HStack(spacing: BumpSpacing.ms) {
+                ForEach(0..<2, id: \.self) { _ in
+                    BumpSkeletonBlock(width: 240, height: 108, cornerRadius: BumpRadius.card)
+                }
+            }
+            .padding(.horizontal, BumpSpacing.m)
 
         case .locationOff:
-            NearbyNoticeCard(
-                icon: "location.slash.fill",
-                title: String(localized: "Location is off"),
-                message: String(localized: "Turn location on in Settings to see top-rated shops near you."),
-                actionTitle: String(localized: "Open Settings"),
+            NearbyNotice(
+                icon: "location.slash",
+                title: "Location is off",
+                message: "Turn location on in Settings to see top-rated shops near you.",
+                actionTitle: "Open Settings",
                 tone: .muted
             ) {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
@@ -164,11 +180,11 @@ private struct NearbySection: View {
             }
 
         case .failed:
-            NearbyNoticeCard(
-                icon: "exclamationmark.triangle.fill",
-                title: String(localized: "Couldn't find shops nearby"),
-                message: String(localized: "Check your connection and try again."),
-                actionTitle: String(localized: "Try Again"),
+            NearbyNotice(
+                icon: "exclamationmark.triangle",
+                title: "Couldn't find shops nearby",
+                message: "Check your connection and try again.",
+                actionTitle: "Try again",
                 tone: .muted
             ) {
                 Task { await viewModel.loadNearby() }
@@ -176,10 +192,10 @@ private struct NearbySection: View {
 
         case .loaded(let shops):
             if shops.isEmpty {
-                NearbyNoticeCard(
+                NearbyNotice(
                     icon: "mappin.slash",
-                    title: String(localized: "Nothing highly rated yet"),
-                    message: String(localized: "No shop near you has cleared four stars. Be the first to post one."),
+                    title: "Nothing highly rated yet",
+                    message: "No shop near you has cleared four stars. Be the first to post one.",
                     actionTitle: nil,
                     tone: .muted,
                     action: nil
@@ -209,32 +225,38 @@ private struct NearbyCarousel: View {
     }
 }
 
+/// One shop in the nearby strip.
+///
+/// The rank is set as a large editorial numeral rather than stuffed into a badge: at a
+/// glance the user reads "1, 2, 3" down the strip, and the numeral doubles as the tile's
+/// visual anchor on a surface that has no border to hold it together.
 private struct NearbyShopCard: View {
     let rank: Int
     let shop: ShopSummaryDto
 
-    /// Scales with Dynamic Type so a longer text size widens the card instead of
+    /// Scales with Dynamic Type so a longer text size widens the tile instead of
     /// truncating a shop name to nothing.
-    @ScaledMetric private var cardWidth: CGFloat = 216
+    @ScaledMetric private var cardWidth: CGFloat = 240
 
     var body: some View {
         NavigationLink(value: AppRoute.shop(shop.id)) {
-            VStack(alignment: .leading, spacing: BumpSpacing.s) {
-                HStack(spacing: BumpSpacing.s) {
-                    RankBadge(rank: rank)
-                    Spacer(minLength: 0)
-                    RatingStarsView(rating: shop.rate.value)
-                }
+            HStack(alignment: .top, spacing: BumpSpacing.ms) {
+                Text("\(rank)")
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .foregroundStyle(BumpColor.brand.opacity(0.35))
+                    .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                     Text(shop.name)
-                        .font(.subheadline.weight(.semibold))
+                        .font(BumpFont.subheadline)
                         .foregroundStyle(BumpColor.textPrimary)
                         .lineLimit(2)
                     Text(shop.address)
-                        .font(.caption)
+                        .font(BumpFont.meta)
                         .foregroundStyle(BumpColor.textSecondary)
                         .lineLimit(2)
+                    RatingStarsView(rating: shop.rate.value)
+                        .padding(.top, 1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -242,38 +264,29 @@ private struct NearbyShopCard: View {
             .frame(width: cardWidth, alignment: .leading)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bumpSurface)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(String(localized: "Number \(rank) nearby, \(shop.name), \(shop.address), rated \(shop.rate.value) out of 5"))
         .accessibilityAddTraits(.isButton)
     }
 }
 
-private struct RankBadge: View {
-    let rank: Int
-
-    var body: some View {
-        Text("\(rank)")
-            .font(.caption.weight(.bold))
-            .foregroundStyle(.white)
-            .frame(minWidth: 22, minHeight: 22)
-            .background(BumpColor.brandFill, in: Circle())
-            .accessibilityHidden(true)
-    }
-}
-
 /// One shape for every non-list state of the nearby section, so permission, failure and
 /// "nothing found" read as the same designed component rather than three ad-hoc blocks.
-private struct NearbyNoticeCard: View {
+///
+/// Flat and inset rather than carded: on a page with no elevation, a notice earns its
+/// separation from a tonal step, and the light-weight outline glyph keeps it from
+/// shouting louder than the shops it stands in for.
+private struct NearbyNotice: View {
     enum Tone {
         case brand
         case muted
     }
 
     let icon: String
-    let title: String
-    let message: String
-    var actionTitle: String?
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
+    var actionTitle: LocalizedStringKey?
     var tone: Tone = .muted
     var action: (() -> Void)?
 
@@ -282,16 +295,16 @@ private struct NearbyNoticeCard: View {
     var body: some View {
         HStack(alignment: .top, spacing: BumpSpacing.ms) {
             Image(systemName: icon)
-                .font(.system(size: iconSize))
+                .font(.system(size: iconSize, weight: .light))
                 .foregroundStyle(tint)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
                 Text(message)
-                    .font(.caption)
+                    .font(BumpFont.meta)
                     .foregroundStyle(BumpColor.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
 

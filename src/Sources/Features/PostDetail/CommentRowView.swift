@@ -33,7 +33,7 @@ struct CommentRowView: View {
 
             if let content = comment.content, !content.isEmpty {
                 Text(content)
-                    .font(.body)
+                    .font(BumpFont.body)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -60,7 +60,7 @@ struct CommentRowView: View {
 
                 NavigationLink(value: AppRoute.commentReactors(comment.id)) {
                     Text("\(displayedLikeCount)")
-                        .font(.footnote.weight(.semibold))
+                        .font(BumpFont.meta)
                         .foregroundStyle(BumpColor.textSecondary)
                         .contentTransition(.numericText())
                 }
@@ -69,7 +69,7 @@ struct CommentRowView: View {
                 .accessibilityValue(Text("\(displayedLikeCount)"))
 
                 Text(comment.createdAt.relativeDescription)
-                    .font(.footnote)
+                    .font(BumpFont.meta)
                     .foregroundStyle(BumpColor.textSecondary)
 
                 Spacer()
@@ -84,7 +84,7 @@ struct CommentRowView: View {
                         }
                     } else {
                         Button("Report", systemImage: "flag") { showingReportSheet = true }
-                        Button("Block Author", systemImage: "hand.raised", role: .destructive) {
+                        Button("Block author", systemImage: "hand.raised", role: .destructive) {
                             showingBlockConfirm = true
                         }
                     }

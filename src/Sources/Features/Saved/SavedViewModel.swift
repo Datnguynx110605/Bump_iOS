@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum SavedTab: String, CaseIterable {
     case posts = "Posts"
@@ -8,6 +9,14 @@ enum SavedTab: String, CaseIterable {
         switch self {
         case .posts: String(localized: "Posts")
         case .shops: String(localized: "Shops")
+        }
+    }
+
+    /// The same labels as catalogue keys — see `SearchScope.titleKey` for why both exist.
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .posts: "Posts"
+        case .shops: "Shops"
         }
     }
 }

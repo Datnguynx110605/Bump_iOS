@@ -23,25 +23,28 @@ struct ProfileView: View {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.refresh() } }
                 } else {
                     ScrollView {
-                        VStack(spacing: BumpSpacing.l) {
+                        VStack(alignment: .leading, spacing: BumpSpacing.l) {
                             ProfileHeaderView(
                                 viewModel: viewModel,
                                 isOwnProfile: isOwnProfile,
                                 onEditProfile: { showingSettings = true }
                             )
 
-                            Divider()
-
                             if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
                                 EmptyStateView(
-                                    icon: "camera.fill",
-                                    title: isOwnProfile ? String(localized: "Share your first post") : String(localized: "No posts yet"),
-                                    message: isOwnProfile ? String(localized: "Rate a coffee shop or restaurant and it shows up here.") : nil
+                                    icon: "camera",
+                                    title: isOwnProfile ? "Share your first spot" : "Nothing posted yet",
+                                    message: isOwnProfile ? "Rate a place you love and it lands right here." : nil
                                 )
-                                .frame(height: 220)
+                                .frame(height: 260)
                             } else {
-                                PostThumbnailGrid(posts: viewModel.posts) { post in
-                                    Task { await viewModel.loadMorePostsIfNeeded(current: post) }
+                                VStack(alignment: .leading, spacing: BumpSpacing.ms) {
+                                    BumpSectionHeader("Posts")
+                                    // The grid bleeds to both screen edges; only the label
+                                    // above it sits in the text gutter.
+                                    PostThumbnailGrid(posts: viewModel.posts) { post in
+                                        Task { await viewModel.loadMorePostsIfNeeded(current: post) }
+                                    }
                                 }
                             }
                         }
@@ -84,16 +87,16 @@ struct ProfileView: View {
                     }
                 } else {
                     Menu {
-                        Button("Report Account", systemImage: "flag") { showingReportSheet = true }
+                        Button("Report account", systemImage: "flag") { showingReportSheet = true }
                         if environment.blockStore.isBlocked(accountId) {
-                            Button("Unblock Account", systemImage: "hand.raised.slash") {
+                            Button("Unblock account", systemImage: "hand.raised.slash") {
                                 Task {
                                     await environment.blockStore.unblock(accountId)
                                     environment.feedRefreshSignal.bump()
                                 }
                             }
                         } else {
-                            Button("Block Account", systemImage: "hand.raised", role: .destructive) {
+                            Button("Block account", systemImage: "hand.raised", role: .destructive) {
                                 showingBlockConfirm = true
                             }
                         }
@@ -128,11 +131,24 @@ struct ProfileView: View {
     }
 }
 
+/// The profile header, set left-aligned rather than centred.
+///
+/// A centred avatar/name/stats column is the default every social app ships; running the
+/// same information down the left margin makes the screen read as a *page about a person*
+/// — the name behaves like a headline, the stats like a standfirst under it.
+///
+/// **It reflows at accessibility text sizes.** The side-by-side arrangement puts a 76pt
+/// avatar, a title-weight name and two stat pairs on one row, and at
+/// `accessibility-extra-large` that row has nowhere left to go: verified on device, the
+/// name jumped above the avatar and "Followers" hyphenated across three lines as
+/// "Fol-low-ers". Past `isAccessibilitySize` the whole header stacks vertically instead,
+/// where every element has the full width of the screen.
 private struct ProfileHeaderView: View {
     @Bindable var viewModel: ProfileViewModel
     let isOwnProfile: Bool
     let onEditProfile: () -> Void
     @Environment(AppEnvironment.self) private var environment
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var isTogglingFollow = false
 
     /// Read straight off the `@Observable` store rather than copied into `@State`.
@@ -143,39 +159,43 @@ private struct ProfileHeaderView: View {
     private var isFollowing: Bool { environment.followStore.isFollowing(viewModel.accountId) }
 
     var body: some View {
-        VStack(spacing: BumpSpacing.m) {
-            AvatarView(url: viewModel.account?.avatar?.url, size: 88)
+        VStack(alignment: .leading, spacing: BumpSpacing.m) {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: BumpSpacing.m) {
+                    AvatarView(url: viewModel.account?.avatar?.url, size: 76)
+                    nameText
+                    VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+                        followersLink
+                        followingLink
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                HStack(alignment: .center, spacing: BumpSpacing.m) {
+                    AvatarView(url: viewModel.account?.avatar?.url, size: 76)
 
-            VStack(spacing: BumpSpacing.xs) {
-                Text(viewModel.account?.name.value ?? "            ")
-                    .font(.title2.bold())
-                    .foregroundStyle(BumpColor.textPrimary)
-                    .redacted(reason: viewModel.account == nil ? .placeholder : [])
-                if let bio = viewModel.account?.bio, !bio.isEmpty {
-                    Text(bio)
-                        .font(.subheadline)
-                        .foregroundStyle(BumpColor.textSecondary)
-                        .multilineTextAlignment(.center)
+                    VStack(alignment: .leading, spacing: BumpSpacing.s) {
+                        nameText
+                        HStack(spacing: BumpSpacing.m) {
+                            followersLink
+                            followingLink
+                        }
+                    }
+
+                    Spacer(minLength: 0)
                 }
             }
 
-            HStack(spacing: 0) {
-                NavigationLink(value: AppRoute.followers(viewModel.accountId)) {
-                    statTile(count: viewModel.account?.followerAmount.value, label: String(localized: "Followers"))
-                }
-                .buttonStyle(.plain)
-
-                Divider().frame(height: 28)
-
-                NavigationLink(value: AppRoute.following(viewModel.accountId)) {
-                    statTile(count: viewModel.account?.followingAmount.value, label: String(localized: "Following"))
-                }
-                .buttonStyle(.plain)
+            if let bio = viewModel.account?.bio, !bio.isEmpty {
+                Text(bio)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
+                    .lineSpacing(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: 280)
 
             if isOwnProfile {
-                Button("Edit Profile", action: onEditProfile)
+                Button("Edit profile", action: onEditProfile)
                     .buttonStyle(.bumpSecondary)
             } else {
                 Button {
@@ -186,9 +206,35 @@ private struct ProfileHeaderView: View {
                 .buttonStyle(.bumpSecondary(isProminent: !isFollowing))
                 .disabled(isTogglingFollow)
                 .accessibilityAddTraits(isFollowing ? [.isSelected] : [])
+                .bumpAnimation(BumpMotion.standard, value: isFollowing)
             }
         }
-        .padding(.horizontal, BumpSpacing.l)
+        .padding(.horizontal, BumpSpacing.m)
+    }
+
+    private var nameText: some View {
+        Text(viewModel.account?.name.value ?? "            ")
+            .font(BumpFont.title)
+            .foregroundStyle(BumpColor.textPrimary)
+            .lineLimit(2)
+            .redacted(reason: viewModel.account == nil ? .placeholder : [])
+    }
+
+    /// Follower and following counts set inline as prose rather than as two boxed tiles
+    /// with a rule between them — the tiles were small containers, and this system
+    /// doesn't draw containers around text.
+    private var followersLink: some View {
+        NavigationLink(value: AppRoute.followers(viewModel.accountId)) {
+            stat(count: viewModel.account?.followerAmount.value, label: String(localized: "Followers"))
+        }
+        .buttonStyle(.bumpSurface)
+    }
+
+    private var followingLink: some View {
+        NavigationLink(value: AppRoute.following(viewModel.accountId)) {
+            stat(count: viewModel.account?.followingAmount.value, label: String(localized: "Following"))
+        }
+        .buttonStyle(.bumpSurface)
     }
 
     private func toggleFollow() async {
@@ -201,17 +247,20 @@ private struct ProfileHeaderView: View {
         }
     }
 
-    private func statTile(count: Int?, label: String) -> some View {
-        VStack(spacing: BumpSpacing.xs) {
+    private func stat(count: Int?, label: String) -> some View {
+        HStack(spacing: BumpSpacing.xs) {
             Text(count.map(String.init) ?? "–")
-                .font(.title3.weight(.bold))
+                .font(BumpFont.numeric)
                 .foregroundStyle(BumpColor.textPrimary)
                 .contentTransition(.numericText())
             Text(label)
-                .font(.caption)
+                .font(BumpFont.meta)
                 .foregroundStyle(BumpColor.textSecondary)
+                // Never hyphenate a one-word label. Without this the squeezed row broke
+                // "Followers" into "Fol-low-ers" rather than letting the row grow.
+                .fixedSize(horizontal: true, vertical: false)
         }
-        .frame(maxWidth: .infinity, minHeight: BumpHitTarget.min)
+        .frame(minHeight: BumpHitTarget.min)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }

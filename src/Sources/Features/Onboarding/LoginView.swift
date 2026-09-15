@@ -16,10 +16,10 @@ struct LoginView: View {
         AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Welcome back")
-                    .font(.largeTitle.bold())
+                    .font(BumpFont.display)
                     .foregroundStyle(BumpColor.textPrimary)
-                Text("Log in to continue.")
-                    .font(.subheadline)
+                Text("Good to see you again.")
+                    .font(BumpFont.callout)
                     .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
@@ -32,7 +32,7 @@ struct LoginView: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                 if !email.isEmpty && !EmailRule.isValid(email) {
-                    FieldHint(text: String(localized: "Enter a valid email address."), tone: .error)
+                    FieldHint(text: "Enter a valid email address.", tone: .error)
                 }
             }
 
@@ -60,7 +60,7 @@ struct LoginView: View {
             Button {
                 Task { await login() }
             } label: {
-                Text("Log In")
+                Text("Log in")
             }
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(!isValid || isLoading)

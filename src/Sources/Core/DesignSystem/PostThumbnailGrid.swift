@@ -2,6 +2,10 @@ import SwiftUI
 
 /// Three-column square photo grid used by Profile, Shop detail, and Saved.
 ///
+/// The gap is 2pt and the grid bleeds to the screen edges: in an editorial layout the
+/// photos *are* the page, and inset, rounded tiles would reintroduce the floating-card
+/// idiom the rest of the system just removed.
+///
 /// Cells size themselves with `aspectRatio` instead of a per-cell `GeometryReader`. The
 /// GeometryReader version ran a measurement pass for every cell in a lazy grid and fed
 /// its measured width into the image decode size, so the same photo could be decoded and
@@ -26,7 +30,7 @@ struct PostThumbnailGrid: View {
                 NavigationLink(value: AppRoute.post(post.id)) {
                     thumbnail(for: post)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bumpSurface)
                 .accessibilityLabel(String(localized: "Post"))
                 .onAppear { onAppearOfLast?(post) }
             }
@@ -50,10 +54,30 @@ struct PostThumbnailGrid: View {
                         }
                     }
                 } else {
-                    BumpColor.fill.overlay {
-                        Image(systemName: "text.bubble")
-                            .foregroundStyle(BumpColor.textTertiary)
+                    // A text-only post still needs to read as a post rather than as a
+                    // failed photo, so it gets the caption glyph on a tonal tile.
+                    BumpColor.surfaceTertiary.overlay {
+                        Image(systemName: "text.alignleft")
+                            .font(.system(size: BumpIconSize.small, weight: .light))
+                            .foregroundStyle(BumpColor.textSecondary)
                     }
+                }
+            }
+            .overlay(alignment: .topTrailing) {
+                // Multi-photo posts say so, the way every photo grid the user already
+                // knows does. Without it a carousel is indistinguishable from a single
+                // shot until you open it.
+                if post.images.count > 1 {
+                    // The one shadow left in the system, and it isn't elevation: a white
+                    // glyph sitting directly on an arbitrary photo has no guaranteed
+                    // contrast, and a tight dark halo is what gets it to 3:1 against a
+                    // pale image without covering the photo with a plate.
+                    Image(systemName: "square.on.square")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.45), radius: 2, y: 0)
+                        .padding(6)
+                        .accessibilityHidden(true)
                 }
             }
             .clipped()

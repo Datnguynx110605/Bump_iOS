@@ -84,23 +84,6 @@
         }
       }
     },
-    "%lld/2000": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld/2000"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld/2000"
-          }
-        }
-      }
-    },
     "000000": {
       "extractionState": "manual",
       "localizations": {
@@ -166,6 +149,40 @@
         }
       }
     },
+    "A like or a comment is often all it takes to point a friend somewhere good.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A like or a comment is often all it takes to point a friend somewhere good."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đôi khi chỉ một lượt thích hay một bình luận là đủ để chỉ cho bạn bè một chỗ hay."
+          }
+        }
+      }
+    },
+    "Account & privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account & privacy"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài khoản & quyền riêng tư"
+          }
+        }
+      }
+    },
     "Accounts": {
       "localizations": {
         "en": {
@@ -198,66 +215,19 @@
         }
       }
     },
-    "Activity": {
+    "Activity history": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Activity"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hoạt động"
-          }
-        }
-      }
-    },
-    "Activity History": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activity History"
+            "value": "Activity history"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Lịch sử hoạt động"
-          }
-        }
-      }
-    },
-    "Add Photos": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add Photos"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thêm ảnh"
-          }
-        }
-      }
-    },
-    "Add a comment…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add a comment…"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thêm bình luận…"
           }
         }
       }
@@ -327,18 +297,19 @@
         }
       }
     },
-    "All Shops": {
+    "All quiet": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "All Shops"
+            "value": "All quiet"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tất cả quán"
+            "value": "Chưa có gì mới"
           }
         }
       }
@@ -360,19 +331,19 @@
         }
       }
     },
-    "Be the first to review this place.": {
+    "Be the first to say what this place is like.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Be the first to review this place."
+            "value": "Be the first to say what this place is like."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hãy là người đầu tiên đánh giá nơi này."
+            "value": "Hãy là người đầu tiên kể về nơi này."
           }
         }
       }
@@ -425,12 +396,13 @@
         }
       }
     },
-    "Block Account": {
+    "Block account": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Block Account"
+            "value": "Block account"
           }
         },
         "vi": {
@@ -441,12 +413,13 @@
         }
       }
     },
-    "Block Author": {
+    "Block author": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Block Author"
+            "value": "Block author"
           }
         },
         "vi": {
@@ -489,12 +462,13 @@
         }
       }
     },
-    "Blocked Accounts": {
+    "Blocked accounts": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Blocked Accounts"
+            "value": "Blocked accounts"
           }
         },
         "vi": {
@@ -505,44 +479,12 @@
         }
       }
     },
-    "Browse real photos and ratings from people who've actually been there.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Browse real photos and ratings from people who've actually been there."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xem ảnh thật và đánh giá từ những người đã từng đến đó."
-          }
-        }
-      }
-    },
     "Bump": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Bump"
-          }
-        }
-      }
-    },
-    "Bump fills this with posts from people you follow and places you've reacted to. Find a few to get started.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bump fills this with posts from people you follow and places you've reacted to. Find a few to get started."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bump hiển thị ở đây bài đăng từ những người bạn theo dõi và những quán bạn đã thả tim. Hãy tìm vài gợi ý để bắt đầu."
           }
         }
       }
@@ -579,12 +521,13 @@
         }
       }
     },
-    "Change Email": {
+    "Change email": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Change Email"
+            "value": "Change email"
           }
         },
         "vi": {
@@ -595,12 +538,13 @@
         }
       }
     },
-    "Change Password": {
+    "Change password": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Change Password"
+            "value": "Change password"
           }
         },
         "vi": {
@@ -628,6 +572,23 @@
         }
       }
     },
+    "Check the spelling, or try the name of the street.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the spelling, or try the name of the street."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thử kiểm tra chính tả, hoặc tìm theo tên đường."
+          }
+        }
+      }
+    },
     "Check your connection and try again.": {
       "localizations": {
         "en": {
@@ -644,6 +605,23 @@
         }
       }
     },
+    "Check your inbox": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check your inbox"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiểm tra hộp thư của bạn"
+          }
+        }
+      }
+    },
     "Choose a new password for %@.": {
       "localizations": {
         "vi": {
@@ -654,12 +632,13 @@
         }
       }
     },
-    "Choose from Library": {
+    "Choose from library": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose from Library"
+            "value": "Choose from library"
           }
         },
         "vi": {
@@ -698,16 +677,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bình luận"
-          }
-        }
-      }
-    },
-    "Comments you leave on posts show up here.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bình luận bạn để lại trên bài viết sẽ hiện ở đây."
           }
         }
       }
@@ -1016,12 +985,13 @@
         }
       }
     },
-    "Create Account": {
+    "Create account": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Create Account"
+            "value": "Create account"
           }
         },
         "vi": {
@@ -1064,6 +1034,23 @@
         }
       }
     },
+    "Dark": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tối"
+          }
+        }
+      }
+    },
     "Delete": {
       "localizations": {
         "en": {
@@ -1080,12 +1067,13 @@
         }
       }
     },
-    "Delete Account": {
+    "Delete account": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Delete Account"
+            "value": "Delete account"
           }
         },
         "vi": {
@@ -1096,12 +1084,13 @@
         }
       }
     },
-    "Delete Post": {
+    "Delete post": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Delete Post"
+            "value": "Delete post"
           }
         },
         "vi": {
@@ -1144,22 +1133,6 @@
         }
       }
     },
-    "Describe the issue": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Describe the issue"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mô tả vấn đề"
-          }
-        }
-      }
-    },
     "Discard": {
       "extractionState": "manual",
       "localizations": {
@@ -1190,54 +1163,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bỏ bài viết này?"
-          }
-        }
-      }
-    },
-    "Discover Shops & People": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Discover Shops & People"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Khám phá quán và mọi người"
-          }
-        }
-      }
-    },
-    "Discover great local spots through the people around you.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Discover great local spots through the people around you."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Khám phá những địa điểm tuyệt vời gần bạn qua những người xung quanh."
-          }
-        }
-      }
-    },
-    "Discover great spots": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Discover great spots"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Khám phá những địa điểm tuyệt vời"
           }
         }
       }
@@ -1274,12 +1199,13 @@
         }
       }
     },
-    "Edit Comment": {
+    "Edit comment": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Edit Comment"
+            "value": "Edit comment"
           }
         },
         "vi": {
@@ -1290,12 +1216,13 @@
         }
       }
     },
-    "Edit Post": {
+    "Edit post": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Edit Post"
+            "value": "Edit post"
           }
         },
         "vi": {
@@ -1306,12 +1233,13 @@
         }
       }
     },
-    "Edit Profile": {
+    "Edit profile": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Edit Profile"
+            "value": "Edit profile"
           }
         },
         "vi": {
@@ -1354,19 +1282,19 @@
         }
       }
     },
-    "Enable Notifications": {
+    "English": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enable Notifications"
+            "value": "English"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bật thông báo"
+            "value": "English"
           }
         }
       }
@@ -1453,6 +1381,40 @@
         }
       }
     },
+    "Every comment you leave on a post is kept here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every comment you leave on a post is kept here."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi bình luận bạn để lại trên bài đăng đều được lưu ở đây."
+          }
+        }
+      }
+    },
+    "Every shop on Bump": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every shop on Bump"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả quán trên Bump"
+          }
+        }
+      }
+    },
     "Fills in this place": {
       "localizations": {
         "en": {
@@ -1486,18 +1448,53 @@
         }
       }
     },
-    "Find shops, posts, or people.": {
+    "Find places worth the trip": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Find shops, posts, or people."
+            "value": "Find places worth the trip"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tìm cửa hàng, bài đăng, hoặc mọi người."
+            "value": "Tìm những nơi đáng để ghé"
+          }
+        }
+      }
+    },
+    "Find shops & people": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find shops & people"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm quán & mọi người"
+          }
+        }
+      }
+    },
+    "Finding the spot…": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding the spot…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang tìm địa điểm…"
           }
         }
       }
@@ -1514,6 +1511,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Theo dõi"
+          }
+        }
+      }
+    },
+    "Follow a few people and react to the places you like — their posts land here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow a few people and react to the places you like — their posts land here."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo dõi vài người và thả tim những nơi bạn thích — bài của họ sẽ hiện ở đây."
           }
         }
       }
@@ -1560,18 +1574,70 @@
         }
       }
     },
-    "Get Started": {
+    "Get directions": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Get Started"
+            "value": "Get directions"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ đường"
+          }
+        }
+      }
+    },
+    "Get started": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get started"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Bắt đầu"
+          }
+        }
+      }
+    },
+    "Good to see you again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good to see you again."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rất vui được gặp lại bạn."
+          }
+        }
+      }
+    },
+    "Help someone decide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Help someone decide"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giúp ai đó chọn được chỗ"
           }
         }
       }
@@ -1625,13 +1691,13 @@
         }
       }
     },
-    "Keep Editing": {
+    "Keep editing": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep Editing"
+            "value": "Keep editing"
           }
         },
         "vi": {
@@ -1654,6 +1720,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngôn ngữ"
+          }
+        }
+      }
+    },
+    "Light": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sáng"
           }
         }
       }
@@ -1709,12 +1792,13 @@
         }
       }
     },
-    "Likes, comments, and new followers show up here.": {
+    "Likes, comments and new followers will turn up here.": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Likes, comments, and new followers show up here."
+            "value": "Likes, comments and new followers will turn up here."
           }
         },
         "vi": {
@@ -1738,22 +1822,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đang tải"
-          }
-        }
-      }
-    },
-    "Loading shop…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Loading shop…"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đang tải cửa hàng…"
           }
         }
       }
@@ -1806,12 +1874,13 @@
         }
       }
     },
-    "Log In": {
+    "Log in": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Log In"
+            "value": "Log in"
           }
         },
         "vi": {
@@ -1822,34 +1891,19 @@
         }
       }
     },
-    "Log Out": {
+    "Log out": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Log Out"
+            "value": "Log out"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Đăng xuất"
-          }
-        }
-      }
-    },
-    "Log in to continue.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log in to continue."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đăng nhập để tiếp tục."
           }
         }
       }
@@ -1935,18 +1989,19 @@
         }
       }
     },
-    "New Post": {
+    "Nearby & highly rated": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "New Post"
+            "value": "Nearby & highly rated"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bài đăng mới"
+            "value": "Gần đây & được đánh giá cao"
           }
         }
       }
@@ -1999,6 +2054,23 @@
         }
       }
     },
+    "New post": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New post"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bài đăng mới"
+          }
+        }
+      }
+    },
     "Next": {
       "localizations": {
         "en": {
@@ -2047,66 +2119,53 @@
         }
       }
     },
-    "No comments yet": {
+    "No comments yet — be the first to say something kind.": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No comments yet"
+            "value": "No comments yet — be the first to say something kind."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chưa có bình luận nào"
+            "value": "Chưa có bình luận nào — hãy là người đầu tiên nói điều gì đó tử tế."
           }
         }
       }
     },
-    "No comments yet. Say something nice.": {
+    "No likes yet": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No comments yet. Say something nice."
+            "value": "No likes yet"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chưa có bình luận nào. Hãy nói điều gì đó tử tế."
+            "value": "Chưa có lượt thích nào"
           }
         }
       }
     },
-    "No notifications yet": {
+    "No one by that name": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No notifications yet"
+            "value": "No one by that name"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chưa có thông báo nào"
-          }
-        }
-      }
-    },
-    "No people found": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No people found"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Không tìm thấy người nào"
+            "value": "Không có ai tên như vậy"
           }
         }
       }
@@ -2127,82 +2186,19 @@
         }
       }
     },
-    "No posts found": {
+    "No posts match that": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No posts found"
+            "value": "No posts match that"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Không tìm thấy bài đăng nào"
-          }
-        }
-      }
-    },
-    "No posts yet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No posts yet"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chưa có bài đăng nào"
-          }
-        }
-      }
-    },
-    "No reactions yet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No reactions yet"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chưa có lượt thả cảm xúc nào"
-          }
-        }
-      }
-    },
-    "No saved posts yet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No saved posts yet"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chưa có bài đăng nào được lưu"
-          }
-        }
-      }
-    },
-    "No saved shops yet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No saved shops yet"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chưa có cửa hàng nào được lưu"
+            "value": "Không có bài đăng nào khớp"
           }
         }
       }
@@ -2223,18 +2219,36 @@
         }
       }
     },
-    "No shops found": {
+    "No shops match that": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No shops found"
+            "value": "No shops match that"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Không tìm thấy cửa hàng nào"
+            "value": "Không có quán nào khớp"
+          }
+        }
+      }
+    },
+    "No shops saved yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No shops saved yet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa lưu quán nào"
           }
         }
       }
@@ -2255,6 +2269,40 @@
         }
       }
     },
+    "Nobody's posted here yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody's posted here yet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa ai đăng gì ở đây"
+          }
+        }
+      }
+    },
+    "Nothing here yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing here yet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có gì ở đây"
+          }
+        }
+      }
+    },
     "Nothing highly rated yet": {
       "localizations": {
         "en": {
@@ -2267,6 +2315,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chưa có quán nào nổi bật"
+          }
+        }
+      }
+    },
+    "Nothing posted yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing posted yet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa đăng bài nào"
+          }
+        }
+      }
+    },
+    "Nothing saved yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing saved yet"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa lưu gì cả"
           }
         }
       }
@@ -2509,12 +2591,13 @@
         }
       }
     },
-    "Position Photo": {
+    "Position photo": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Position Photo"
+            "value": "Position photo"
           }
         },
         "vi": {
@@ -2557,18 +2640,19 @@
         }
       }
     },
-    "Privacy": {
+    "Preferences": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Privacy"
+            "value": "Preferences"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quyền riêng tư"
+            "value": "Tùy chọn"
           }
         }
       }
@@ -2589,19 +2673,36 @@
         }
       }
     },
-    "Rate a coffee shop or restaurant and it shows up here.": {
+    "Push notifications": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rate a coffee shop or restaurant and it shows up here."
+            "value": "Push notifications"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đánh giá một quán cà phê hoặc nhà hàng và bài viết sẽ hiện ở đây."
+            "value": "Thông báo đẩy"
+          }
+        }
+      }
+    },
+    "Rate a place you love and it lands right here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rate a place you love and it lands right here."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đánh giá một nơi bạn thích và nó sẽ hiện ngay ở đây."
           }
         }
       }
@@ -2622,22 +2723,6 @@
         }
       }
     },
-    "React and comment on posts to help others decide where to go next.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "React and comment on posts to help others decide where to go next."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thả cảm xúc và bình luận trên bài đăng để giúp người khác quyết định nơi cần đến tiếp theo."
-          }
-        }
-      }
-    },
     "Reactions": {
       "localizations": {
         "en": {
@@ -2654,12 +2739,19 @@
         }
       }
     },
-    "Recover Account": {
+    "Real photos and honest ratings from people who actually went.": {
+      "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Real photos and honest ratings from people who actually went."
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Khôi phục tài khoản"
+            "value": "Ảnh thật và đánh giá thật từ những người đã đến tận nơi."
           }
         }
       }
@@ -2696,22 +2788,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xóa"
-          }
-        }
-      }
-    },
-    "Remove Photo": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Remove Photo"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xoá ảnh"
           }
         }
       }
@@ -2782,12 +2858,13 @@
         }
       }
     },
-    "Report Account": {
+    "Report account": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Report Account"
+            "value": "Report account"
           }
         },
         "vi": {
@@ -2798,12 +2875,13 @@
         }
       }
     },
-    "Report Post": {
+    "Report post": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Report Post"
+            "value": "Report post"
           }
         },
         "vi": {
@@ -2862,8 +2940,15 @@
         }
       }
     },
-    "Reset Password": {
+    "Reset password": {
+      "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset password"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -2905,19 +2990,19 @@
         }
       }
     },
-    "Save a shop to find it again quickly.": {
+    "Save a place and you'll find it again in one tap.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Save a shop to find it again quickly."
+            "value": "Save a place and you'll find it again in one tap."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lưu một quán để tìm lại nhanh hơn."
+            "value": "Lưu một địa điểm và bạn sẽ tìm lại chỉ bằng một chạm."
           }
         }
       }
@@ -3005,18 +3090,19 @@
         }
       }
     },
-    "Scope": {
+    "Say something nice…": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scope"
+            "value": "Say something nice…"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Phạm vi"
+            "value": "Nói điều gì đó dễ thương…"
           }
         }
       }
@@ -3037,34 +3123,36 @@
         }
       }
     },
-    "Search Bump": {
+    "Search a shop, a post, or someone worth following.": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Search Bump"
+            "value": "Search a shop, a post, or someone worth following."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tìm kiếm trên Bump"
+            "value": "Tìm một quán, một bài đăng, hoặc ai đó đáng theo dõi."
           }
         }
       }
     },
-    "Security": {
+    "Search in": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Security"
+            "value": "Search in"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bảo mật"
+            "value": "Tìm trong"
           }
         }
       }
@@ -3102,12 +3190,13 @@
         }
       }
     },
-    "Send Code": {
+    "Send code": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Send Code"
+            "value": "Send code"
           }
         },
         "vi": {
@@ -3161,22 +3250,6 @@
         }
       }
     },
-    "Share": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chia sẻ"
-          }
-        }
-      }
-    },
     "Share what you find": {
       "localizations": {
         "en": {
@@ -3193,18 +3266,19 @@
         }
       }
     },
-    "Share your first post": {
+    "Share your first spot": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Share your first post"
+            "value": "Share your first spot"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chia sẻ bài đăng đầu tiên của bạn"
+            "value": "Chia sẻ địa điểm đầu tiên của bạn"
           }
         }
       }
@@ -3221,22 +3295,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chia sẻ vị trí để Bump gợi ý những quán được đánh giá cao trong bán kính năm ki-lô-mét."
-          }
-        }
-      }
-    },
-    "Shop": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shop"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cửa hàng"
           }
         }
       }
@@ -3289,18 +3347,19 @@
         }
       }
     },
-    "Shops appear here once someone posts about them. Be the first.": {
+    "Shops show up here the moment someone posts about one. Be the first.": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shops appear here once someone posts about them. Be the first."
+            "value": "Shops show up here the moment someone posts about one. Be the first."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Các quán sẽ xuất hiện ở đây khi có người đăng bài về chúng. Hãy là người đầu tiên."
+            "value": "Quán sẽ xuất hiện ở đây ngay khi có người đăng bài. Hãy là người đầu tiên."
           }
         }
       }
@@ -3337,18 +3396,19 @@
         }
       }
     },
-    "Snap a photo, rate the place, and bump it to your feed in seconds.": {
+    "Snap it, rate it, post it. Thirty seconds, start to finish.": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snap a photo, rate the place, and bump it to your feed in seconds."
+            "value": "Snap it, rate it, post it. Thirty seconds, start to finish."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chụp một tấm ảnh, đánh giá địa điểm, và đăng lên bảng tin chỉ trong vài giây."
+            "value": "Chụp, đánh giá, đăng. Ba mươi giây là xong."
           }
         }
       }
@@ -3401,12 +3461,30 @@
         }
       }
     },
-    "Take Photo": {
+    "System": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Take Photo"
+            "value": "System"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hệ thống"
+          }
+        }
+      }
+    },
+    "Take photo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take photo"
           }
         },
         "vi": {
@@ -3417,35 +3495,19 @@
         }
       }
     },
-    "Talk about it": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Talk about it"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cùng bàn luận"
-          }
-        }
-      }
-    },
-    "Tap the bookmark on a post to keep it here.": {
+    "Tap the bookmark on any post and it waits for you here.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tap the bookmark on a post to keep it here."
+            "value": "Tap the bookmark on any post and it waits for you here."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chạm biểu tượng dấu trang trên bài viết để lưu tại đây."
+            "value": "Chạm dấu trang trên bất kỳ bài nào, nó sẽ đợi bạn ở đây."
           }
         }
       }
@@ -3466,18 +3528,36 @@
         }
       }
     },
-    "Thanks for letting us know. Our team will take a look.": {
+    "Tell us what's wrong": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Thanks for letting us know. Our team will take a look."
+            "value": "Tell us what's wrong"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cảm ơn bạn đã cho chúng tôi biết. Đội ngũ của chúng tôi sẽ xem xét."
+            "value": "Cho chúng tôi biết vấn đề là gì"
+          }
+        }
+      }
+    },
+    "Thanks for flagging it. Someone on the team will take a look.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thanks for flagging it. Someone on the team will take a look."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cảm ơn bạn đã báo. Đội ngũ của chúng tôi sẽ xem qua."
           }
         }
       }
@@ -3566,28 +3646,98 @@
         }
       }
     },
-    "Top Rated Nearby": {
+    "The best places, found the way they always were — through people who've been.": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Top Rated Nearby"
+            "value": "The best places, found the way they always were — through people who've been."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đánh giá cao gần bạn"
+            "value": "Những chỗ hay nhất, tìm theo cách xưa nay vẫn thế — qua những người đã đến."
           }
         }
       }
     },
-    "Try Again": {
+    "The first one always shows up eventually.": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Try Again"
+            "value": "The first one always shows up eventually."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lượt đầu tiên rồi cũng sẽ đến thôi."
+          }
+        }
+      }
+    },
+    "The place": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The place"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Địa điểm"
+          }
+        }
+      }
+    },
+    "Tiếng Việt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếng Việt"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếng Việt"
+          }
+        }
+      }
+    },
+    "Try a shorter word, or search shops instead.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try a shorter word, or search shops instead."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thử từ ngắn hơn, hoặc tìm theo quán."
+          }
+        }
+      }
+    },
+    "Try again": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
           }
         },
         "vi": {
@@ -3646,12 +3796,13 @@
         }
       }
     },
-    "Unblock Account": {
+    "Unblock account": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unblock Account"
+            "value": "Unblock account"
           }
         },
         "vi": {
@@ -3712,51 +3863,19 @@
         }
       }
     },
-    "Up to 6 photos, squared to a 1:1 crop.": {
+    "Up to 6, cropped square.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Up to 6 photos, squared to a 1:1 crop."
+            "value": "Up to 6, cropped square."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tối đa 6 ảnh, cắt theo tỉ lệ 1:1."
-          }
-        }
-      }
-    },
-    "Use My Location": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Use My Location"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dùng vị trí của tôi"
-          }
-        }
-      }
-    },
-    "Use Photo": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Use Photo"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dùng ảnh này"
+            "value": "Tối đa 6 ảnh, cắt vuông."
           }
         }
       }
@@ -3777,6 +3896,40 @@
         }
       }
     },
+    "Use my location": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use my location"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng vị trí của tôi"
+          }
+        }
+      }
+    },
+    "Use photo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use photo"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng ảnh này"
+          }
+        }
+      }
+    },
     "Username": {
       "localizations": {
         "en": {
@@ -3793,6 +3946,23 @@
         }
       }
     },
+    "Usernames are lowercase and have no spaces.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usernames are lowercase and have no spaces."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên người dùng viết thường và không có dấu cách."
+          }
+        }
+      }
+    },
     "Verify": {
       "localizations": {
         "en": {
@@ -3805,23 +3975,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xác minh"
-          }
-        }
-      }
-    },
-    "View in Map": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "View in Map"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xem trên Bản đồ"
           }
         }
       }
@@ -3917,18 +4070,53 @@
         }
       }
     },
-    "What made this place worth a Bump?": {
+    "What are you after?": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "What made this place worth a Bump?"
+            "value": "What are you after?"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Điều gì khiến nơi này đáng để \"Bump\"?"
+            "value": "Bạn đang tìm gì?"
+          }
+        }
+      }
+    },
+    "What made this place worth the trip?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What made this place worth the trip?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Điều gì khiến nơi này đáng để ghé?"
+          }
+        }
+      }
+    },
+    "What people posted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What people posted"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi người đã đăng gì"
           }
         }
       }
@@ -3961,6 +4149,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bạn đang báo cáo vì lý do gì?"
+          }
+        }
+      }
+    },
+    "You": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn"
           }
         }
       }
@@ -3998,22 +4203,6 @@
         }
       }
     },
-    "Your Rating": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your Rating"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đánh giá của bạn"
-          }
-        }
-      }
-    },
     "Your feed is quiet": {
       "localizations": {
         "en": {
@@ -4026,6 +4215,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bảng tin của bạn đang yên ắng"
+          }
+        }
+      }
+    },
+    "Your rating": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your rating"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đánh giá của bạn"
           }
         }
       }

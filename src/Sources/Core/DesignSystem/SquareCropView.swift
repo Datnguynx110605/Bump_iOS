@@ -26,7 +26,7 @@ struct SquareCropView: View {
                     .overlay(cropCanvas(containerSize: proxy.size))
             }
             .background(Color.black)
-            .navigationTitle("Position Photo")
+            .navigationTitle("Position photo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
@@ -35,7 +35,7 @@ struct SquareCropView: View {
                     Button("Cancel", action: onCancel)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Use Photo", action: confirm)
+                    Button("Use photo", action: confirm)
                         .fontWeight(.semibold)
                 }
             }

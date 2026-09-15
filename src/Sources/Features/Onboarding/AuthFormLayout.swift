@@ -32,9 +32,12 @@ struct AuthFormLayout<Content: View, Action: View>: View {
         .scrollDismissesKeyboard(.interactively)
         .background(BumpColor.surface)
         .safeAreaInset(edge: .bottom) {
+            // Opaque `surface`, never a material: the pinned action sits on the same page
+            // as the form above it, so the form must scroll *under* an opaque bar rather
+            // than blur through it.
             action()
                 .padding(.horizontal, BumpSpacing.l)
-                .padding(.top, BumpSpacing.s)
+                .padding(.top, BumpSpacing.ms)
                 .padding(.bottom, BumpSpacing.l)
                 .background(BumpColor.surface)
         }

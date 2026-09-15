@@ -15,6 +15,16 @@ enum AppAppearance: String, CaseIterable, Identifiable {
         }
     }
 
+    /// See `AppLanguage.titleKey` — resolved late so the picker follows the in-app
+    /// language switch rather than the device's.
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .system: "System"
+        case .light: "Light"
+        case .dark: "Dark"
+        }
+    }
+
     var colorScheme: ColorScheme? {
         switch self {
         case .system: nil

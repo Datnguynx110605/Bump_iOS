@@ -1,8 +1,14 @@
 import SwiftUI
 
-/// Circular profile image. Always decorative: every place it appears, the account's name
-/// is already on screen as text, so it stays out of the accessibility tree rather than
-/// making VoiceOver announce each row twice.
+/// Circular profile image.
+///
+/// Always decorative: every place it appears, the account's name is already on screen as
+/// text, so it stays out of the accessibility tree rather than making VoiceOver announce
+/// each row twice.
+///
+/// The ring is a hairline in the divider colour, not a brand tint. On a page with no
+/// elevation the avatar is already the darkest, busiest object in its row; a coloured ring
+/// around it competes with the name beside it for the eye.
 struct AvatarView: View {
     let url: String?
     var size: CGFloat = 40
@@ -24,17 +30,17 @@ struct AvatarView: View {
         }
         .frame(width: size, height: size)
         .clipShape(Circle())
-        .overlay(Circle().strokeBorder(BumpColor.brand.opacity(0.16), lineWidth: 1))
+        .overlay(Circle().strokeBorder(BumpColor.hairline, lineWidth: BumpStroke.hairline))
         .accessibilityHidden(true)
     }
 
     private var placeholder: some View {
         Circle()
-            .fill(BumpColor.brand.opacity(0.14))
+            .fill(BumpColor.surfaceTertiary)
             .overlay {
                 Image(systemName: "person.fill")
                     .font(.system(size: size * 0.42))
-                    .foregroundStyle(BumpColor.brand)
+                    .foregroundStyle(BumpColor.brand.opacity(0.55))
             }
     }
 }

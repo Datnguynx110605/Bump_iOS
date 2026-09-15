@@ -20,17 +20,17 @@ struct ShopDetailView: View {
                                 HStack(alignment: .top) {
                                     VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                                         Text(shop.name)
-                                            .font(.title.bold())
+                                            .font(BumpFont.title)
                                             .foregroundStyle(BumpColor.textPrimary)
                                         Text(shop.address)
-                                            .font(.subheadline)
+                                            .font(BumpFont.callout)
                                             .foregroundStyle(BumpColor.textSecondary)
                                         RatingStarsView(rating: shop.rate.value, size: BumpIconSize.small)
                                             .padding(.top, BumpSpacing.xs)
                                         Button {
                                             AppleMaps.openDirections(shopName: shop.name, address: shop.address)
                                         } label: {
-                                            Label("View in Map", systemImage: "map")
+                                            Label("Get directions", systemImage: "arrow.triangle.turn.up.right.circle")
                                         }
                                         .buttonStyle(.bumpText)
                                     }
@@ -49,24 +49,27 @@ struct ShopDetailView: View {
                                 LoadingView().frame(height: 100)
                             }
 
-                            Divider()
+                            BumpDivider()
 
                             if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
                                 EmptyStateView(
-                                    icon: "camera.fill",
-                                    title: String(localized: "No posts yet"),
-                                    message: String(localized: "Be the first to review this place.")
+                                    icon: "camera",
+                                    title: "Nobody's posted here yet",
+                                    message: "Be the first to say what this place is like."
                                 )
-                                .frame(height: 220)
+                                .frame(height: 260)
                             } else {
-                                PostThumbnailGrid(posts: viewModel.posts) { post in
-                                    Task { await viewModel.loadMorePostsIfNeeded(current: post) }
+                                VStack(alignment: .leading, spacing: BumpSpacing.ms) {
+                                    BumpSectionHeader("What people posted")
+                                    PostThumbnailGrid(posts: viewModel.posts) { post in
+                                        Task { await viewModel.loadMorePostsIfNeeded(current: post) }
+                                    }
                                 }
                             }
                         }
                         .padding(.top, BumpSpacing.m)
                     }
-                    .background(BumpColor.surface)
+                    .bumpPage()
                     .refreshable { await viewModel.refresh() }
                 }
             } else {

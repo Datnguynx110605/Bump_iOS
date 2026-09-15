@@ -17,11 +17,11 @@ struct OtpVerifyView: View {
     var body: some View {
         AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
-                Text("Enter your code")
-                    .font(.largeTitle.bold())
+                Text("Check your inbox")
+                    .font(BumpFont.display)
                 Text("We sent a 6-digit code to \(email).")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
 
@@ -41,7 +41,7 @@ struct OtpVerifyView: View {
                         otp = String(newValue.filter(\.isNumber).prefix(6))
                     }
                 if !otp.isEmpty && !isValid {
-                    FieldHint(text: String(localized: "Enter all 6 digits (\(otp.count)/6)."), tone: .neutral)
+                    FieldHint(text: "Enter all 6 digits (\(otp.count)/6).", tone: .neutral)
                 }
             }
 

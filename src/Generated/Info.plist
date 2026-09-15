@@ -27,6 +27,8 @@
 	<string>Bump uses your camera so you can take a photo to share in a post or comment.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Bump uses your location to tag the shop you're posting about and to find top-rated shops near you.</string>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UIRequiresFullScreen</key>

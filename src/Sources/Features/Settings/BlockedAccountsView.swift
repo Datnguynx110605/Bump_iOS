@@ -27,8 +27,8 @@ struct BlockedAccountsView: View {
             } else if visible.isEmpty {
                 EmptyStateView(
                     icon: "hand.raised",
-                    title: String(localized: "No blocked accounts"),
-                    message: String(localized: "Accounts you block are hidden from your feed, search, and comments. They show up here so you can undo it.")
+                    title: "No blocked accounts",
+                    message: "Accounts you block are hidden from your feed, search, and comments. They show up here so you can undo it."
                 )
             } else {
                 List {
@@ -46,11 +46,13 @@ struct BlockedAccountsView: View {
                     }
                 }
                 .listStyle(.plain)
-                .bumpScrollBackground()
+                .listRowBackground(BumpColor.surfaceSecondary)
+        .bumpScrollBackground()
+        .tint(BumpColor.brand)
                 .refreshable { await load(cursor: nil) }
             }
         }
-        .navigationTitle("Blocked Accounts")
+        .navigationTitle("Blocked accounts")
         .navigationBarTitleDisplayMode(.inline)
         .task {
             guard blocked.isEmpty else { return }
@@ -106,11 +108,11 @@ private struct BlockedAccountRow: View {
 
             VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(block.name.value)
-                    .font(.subheadline.weight(.semibold))
+                    .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
                     .lineLimit(1)
                 Text("Blocked \(block.blockedAt.relativeDescription)")
-                    .font(.caption)
+                    .font(.system(.caption, design: .rounded))
                     .foregroundStyle(BumpColor.textSecondary)
             }
             .accessibilityElement(children: .combine)

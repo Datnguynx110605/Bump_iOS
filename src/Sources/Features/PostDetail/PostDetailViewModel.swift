@@ -118,6 +118,7 @@ final class PostDetailViewModel {
             commentDraft = ""
             selectedCommentImages = []
             SoundEffect.sent.play()
+            HapticFeedback.succeeded()
             await loadPost()
         } catch {
             errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't post your comment."))

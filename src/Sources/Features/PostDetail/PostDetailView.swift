@@ -45,18 +45,18 @@ struct PostDetailView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     if let post = viewModel?.post, post.accountId == authSession.accountId {
-                        Button("Edit Post", systemImage: "pencil") {
+                        Button("Edit post", systemImage: "pencil") {
                             showingEditSheet = true
                         }
-                        Button("Delete Post", systemImage: "trash", role: .destructive) {
+                        Button("Delete post", systemImage: "trash", role: .destructive) {
                             showingDeleteConfirm = true
                         }
                     } else {
-                        Button("Report Post", systemImage: "flag") {
+                        Button("Report post", systemImage: "flag") {
                             showingReportSheet = true
                         }
                         if viewModel?.post != nil {
-                            Button("Block Author", systemImage: "hand.raised", role: .destructive) {
+                            Button("Block author", systemImage: "hand.raised", role: .destructive) {
                                 showingBlockConfirm = true
                             }
                         }
@@ -110,7 +110,6 @@ private struct PostDetailContent: View {
                     VStack(alignment: .leading, spacing: BumpSpacing.l) {
                         PostHeaderSection(post: post, isReacted: viewModel.isReacted, isSaved: viewModel.isSaved)
                         commentsSection
-                            .padding(.horizontal, BumpSpacing.m)
                     }
                     .padding(.bottom, BumpSpacing.m)
                 }
@@ -123,7 +122,7 @@ private struct PostDetailContent: View {
                             .transition(.move(edge: .top).combined(with: .opacity))
                     }
                 }
-                .bumpAnimation(BumpMotion.quick, value: viewModel.hasNewComments)
+                .bumpAnimation(BumpMotion.standard, value: viewModel.hasNewComments)
             } else if viewModel.isLoadingPost {
                 LoadingView()
             } else if let errorMessage = viewModel.errorMessage {
@@ -148,30 +147,35 @@ private struct PostDetailContent: View {
         // Filtered once per body pass. Read straight from `visibleComments` inside the
         // ForEach and the whole list gets re-filtered on every row's divider check.
         let comments = visibleComments
-        VStack(alignment: .leading, spacing: BumpSpacing.m) {
-            HStack(spacing: BumpSpacing.s) {
-                Text("Comments")
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: BumpSpacing.ms) {
+            BumpSectionHeader(title: "Comments") {
                 if let count = viewModel.post?.commentAmount.value, count > 0 {
                     Text("\(count)")
-                        .font(.subheadline.weight(.semibold))
+                        .font(BumpFont.numeric)
                         .foregroundStyle(BumpColor.textSecondary)
-                        .padding(.horizontal, BumpSpacing.s)
-                        .padding(.vertical, BumpSpacing.xs)
-                        .background(BumpColor.surfaceTertiary, in: Capsule())
                 }
             }
-            .accessibilityElement(children: .combine)
 
             if viewModel.isLoadingComments && viewModel.comments.isEmpty {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, BumpSpacing.l)
+                VStack(alignment: .leading, spacing: BumpSpacing.m) {
+                    ForEach(0..<2, id: \.self) { _ in
+                        HStack(alignment: .top, spacing: BumpSpacing.s) {
+                            Circle().fill(BumpColor.fill).frame(width: 32, height: 32)
+                            VStack(alignment: .leading, spacing: BumpSpacing.s) {
+                                BumpSkeletonBlock(width: 100, height: 11)
+                                BumpSkeletonBlock(height: 11)
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, BumpSpacing.m)
+                .padding(.vertical, BumpSpacing.s)
             } else if comments.isEmpty {
-                Text("No comments yet. Say something nice.")
-                    .font(.subheadline)
+                Text("No comments yet — be the first to say something kind.")
+                    .font(BumpFont.callout)
                     .foregroundStyle(BumpColor.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, BumpSpacing.m)
                     .padding(.vertical, BumpSpacing.m)
             } else {
                 LazyVStack(alignment: .leading, spacing: 0) {
@@ -186,16 +190,18 @@ private struct PostDetailContent: View {
                             },
                             onEdited: { viewModel.updateComment(comment, content: $0) }
                         )
+                        .padding(.horizontal, BumpSpacing.m)
                         .padding(.vertical, BumpSpacing.ms)
                         .task { await viewModel.loadMoreCommentsIfNeeded(current: comment) }
 
                         if comment.id != comments.last?.id {
-                            Divider()
+                            BumpDivider(inset: BumpSpacing.m + 32 + BumpSpacing.s)
                         }
                     }
                 }
                 if viewModel.isLoadingMoreComments {
                     ProgressView()
+                        .tint(BumpColor.brand)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, BumpSpacing.m)
                 }
@@ -209,8 +215,15 @@ private struct PostDetailContent: View {
             && !viewModel.isSubmittingComment
     }
 
+    /// The comment bar.
+    ///
+    /// Opaque `surface` with a hairline on top, **not** `.bar`. `.bar` is a system
+    /// material — it blurs the comments scrolling behind it, which is precisely the
+    /// translucent chrome this design language removes everywhere else.
     private var composer: some View {
         VStack(alignment: .leading, spacing: BumpSpacing.s) {
+            BumpDivider()
+
             if !viewModel.selectedCommentImages.isEmpty {
                 attachmentStrip
             }
@@ -218,14 +231,14 @@ private struct PostDetailContent: View {
             HStack(alignment: .bottom, spacing: BumpSpacing.xs) {
                 SquarePhotoAttachmentPicker(images: $viewModel.selectedCommentImages, maxCount: 6) {
                     Image(systemName: "photo.on.rectangle")
-                        .font(.system(size: BumpIconSize.medium))
+                        .font(.system(size: BumpIconSize.medium, weight: .light))
                         .foregroundStyle(BumpColor.textSecondary)
                         .frame(minWidth: BumpHitTarget.min, minHeight: BumpHitTarget.min)
                         .contentShape(Rectangle())
                 }
                 .accessibilityLabel(String(localized: "Add photos"))
 
-                TextField("Add a comment…", text: $viewModel.commentDraft, axis: .vertical)
+                TextField("Say something nice…", text: $viewModel.commentDraft, axis: .vertical)
                     .textFieldStyle(.bump)
                     .lineLimit(1...4)
                     .focused($isComposerFocused)
@@ -238,15 +251,16 @@ private struct PostDetailContent: View {
                 } label: {
                     Group {
                         if viewModel.isSubmittingComment {
-                            ProgressView()
+                            ProgressView().tint(.white)
                         } else {
                             Image(systemName: "arrow.up")
-                                .font(.subheadline.weight(.bold))
+                                .font(BumpFont.subheadline)
                                 .foregroundStyle(.white)
                         }
                     }
-                    .frame(width: 34, height: 34)
+                    .frame(width: 36, height: 36)
                     .background(canSubmitComment ? BumpColor.brandFill : BumpColor.fill, in: Circle())
+                    .bumpAnimation(BumpMotion.quick, value: canSubmitComment)
                 }
                 .buttonStyle(.bumpIcon)
                 .disabled(!canSubmitComment)
@@ -254,8 +268,8 @@ private struct PostDetailContent: View {
             }
             .padding(.horizontal, BumpSpacing.m)
         }
-        .padding(.vertical, BumpSpacing.s)
-        .background(.bar)
+        .padding(.bottom, BumpSpacing.s)
+        .background(BumpColor.surface)
     }
 
     private var attachmentStrip: some View {
@@ -275,20 +289,21 @@ private struct PostDetailContent: View {
     }
 }
 
+/// "New comments" jump-to-top affordance. A filled pill with no shadow — it already
+/// separates from the page by being the only saturated object on it.
 private struct NewCommentsPill: View {
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Label("New comments", systemImage: "arrow.up")
-                .font(.subheadline.weight(.semibold))
+                .font(BumpFont.control)
                 .foregroundStyle(.white)
                 .padding(.horizontal, BumpSpacing.m)
                 .frame(minHeight: BumpHitTarget.min)
                 .background(BumpColor.brandFill, in: Capsule())
-                .shadow(color: .black.opacity(0.18), radius: 8, y: 3)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bumpSurface)
     }
 }
 
@@ -318,74 +333,33 @@ private struct PostHeaderSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BumpSpacing.m) {
             NavigationLink(value: AppRoute.account(post.accountId)) {
-                AuthorRowView(accountId: post.accountId, avatarSize: 36, showsChevron: true)
+                AuthorRowView(
+                    accountId: post.accountId,
+                    trailingText: post.createdAt.relativeDescription,
+                    showsChevron: true
+                )
+                .padding(.horizontal, BumpSpacing.m)
             }
-            .buttonStyle(.plain)
-            .padding(.horizontal, BumpSpacing.m)
+            .buttonStyle(.bumpSurface)
 
             // Edge to edge: the photo is the subject of this screen, so it gets the
             // full width rather than sitting inside the text gutter.
             if !post.images.isEmpty {
-                PostImageCarousel(imageURLs: post.images.map(\.url), cornerRadius: 0)
+                PostImageCarousel(imageURLs: post.images.map(\.url))
             }
 
             VStack(alignment: .leading, spacing: BumpSpacing.m) {
-                shopCard
+                actionBar
 
                 if let caption = post.caption, !caption.isEmpty {
                     Text(caption)
-                        .font(.body)
+                        .font(BumpFont.body)
                         .foregroundStyle(BumpColor.textPrimary)
+                        .lineSpacing(3)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-            HStack(spacing: BumpSpacing.s) {
-                BumpToggleIconButton(
-                    isOn: isLiked,
-                    onImage: "heart.fill",
-                    offImage: "heart",
-                    label: isLiked ? String(localized: "Unlike") : String(localized: "Like"),
-                    activeColor: BumpColor.like
-                ) {
-                    Task {
-                        let toggle = await environment.reactionStore.togglePost(post.id)
-                        isLiked = toggle.isLiked
-                        displayedLikeCount += toggle.countDelta
-                        if toggle.countDelta > 0 { HapticFeedback.reacted() }
-                    }
-                }
-
-                NavigationLink(value: AppRoute.postReactors(post.id)) {
-                    Text("\(displayedLikeCount)")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(BumpColor.textSecondary)
-                        .contentTransition(.numericText())
-                }
-                .buttonStyle(.bumpIcon)
-                .accessibilityLabel(String(localized: "See who liked this"))
-                .accessibilityValue(Text("\(displayedLikeCount)"))
-
-                ReactionCountLabel(
-                    systemImage: "bubble.right",
-                    count: post.commentAmount.value,
-                    accessibilityLabel: String(localized: "Comments")
-                )
-                .padding(.leading, BumpSpacing.s)
-
-                Spacer()
-
-                Text(post.createdAt.relativeDescription)
-                    .font(.caption)
-                    .foregroundStyle(BumpColor.textSecondary)
-
-                BumpToggleIconButton(
-                    isOn: isSaved,
-                    onImage: "bookmark.fill",
-                    offImage: "bookmark",
-                    label: isSaved ? String(localized: "Remove from saved") : String(localized: "Save post")
-                ) {
-                    Task { isSaved = await environment.saveStore.togglePost(post.id) }
-                }
-                }
+                shopBlock
             }
             .padding(.horizontal, BumpSpacing.m)
         }
@@ -409,20 +383,91 @@ private struct PostHeaderSection: View {
         }
     }
 
-    /// Shop name, address, rating and directions grouped into one tappable card, so the
-    /// place being reviewed reads as a single object rather than four loose lines.
-    private var shopCard: some View {
+    /// Directly under the photo, matching the feed row, so the like button lives in the
+    /// same place whether the user is scrolling past a post or reading it.
+    private var actionBar: some View {
+        HStack(spacing: BumpSpacing.xs) {
+            likePair
+
+            ReactionCountLabel(
+                systemImage: "bubble.right",
+                count: post.commentAmount.value,
+                accessibilityLabel: String(localized: "Comments")
+            )
+            .padding(.leading, BumpSpacing.s)
+
+            Spacer()
+
+            BumpToggleIconButton(
+                isOn: isSaved,
+                onImage: "bookmark.fill",
+                offImage: "bookmark",
+                label: isSaved ? String(localized: "Remove from saved") : String(localized: "Save post")
+            ) {
+                Task { isSaved = await environment.saveStore.togglePost(post.id) }
+            }
+        }
+    }
+
+    /// The heart and its count, as one unit.
+    ///
+    /// They are two different actions — the heart toggles the like, the number opens the
+    /// list of who liked it — but they are one *thing*, and the layout has to say so.
+    ///
+    /// `spacing: 0` and a trailing-only tap extension are what does it. The count used to
+    /// carry `.buttonStyle(.bumpIcon)`, which stretches its content to a 44pt-wide box and
+    /// **centres** it: correct for an icon-only control, wrong for a digit, because it
+    /// parked ~17pt of dead space on each side. The number ended up 48pt from the heart
+    /// and 48pt from the comment bubble — exactly equidistant, so it read as belonging to
+    /// neither. Growing the hit area away from the heart instead keeps the full 44pt touch
+    /// target while leaving the digit beside the glyph it counts.
+    private var likePair: some View {
+        HStack(spacing: 0) {
+            BumpToggleIconButton(
+                isOn: isLiked,
+                onImage: "heart.fill",
+                offImage: "heart",
+                label: isLiked ? String(localized: "Unlike") : String(localized: "Like"),
+                activeColor: BumpColor.like
+            ) {
+                Task {
+                    let toggle = await environment.reactionStore.togglePost(post.id)
+                    isLiked = toggle.isLiked
+                    displayedLikeCount += toggle.countDelta
+                    if toggle.countDelta > 0 { HapticFeedback.reacted() }
+                }
+            }
+
+            NavigationLink(value: AppRoute.postReactors(post.id)) {
+                Text("\(displayedLikeCount)")
+                    .font(BumpFont.numeric)
+                    .foregroundStyle(BumpColor.textSecondary)
+                    .contentTransition(.numericText())
+                    .padding(.trailing, BumpSpacing.m)
+                    .frame(minHeight: BumpHitTarget.min)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.bumpSurface)
+            .accessibilityLabel(String(localized: "See who liked this"))
+            .accessibilityValue(Text("\(displayedLikeCount)"))
+        }
+    }
+
+    /// The place being reviewed, as one flat tonal block: name, address, rating, and a
+    /// route out to Maps. Grouped so it reads as a single object rather than four loose
+    /// lines, and tonal rather than carded so it stays part of the page.
+    private var shopBlock: some View {
         VStack(alignment: .leading, spacing: BumpSpacing.s) {
             NavigationLink(value: AppRoute.shop(post.shopId)) {
                 HStack(alignment: .firstTextBaseline, spacing: BumpSpacing.s) {
-                    VStack(alignment: .leading, spacing: BumpSpacing.xs) {
-                        Text(shop?.name ?? String(localized: "Loading shop…"))
-                            .font(.headline)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(shop?.name ?? String(localized: "Finding the spot…"))
+                            .font(BumpFont.headline)
                             .foregroundStyle(BumpColor.textPrimary)
                             .redacted(reason: shop == nil ? .placeholder : [])
                         if let address = shop?.address {
                             Text(address)
-                                .font(.footnote)
+                                .font(BumpFont.meta)
                                 .foregroundStyle(BumpColor.textSecondary)
                         }
                     }
@@ -434,14 +479,14 @@ private struct PostHeaderSection: View {
                         .accessibilityHidden(true)
                 }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.bumpSurface)
 
             if let shop {
-                Divider()
+                BumpDivider()
                 Button {
                     AppleMaps.openDirections(shopName: shop.name, address: shop.address)
                 } label: {
-                    Label("View in Map", systemImage: "map")
+                    Label("Get directions", systemImage: "arrow.triangle.turn.up.right.circle")
                 }
                 .buttonStyle(.bumpText)
             }

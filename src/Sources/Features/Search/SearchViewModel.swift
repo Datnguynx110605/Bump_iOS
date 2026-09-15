@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum SearchScope: String, CaseIterable, Identifiable {
     case posts = "Posts"
@@ -11,6 +12,17 @@ enum SearchScope: String, CaseIterable, Identifiable {
         case .posts: String(localized: "Posts")
         case .shops: String(localized: "Shops")
         case .accounts: String(localized: "Accounts")
+        }
+    }
+
+    /// The same three labels as catalogue *keys*. `displayName` resolves eagerly against
+    /// the process locale, so it cannot follow the in-app language switch; a key handed to
+    /// SwiftUI resolves late, against `\.locale`.
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .posts: "Posts"
+        case .shops: "Shops"
+        case .accounts: "Accounts"
         }
     }
 }

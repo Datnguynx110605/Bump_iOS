@@ -59,7 +59,7 @@ struct ChangeEmailView: View {
         }
         .scrollContentBackground(.hidden)
         .background(BumpColor.surface)
-        .navigationTitle("Change Email")
+        .navigationTitle("Change email")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -69,7 +69,7 @@ struct ChangeEmailView: View {
                     if isLoading {
                         ProgressView()
                     } else {
-                        Text(step == .enterEmail ? "Send Code" : "Verify")
+                        Text(step == .enterEmail ? "Send code" : "Verify")
                     }
                 }
                 .disabled(!isPrimaryActionEnabled || isLoading)

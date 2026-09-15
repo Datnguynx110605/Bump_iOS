@@ -10,32 +10,39 @@ struct FollowListView: View {
         Group {
             if let viewModel {
                 if viewModel.isLoading && viewModel.rows.isEmpty {
-                    LoadingView()
+                    PeopleSkeletonList()
                 } else if let errorMessage = viewModel.errorMessage, viewModel.rows.isEmpty {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.rows.isEmpty {
-                    EmptyStateView(icon: "person.2", title: String(localized: "No \(kind.displayNameLowercased) yet"))
+                    EmptyStateView(
+                        icon: "person.2",
+                        title: "No \(kind.displayNameLowercased) yet"
+                    )
                 } else {
                     List {
                         ForEach(viewModel.rows) { row in
                             NavigationLink(value: AppRoute.account(row.id)) {
                                 HStack(spacing: BumpSpacing.ms) {
-                                    AvatarView(url: row.avatarURL, size: 40)
+                                    AvatarView(url: row.avatarURL, size: 44)
                                     Text(row.name)
-                                        .font(.subheadline.weight(.semibold))
+                                        .font(BumpFont.subheadline)
                                         .foregroundStyle(BumpColor.textPrimary)
                                     Spacer(minLength: 0)
                                 }
-                                .padding(.vertical, BumpSpacing.xs)
+                                .padding(.vertical, BumpSpacing.s)
                                 .accessibilityElement(children: .combine)
                             }
                             .listRowBackground(BumpColor.surface)
+                            .listRowSeparatorTint(BumpColor.hairline)
                             .task { await viewModel.loadMoreIfNeeded(current: row) }
                         }
                         if viewModel.isLoadingMore {
                             ProgressView()
+                                .tint(BumpColor.brand)
                                 .frame(maxWidth: .infinity)
+                                .padding(.vertical, BumpSpacing.m)
                                 .listRowBackground(BumpColor.surface)
+                                .listRowSeparator(.hidden)
                         }
                     }
                     .listStyle(.plain)

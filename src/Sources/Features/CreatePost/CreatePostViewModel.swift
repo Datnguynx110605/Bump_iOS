@@ -185,6 +185,7 @@ final class CreatePostViewModel {
             )
             didSubmit = true
             SoundEffect.sent.play()
+            HapticFeedback.succeeded()
         } catch {
             errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't share your post."))
         }

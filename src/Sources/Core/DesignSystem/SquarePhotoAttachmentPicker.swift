@@ -20,13 +20,13 @@ struct SquarePhotoAttachmentPicker<Content: View>: View {
     var body: some View {
         Menu {
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                Button("Take Photo", systemImage: "camera") {
+                Button("Take photo", systemImage: "camera") {
                     flowSeedImages = []
                     showingFlow = true
                 }
                 .disabled(remainingSlots == 0)
             }
-            Button("Choose from Library", systemImage: "photo.on.rectangle") {
+            Button("Choose from library", systemImage: "photo.on.rectangle") {
                 showingLibraryPicker = true
             }
             .disabled(remainingSlots == 0)

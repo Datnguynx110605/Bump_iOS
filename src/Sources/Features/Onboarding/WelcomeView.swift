@@ -16,8 +16,8 @@ struct WelcomeView: View {
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
                     .foregroundStyle(BumpColor.textPrimary)
 
-                Text("Discover great local spots through the people around you.")
-                    .font(.subheadline)
+                Text("The best places, found the way they always were — through people who've been.")
+                    .font(BumpFont.callout)
                     .foregroundStyle(BumpColor.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BumpSpacing.xl)
@@ -26,7 +26,7 @@ struct WelcomeView: View {
             Spacer()
 
             VStack(spacing: BumpSpacing.m) {
-                Button("Get Started") {
+                Button("Get started") {
                     path.append(.signUpEmail)
                 }
                 .buttonStyle(.bumpPrimary)

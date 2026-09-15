@@ -1,10 +1,21 @@
 import SwiftUI
 
-/// Feed card. Photo-first: the carousel bleeds to the card's edges and the card itself
-/// does the clipping, so the image reads as the content and the text rails around it.
+/// The feed row — the app's signature surface.
+///
+/// **Full-bleed editorial.** There is no card: no border, no shadow, no rounded corner and
+/// no inset. The photo runs the full width of the screen, the text rails sit on the page
+/// itself, and one hairline at the bottom separates this post from the next. The photo is
+/// the content; everything else is caption furniture around it.
+///
+/// Reading order is deliberate and matches how the row is actually scanned: *who* posted
+/// it, *the photo*, *what you can do about it*, then *where it was and what they said*.
+/// Putting the actions directly under the photo — rather than at the very bottom — keeps
+/// them under the thumb on a phone and stops a long caption from pushing the like button
+/// off the bottom of the visible area.
 struct PostRowView: View {
     let item: PostFeedItemDto
     @Environment(AppEnvironment.self) private var environment
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @State private var shop: ShopDto?
     @State private var displayedLikeCount: Int
@@ -22,22 +33,34 @@ struct PostRowView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Two navigation links rather than one wrapping the whole row: the action bar
+            // sits between them, and nesting buttons inside a `NavigationLink` label makes
+            // which one receives the tap ambiguous.
             NavigationLink(value: AppRoute.post(post.id)) {
-                cardContent
-            }
-            .buttonStyle(.plain)
+                VStack(alignment: .leading, spacing: BumpSpacing.ms) {
+                    AuthorRowView(accountId: post.accountId, trailingText: post.createdAt.relativeDescription)
+                        .padding(.horizontal, BumpSpacing.m)
 
-            footer
+                    if !post.images.isEmpty {
+                        PostImageCarousel(imageURLs: post.images.map(\.url))
+                    }
+                }
+            }
+            .buttonStyle(.bumpSurface)
+
+            actionBar
                 .padding(.horizontal, BumpSpacing.s)
-                .padding(.bottom, BumpSpacing.xs)
+
+            NavigationLink(value: AppRoute.post(post.id)) {
+                caption
+                    .padding(.horizontal, BumpSpacing.m)
+            }
+            .buttonStyle(.bumpSurface)
+
+            BumpDivider()
+                .padding(.top, BumpSpacing.m)
         }
-        .background(BumpColor.surfaceSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: BumpRadius.card, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: BumpRadius.card, style: .continuous)
-                .strokeBorder(BumpColor.border, lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.05), radius: 14, x: 0, y: 6)
+        .padding(.top, BumpSpacing.m)
         .task {
             environment.reactionStore.setLiked(post: post.id, isLiked)
             environment.saveStore.setSaved(post: post.id, isSaved)
@@ -46,7 +69,7 @@ struct PostRowView: View {
             }
         }
         // `@State` seeded in `init` survives a feed reload, because SwiftUI keys it on the
-        // row's identity and the post id hasn't changed — so without this the card keeps
+        // row's identity and the post id hasn't changed — so without this the row keeps
         // showing the counts it was first built with.
         .onChange(of: item) { _, newItem in
             displayedLikeCount = newItem.post.reactionAmount.value
@@ -55,61 +78,9 @@ struct PostRowView: View {
         }
     }
 
-    private var cardContent: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .center) {
-                AuthorRowView(accountId: post.accountId)
-                Spacer(minLength: BumpSpacing.s)
-                Text(post.createdAt.relativeDescription)
-                    .font(.caption)
-                    .foregroundStyle(BumpColor.textSecondary)
-            }
-            .padding(.horizontal, BumpSpacing.m)
-            .padding(.vertical, BumpSpacing.ms)
-
-            if !post.images.isEmpty {
-                PostImageCarousel(imageURLs: post.images.map(\.url), cornerRadius: 0)
-            }
-
-            VStack(alignment: .leading, spacing: BumpSpacing.s) {
-                shopRow
-
-                if let caption = post.caption, !caption.isEmpty {
-                    Text(caption)
-                        .font(.subheadline)
-                        .foregroundStyle(BumpColor.textPrimary)
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
-                }
-            }
-            .padding(.horizontal, BumpSpacing.m)
-            .padding(.top, BumpSpacing.ms)
-        }
-    }
-
-    /// Shop name and rating sit on one line as the card's subtitle; the address is
-    /// dropped here because the feed is scanned, not read — it's on the post detail.
-    private var shopRow: some View {
+    /// Like, comment, save. Photo-adjacent and thumb-height.
+    private var actionBar: some View {
         HStack(spacing: BumpSpacing.xs) {
-            Image(systemName: "mappin.circle.fill")
-                .font(.footnote)
-                .foregroundStyle(BumpColor.brand)
-                .accessibilityHidden(true)
-
-            Text(shop?.name ?? String(localized: "Loading shop…"))
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(BumpColor.textPrimary)
-                .lineLimit(1)
-                .redacted(reason: shop == nil ? .placeholder : [])
-
-            Spacer(minLength: BumpSpacing.s)
-
-            RatingStarsView(rating: post.rate.value)
-        }
-    }
-
-    private var footer: some View {
-        HStack(spacing: BumpSpacing.s) {
             Button {
                 Task {
                     let toggle = await environment.reactionStore.togglePost(post.id)
@@ -149,5 +120,50 @@ struct PostRowView: View {
                 Task { isSaved = await environment.saveStore.togglePost(post.id) }
             }
         }
+    }
+
+    /// Where it was, how it rated, what they said — the caption block under the actions.
+    ///
+    /// The address is dropped here because the feed is scanned rather than read; it lives
+    /// on the post detail. The rating trails the shop name on the same line so the row has
+    /// one text column rather than a left and a right edge fighting for attention.
+    ///
+    /// At accessibility text sizes the stars stop sharing that line. Five glyphs keep a
+    /// fixed proportion of the width whatever the text size, so on one row the shop name
+    /// is squeezed to "The Wo…" — the stars win a fight they shouldn't be in. Past
+    /// `isAccessibilitySize` the name takes the full width and the rating sits under it.
+    private var caption: some View {
+        VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+                    shopNameText
+                    RatingStarsView(rating: post.rate.value)
+                }
+            } else {
+                HStack(spacing: BumpSpacing.xs) {
+                    shopNameText
+                    RatingStarsView(rating: post.rate.value)
+                    Spacer(minLength: 0)
+                }
+            }
+
+            if let caption = post.caption, !caption.isEmpty {
+                Text(caption)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
+                    .lineLimit(3)
+                    .lineSpacing(1)
+                    .multilineTextAlignment(.leading)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var shopNameText: some View {
+        Text(shop?.name ?? String(localized: "Finding the spot…"))
+            .font(BumpFont.subheadline)
+            .foregroundStyle(BumpColor.textPrimary)
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+            .redacted(reason: shop == nil ? .placeholder : [])
     }
 }

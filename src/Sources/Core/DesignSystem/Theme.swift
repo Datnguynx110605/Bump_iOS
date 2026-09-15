@@ -1,6 +1,25 @@
 import SwiftUI
 import UIKit
 
+// MARK: - Design language
+//
+// Bump's visual system is **editorial full-bleed**: the app has no floating cards, no
+// drop shadows, and no translucency. Content sits directly on one continuous warm page,
+// photos bleed to the screen edges, and separation is carried by hairlines and vertical
+// rhythm rather than by elevation.
+//
+// Three rules hold the whole system together:
+//
+// 1. **One page, one surface.** `BumpColor.surface` is the background of every screen.
+//    Anything that needs to read as a distinct block uses a *tonal* step
+//    (`surfaceSecondary` / `surfaceTertiary`), never a shadow.
+// 2. **Hairlines, not borders.** A 0.5pt `hairline` divides content. A 1pt stroke is
+//    reserved for interactive outlines (a field, an outline button) so a boundary you can
+//    touch always looks heavier than one you can't.
+// 3. **Type carries hierarchy.** `BumpFont` is the scale. An uppercase tracked `label`
+//    heads a section; a bold `title` opens a screen. Nothing relies on a box to say
+//    "this is important".
+
 /// 4pt rhythm. Every gap, inset, and section break in the app comes from here so
 /// vertical spacing stays on the same grid across screens.
 enum BumpSpacing {
@@ -15,10 +34,24 @@ enum BumpSpacing {
     static let xxl: CGFloat = 48
 }
 
+/// Corner language. Editorial content is **square** — a full-bleed photo has radius 0 and
+/// is clipped by the screen, not by a card. Radii exist only for things you touch
+/// (controls, chips, wells) and for inset blocks that are deliberately *not* full-bleed.
 enum BumpRadius {
-    static let small: CGFloat = 10
+    /// Thumbnails, inline image wells, small tiles.
+    static let small: CGFloat = 8
+    /// Text fields, tonal wells, inset blocks.
     static let control: CGFloat = 14
+    /// Grouped blocks that sit inset from the page edge (settings groups, state blocks).
     static let card: CGFloat = 20
+}
+
+/// Stroke weights. The split is semantic, not decorative: `hairline` separates content,
+/// `regular` outlines something tappable. Keeping them different is what stops a divider
+/// from reading as a button edge.
+enum BumpStroke {
+    static let hairline: CGFloat = 0.5
+    static let regular: CGFloat = 1
 }
 
 /// Apple's minimum comfortable tap area. Icon-only controls are visually smaller than
@@ -29,7 +62,7 @@ enum BumpHitTarget {
 
 extension Color {
     /// A dynamic color that swaps by appearance, so a single token can commit to a
-    /// specific light palette while overriding what dark mode uses (e.g. true black
+    /// specific light palette while overriding what dark mode uses (e.g. a warm espresso
     /// instead of the system's default elevated dark grays).
     static func adaptive(light: UIColor, dark: UIColor) -> Color {
         Color(UIColor { $0.userInterfaceStyle == .dark ? dark : light })
@@ -39,16 +72,19 @@ extension Color {
 /// Semantic colors layered on top of system colors so every screen stays consistent and
 /// adapts automatically to light/dark mode.
 ///
-/// Light mode is a warm, off-white paper tone with pure-white cards lifted on top of it —
-/// calmer than flat system gray, and warm rather than cool for a food/coffee-spot app.
-/// Dark mode mirrors that warmth with a deep espresso instead of the system's elevated
-/// grays: never a true, cold black, but still dark enough for comfortable night use.
+/// Light mode is a warm, off-white paper tone. Dark mode mirrors that warmth with a deep
+/// espresso instead of the system's elevated grays: never a true, cold black, but still
+/// dark enough for comfortable night use.
+///
+/// The palette values are unchanged from the previous system — what changed is how they
+/// are *used*. `surface` is now the background of every screen rather than the gap
+/// between cards, and `surfaceSecondary` has become the tonal step for inset blocks.
 enum BumpColor {
-    /// Page background, behind everything.
+    /// The page. Every screen's background, edge to edge, top to bottom.
     static let surface = Color.adaptive(light: UIColor(red: 0.980, green: 0.961, blue: 0.929, alpha: 1), dark: UIColor(red: 0.109, green: 0.082, blue: 0.071, alpha: 1))
-    /// Cards and raised content sitting on `surface`.
+    /// One tonal step up from the page: inset blocks, grouped rows, sheets.
     static let surfaceSecondary = Color.adaptive(light: .white, dark: UIColor(red: 0.165, green: 0.125, blue: 0.098, alpha: 1))
-    /// One level above a card: composer bars, selected rows, inline wells.
+    /// Two steps up: wells, chips, composer bars, selected rows.
     static let surfaceTertiary = Color.adaptive(light: UIColor(red: 0.945, green: 0.914, blue: 0.867, alpha: 1), dark: UIColor(red: 0.200, green: 0.157, blue: 0.129, alpha: 1))
     /// Neutral placeholder block behind images that haven't decoded yet.
     static let fill = Color.adaptive(light: UIColor(red: 0.914, green: 0.875, blue: 0.820, alpha: 1), dark: UIColor(red: 0.239, green: 0.192, blue: 0.157, alpha: 1))
@@ -56,7 +92,7 @@ enum BumpColor {
     static let textPrimary = Color.primary
     static let textSecondary = Color.secondary
     /// **Decorative glyphs only — never text.** `tertiaryLabel` measures about 1.7:1 on a
-    /// light card, so anything carrying meaning (including a timestamp, which appears
+    /// light page, so anything carrying meaning (including a timestamp, which appears
     /// nowhere else on the row) belongs on `textSecondary`.
     static let textTertiary = Color(.tertiaryLabel)
 
@@ -72,12 +108,17 @@ enum BumpColor {
     static let brand = Color.adaptive(light: UIColor(red: 0.290, green: 0.184, blue: 0.133, alpha: 1), dark: UIColor(red: 0.859, green: 0.643, blue: 0.420, alpha: 1))
     /// Filled surfaces that carry white text or glyphs. Adaptive for the same reason as
     /// `brand`: the light-mode coffee brown reads as almost-black against the espresso
-    /// card in dark mode, so dark mode steps up to a lighter roast that still clears
-    /// 4.5:1 for white text (5.1:1) while staying visually distinct from the card under it.
+    /// page in dark mode, so dark mode steps up to a lighter roast that still clears
+    /// 4.5:1 for white text (5.1:1) while staying visually distinct from the surface under it.
     static let brandFill = Color.adaptive(light: UIColor(red: 0.290, green: 0.184, blue: 0.133, alpha: 1), dark: UIColor(red: 0.588, green: 0.388, blue: 0.247, alpha: 1))
+    /// Low-tint brand wash for chip fills and selected states. A token rather than a
+    /// scattered `brand.opacity(0.12)` so the tint is identical everywhere and can be
+    /// corrected in one place — opacity over a warm page and over an espresso page do not
+    /// land in the same spot.
+    static let brandWash = Color.adaptive(light: UIColor(red: 0.290, green: 0.184, blue: 0.133, alpha: 0.10), dark: UIColor(red: 0.859, green: 0.643, blue: 0.420, alpha: 0.16))
 
     // Status colors are tuned to clear 4.5:1 against the surface they appear on —
-    // white cards in light mode, true black in dark. `rating` is the exception: it tints
+    // the warm page in light mode, espresso in dark. `rating` is the exception: it tints
     // non-text star glyphs, so it targets the 3:1 non-text threshold, and filled-versus-
     // outline shape carries the rating regardless of color.
     static let like = Color.adaptive(light: UIColor(red: 0.875, green: 0.176, blue: 0.271, alpha: 1), dark: UIColor(red: 1.0, green: 0.32, blue: 0.40, alpha: 1))
@@ -85,16 +126,66 @@ enum BumpColor {
     static let success = Color.adaptive(light: UIColor(red: 0.106, green: 0.533, blue: 0.271, alpha: 1), dark: UIColor(red: 0.27, green: 0.80, blue: 0.46, alpha: 1))
     static let danger = Color.adaptive(light: UIColor(red: 0.80, green: 0.15, blue: 0.15, alpha: 1), dark: UIColor(red: 1.0, green: 0.42, blue: 0.40, alpha: 1))
 
-    static let separator = Color(.separator)
-    /// Hairline around cards. Carries the light-mode card/page separation, so it must
-    /// stay visible in both themes rather than fading out in one.
-    static let border = Color.adaptive(light: UIColor(red: 0.871, green: 0.824, blue: 0.761, alpha: 1), dark: UIColor(red: 0.333, green: 0.267, blue: 0.227, alpha: 1))
+    /// The 0.5pt rule between rows and sections. Warm rather than the system's cool gray,
+    /// and defined per theme so it never disappears in one of them — a divider that only
+    /// exists in light mode is the most common way a flat, shadowless layout falls apart.
+    static let hairline = Color.adaptive(light: UIColor(red: 0.871, green: 0.824, blue: 0.761, alpha: 1), dark: UIColor(red: 0.290, green: 0.231, blue: 0.196, alpha: 1))
+    /// 1pt outline on something tappable — a text field, an outline button. Heavier than
+    /// `hairline` on purpose so an interactive edge never reads as a divider.
+    static let border = Color.adaptive(light: UIColor(red: 0.804, green: 0.741, blue: 0.659, alpha: 1), dark: UIColor(red: 0.373, green: 0.302, blue: 0.255, alpha: 1))
+
     static let overlayScrim = Color.black.opacity(0.45)
     /// Backing for small controls and badges that sit directly on a photo (page dots,
     /// a remove button, an image counter). Heavier than `overlayScrim` on purpose: a
     /// modal scrim covers the whole screen, while these are small shapes that have to
     /// clear 3:1 against whatever pixel happens to be under them.
     static let overlayChrome = Color.black.opacity(0.55)
+}
+
+/// The type scale. Every role is SF Rounded — the brand's voice is warm and soft rather
+/// than the system grotesque — and every role is declared `relativeTo:` a system text
+/// style so Dynamic Type keeps scaling it.
+///
+/// Hierarchy in this system is carried by type, not by boxes. `label` is the editorial
+/// signature: an uppercase, tracked caption that heads a section where a heavier design
+/// would draw a card around it.
+enum BumpFont {
+    /// Screen hero — the one line that opens a screen with nothing above it.
+    static let display = Font.system(.largeTitle, design: .rounded, weight: .bold)
+    /// Screen and sheet titles.
+    static let title = Font.system(.title2, design: .rounded, weight: .bold)
+    /// Block titles, account names, primary row text.
+    static let headline = Font.system(.headline, design: .rounded, weight: .semibold)
+    /// A shop name, a prominent subtitle.
+    static let subheadline = Font.system(.subheadline, design: .rounded, weight: .semibold)
+    /// Running content: captions, comment bodies, descriptions.
+    static let body = Font.system(.body, design: .rounded, weight: .regular)
+    /// Supporting content set one step down from `body`.
+    static let callout = Font.system(.subheadline, design: .rounded, weight: .regular)
+    /// Timestamps, distances, counts-in-prose. Always on `textSecondary`.
+    static let meta = Font.system(.footnote, design: .rounded, weight: .medium)
+    /// Button and chip text.
+    static let control = Font.system(.subheadline, design: .rounded, weight: .semibold)
+    /// Counts next to an icon. Monospaced digits so a like count ticking 99 → 100 doesn't
+    /// shove the row next to it sideways.
+    static let numeric = Font.system(.subheadline, design: .rounded, weight: .semibold).monospacedDigit()
+}
+
+extension Text {
+    /// The editorial section label: uppercase, tracked, small, secondary.
+    ///
+    /// **The uppercasing happens here, not in the string.** Call sites pass ordinary
+    /// sentence-case text ("Nearby & highly rated") so the localisation catalogue holds a
+    /// readable key a translator can work with — and so Vietnamese, where shouting a
+    /// diacritic-heavy phrase in caps reads badly, can be restyled in one place rather
+    /// than by rewriting every key.
+    func bumpSectionLabel() -> some View {
+        self
+            .font(.system(.caption, design: .rounded, weight: .semibold))
+            .tracking(0.8)
+            .foregroundColor(BumpColor.textSecondary)
+            .textCase(.uppercase)
+    }
 }
 
 /// Icon point sizes. Call sites wrap these in `@ScaledMetric` so glyphs grow with
@@ -107,10 +198,20 @@ enum BumpIconSize {
     static let hero: CGFloat = 40
 }
 
+/// Motion tokens. Timing is chosen per *kind* of change, not copied from one duration:
+/// a press is near-instant, a layout change settles, and a celebratory state change is
+/// allowed to overshoot. Every one of them goes through `bumpAnimation`, which drops to
+/// no animation under Reduce Motion.
 enum BumpMotion {
-    static let quick = Animation.easeOut(duration: 0.15)
-    static let standard = Animation.easeInOut(duration: 0.25)
-    static let spring = Animation.spring(response: 0.35, dampingFraction: 0.8)
+    /// Press states and tint swaps — fast enough to feel like direct manipulation.
+    static let quick = Animation.spring(response: 0.22, dampingFraction: 0.95)
+    /// The default: content appearing, layout settling, sheets and pushes.
+    static let standard = Animation.spring(response: 0.34, dampingFraction: 0.86)
+    /// A deliberate overshoot for the small moments worth celebrating — a like landing,
+    /// a save confirming. Used sparingly; everywhere is nowhere.
+    static let bouncy = Animation.spring(response: 0.40, dampingFraction: 0.62)
+    /// Pure fades, where a spring on opacity would just look indecisive.
+    static let fade = Animation.easeOut(duration: 0.22)
 }
 
 extension View {

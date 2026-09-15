@@ -4,6 +4,13 @@ private enum MainTab: Hashable {
     case home, search, create, notifications, profile
 }
 
+/// The five-tab shell.
+///
+/// Every tab glyph is the **outline** member of its SF Symbols family. The set used to
+/// mix filled (`house.fill`, `bell.fill`) with outline (`magnifyingglass`), which reads as
+/// two icon families sharing a bar. Selection is carried by the brand tint and the heavier
+/// label weight set in `BumpNavigationAppearance` instead, so the glyphs stay one
+/// consistent stroke weight across all five.
 struct MainTabView: View {
     @Environment(AuthSession.self) private var authSession
     @Environment(AppEnvironment.self) private var environment
@@ -16,6 +23,7 @@ struct MainTabView: View {
             get: { selectedTab },
             set: { newValue in
                 if newValue == .create {
+                    HapticFeedback.selected()
                     showingCreatePost = true
                 } else {
                     selectedTab = newValue
@@ -26,19 +34,19 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: selectedTabBinding) {
-            Tab("Home", systemImage: "house.fill", value: MainTab.home) {
+            Tab("Home", systemImage: "house", value: MainTab.home) {
                 HomeView { selectedTab = .search }
             }
             Tab("Search", systemImage: "magnifyingglass", value: MainTab.search) {
                 SearchView()
             }
-            Tab("tab.post", systemImage: "plus.circle.fill", value: MainTab.create) {
+            Tab("tab.post", systemImage: "plus.circle", value: MainTab.create) {
                 Color.clear
             }
-            Tab("Alerts", systemImage: "bell.fill", value: MainTab.notifications) {
+            Tab("Alerts", systemImage: "bell", value: MainTab.notifications) {
                 NotificationsView(path: $notificationsPath)
             }
-            Tab("Profile", systemImage: "person.crop.circle.fill", value: MainTab.profile) {
+            Tab("Profile", systemImage: "person", value: MainTab.profile) {
                 if let accountId = authSession.accountId {
                     NavigationStack {
                         ProfileView(accountId: accountId)

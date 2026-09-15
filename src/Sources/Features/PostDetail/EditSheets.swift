@@ -37,20 +37,24 @@ struct EditPostSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Your Rating") {
+                Section {
                     RatingPickerView(rating: $rating)
                         .padding(.vertical, BumpSpacing.xs)
+                } header: {
+                    Text("Your rating").bumpSectionLabel()
                 }
 
-                Section("Caption") {
-                    TextField("What made this place worth a Bump?", text: $caption, axis: .vertical)
+                Section {
+                    TextField("What made this place worth the trip?", text: $caption, axis: .vertical)
                         .lineLimit(3...8)
                     if let remaining = FreeTextRule.remaining(caption) {
                         FieldHint(
-                            text: String(localized: "\(remaining) characters left"),
+                            text: "\(remaining) characters left",
                             tone: remaining < 0 ? .error : .neutral
                         )
                     }
+                } header: {
+                    Text("Caption").bumpSectionLabel()
                 }
 
                 if let errorMessage {
@@ -58,8 +62,10 @@ struct EditPostSheet: View {
                         .listRowBackground(Color.clear)
                 }
             }
+            .listRowBackground(BumpColor.surfaceSecondary)
             .bumpScrollBackground()
-            .navigationTitle("Edit Post")
+            .tint(BumpColor.brand)
+            .navigationTitle("Edit post")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -124,21 +130,23 @@ struct EditCommentSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Comment") {
+                Section {
                     TextField("Say something nice", text: $content, axis: .vertical)
                         .lineLimit(3...8)
                         .focused($isContentFocused)
                     if let remaining = FreeTextRule.remaining(content) {
                         FieldHint(
-                            text: String(localized: "\(remaining) characters left"),
+                            text: "\(remaining) characters left",
                             tone: remaining < 0 ? .error : .neutral
                         )
                     }
+                } header: {
+                    Text("Comment").bumpSectionLabel()
                 }
 
                 if !comment.images.isEmpty {
                     Section {
-                        FieldHint(text: String(localized: "Photos can't be changed after posting."))
+                        FieldHint(text: "Photos can't be changed after posting.")
                     }
                 }
 
@@ -147,8 +155,10 @@ struct EditCommentSheet: View {
                         .listRowBackground(Color.clear)
                 }
             }
+            .listRowBackground(BumpColor.surfaceSecondary)
             .bumpScrollBackground()
-            .navigationTitle("Edit Comment")
+            .tint(BumpColor.brand)
+            .navigationTitle("Edit comment")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

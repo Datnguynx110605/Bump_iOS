@@ -30,9 +30,12 @@ final class AppEnvironment {
     let shopCache: ShopCache
     let accountCache: AccountCache
 
-    init(baseURL: URL) {
-        let authSession = AuthSession(baseURL: baseURL)
-        let api = APIClient(baseURL: baseURL, authSession: authSession)
+    /// `session` exists so screenshot/demo builds can swap the transport without any
+    /// service, store or view knowing. It defaults to `.shared`, so production behaviour
+    /// is unchanged.
+    init(baseURL: URL, session: URLSession = .shared) {
+        let authSession = AuthSession(baseURL: baseURL, session: session)
+        let api = APIClient(baseURL: baseURL, authSession: authSession, session: session)
 
         let accountService = AccountService(api: api)
         let reactionService = ReactionService(api: api)

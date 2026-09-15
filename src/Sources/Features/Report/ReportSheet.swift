@@ -21,22 +21,26 @@ struct ReportSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Why are you reporting this?") {
-                    TextField("Describe the issue", text: $reason, axis: .vertical)
+                Section {
+                    TextField("Tell us what's wrong", text: $reason, axis: .vertical)
                         .lineLimit(4...8)
                     if let remaining = FreeTextRule.remaining(reason) {
                         FieldHint(
-                            text: String(localized: "\(remaining) characters left"),
+                            text: "\(remaining) characters left",
                             tone: remaining < 0 ? .error : .neutral
                         )
                     }
+                } header: {
+                    Text("Why are you reporting this?").bumpSectionLabel()
                 }
                 if let errorMessage {
                     InlineErrorBanner(message: errorMessage)
                         .listRowBackground(Color.clear)
                 }
             }
+            .listRowBackground(BumpColor.surfaceSecondary)
             .bumpScrollBackground()
+            .tint(BumpColor.brand)
             .navigationTitle("Report")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -55,7 +59,7 @@ struct ReportSheet: View {
             .alert("Report submitted", isPresented: $didSubmit) {
                 Button("OK") { dismiss() }
             } message: {
-                Text("Thanks for letting us know. Our team will take a look.")
+                Text("Thanks for flagging it. Someone on the team will take a look.")
             }
         }
     }

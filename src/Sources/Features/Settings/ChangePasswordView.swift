@@ -38,15 +38,15 @@ struct ChangePasswordView: View {
                 VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                     FieldHint(
                         text: newPassword.isEmpty || PasswordRule.isValid(newPassword)
-                            ? String(localized: "10-40 characters.")
-                            : String(localized: "10-40 characters (currently \(newPassword.count))."),
+                            ? "10-40 characters."
+                            : "10-40 characters (currently \(newPassword.count)).",
                         tone: newPassword.isEmpty || PasswordRule.isValid(newPassword) ? .neutral : .error
                     )
                     if !confirmPassword.isEmpty {
                         FieldHint(
                             text: newPassword == confirmPassword
-                                ? String(localized: "Passwords match.")
-                                : String(localized: "Passwords don't match."),
+                                ? "Passwords match."
+                                : "Passwords don't match.",
                             tone: newPassword == confirmPassword ? .success : .error
                         )
                     }
@@ -59,7 +59,7 @@ struct ChangePasswordView: View {
         }
         .scrollContentBackground(.hidden)
         .background(BumpColor.surface)
-        .navigationTitle("Change Password")
+        .navigationTitle("Change password")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

@@ -18,7 +18,7 @@ struct CreatePostView: View {
                     LoadingView()
                 }
             }
-            .navigationTitle("New Post")
+            .navigationTitle("New post")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -30,7 +30,7 @@ struct CreatePostView: View {
                     Button {
                         Task { await viewModel?.submit() }
                     } label: {
-                        if viewModel?.isSubmitting == true { ProgressView() } else { Text("Share") }
+                        if viewModel?.isSubmitting == true { ProgressView() } else { Text("Post") }
                     }
                     .disabled(!(viewModel?.isValid ?? false) || viewModel?.isSubmitting == true)
                 }
@@ -63,7 +63,7 @@ struct CreatePostView: View {
             titleVisibility: .visible
         ) {
             Button("Discard", role: .destructive) { dismiss() }
-            Button("Keep Editing", role: .cancel) {}
+            Button("Keep editing", role: .cancel) {}
         }
     }
 }
@@ -75,7 +75,7 @@ private struct CreatePostForm: View {
         Form {
             Section {
                 SquarePhotoAttachmentPicker(images: $viewModel.selectedImages, maxCount: 6) {
-                    Label("Add Photos", systemImage: "photo.on.rectangle")
+                    Label("Add photos", systemImage: "photo.on.rectangle")
                         .foregroundStyle(BumpColor.brand)
                         .frame(minHeight: BumpHitTarget.min)
                 }
@@ -84,17 +84,17 @@ private struct CreatePostForm: View {
                         .listRowInsets(EdgeInsets())
                 }
             } header: {
-                Text("Photos")
+                Text("Photos").bumpSectionLabel()
             } footer: {
-                Text("Up to 6 photos, squared to a 1:1 crop.")
+                Text("Up to 6, cropped square.")
             }
 
-            Section("Shop") {
+            Section {
                 TextField("Shop name", text: $viewModel.shopName)
                     .onChange(of: viewModel.shopName) { _, newValue in viewModel.searchShops(keyword: newValue) }
                 if ShopFieldRule.isTooLong(viewModel.shopName) {
                     FieldHint(
-                        text: String(localized: "Shop name is too long (max \(ShopFieldRule.maxLength) characters)."),
+                        text: "Shop name is too long (max \(ShopFieldRule.maxLength) characters).",
                         tone: .error
                     )
                 }
@@ -102,7 +102,7 @@ private struct CreatePostForm: View {
                     Button {
                         viewModel.selectShop(shop)
                     } label: {
-                        PlaceSuggestionRow(name: shop.name, detail: shop.address, icon: "mappin.circle.fill")
+                        PlaceSuggestionRow(name: shop.name, detail: shop.address, icon: "mappin.circle")
                     }
                     .accessibilityHint(String(localized: "Fills in this shop"))
                 }
@@ -110,36 +110,42 @@ private struct CreatePostForm: View {
                     Button {
                         viewModel.selectPlace(place)
                     } label: {
-                        PlaceSuggestionRow(name: place.name, detail: place.address, icon: "storefront.fill")
+                        PlaceSuggestionRow(name: place.name, detail: place.address, icon: "storefront")
                     }
                     .accessibilityHint(String(localized: "Fills in this place"))
                 }
                 TextField("Address", text: $viewModel.shopAddress)
                 if ShopFieldRule.isTooLong(viewModel.shopAddress) {
                     FieldHint(
-                        text: String(localized: "Address is too long (max \(ShopFieldRule.maxLength) characters)."),
+                        text: "Address is too long (max \(ShopFieldRule.maxLength) characters).",
                         tone: .error
                     )
                 }
                 LocationAttachRow(viewModel: viewModel)
+            } header: {
+                Text("The place").bumpSectionLabel()
             }
 
-            Section("Your Rating") {
+            Section {
                 RatingPickerView(rating: $viewModel.rating)
                     .padding(.vertical, BumpSpacing.xs)
+            } header: {
+                Text("Your rating").bumpSectionLabel()
             }
 
-            Section("Caption") {
-                TextField("What made this place worth a Bump?", text: $viewModel.caption, axis: .vertical)
+            Section {
+                TextField("What made this place worth the trip?", text: $viewModel.caption, axis: .vertical)
                     .lineLimit(3...8)
                 // Same counter the edit sheets already show, so the ceiling appears
                 // while typing rather than as a 400 after every photo has uploaded.
                 if let remaining = FreeTextRule.remaining(viewModel.caption) {
                     FieldHint(
-                        text: String(localized: "\(remaining) characters left"),
+                        text: "\(remaining) characters left",
                         tone: remaining < 0 ? .error : .neutral
                     )
                 }
+            } header: {
+                Text("Caption").bumpSectionLabel()
             }
 
             if let errorMessage = viewModel.errorMessage {
@@ -147,7 +153,9 @@ private struct CreatePostForm: View {
                     .listRowBackground(Color.clear)
             }
         }
+        .listRowBackground(BumpColor.surfaceSecondary)
         .bumpScrollBackground()
+        .tint(BumpColor.brand)
     }
 
     private var attachmentStrip: some View {
@@ -180,10 +188,10 @@ private struct PlaceSuggestionRow: View {
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(name)
-                    .font(.subheadline.weight(.medium))
+                    .font(BumpFont.control)
                     .foregroundStyle(BumpColor.textPrimary)
                 Text(detail)
-                    .font(.caption)
+                    .font(.system(.caption, design: .rounded))
                     .foregroundStyle(BumpColor.textSecondary)
             }
             Spacer(minLength: 0)
@@ -207,7 +215,7 @@ private struct LocationAttachRow: View {
                         .foregroundStyle(BumpColor.success)
                         .accessibilityHidden(true)
                     Text("Location attached")
-                        .font(.subheadline)
+                        .font(BumpFont.callout)
                         .foregroundStyle(BumpColor.textPrimary)
                     Spacer(minLength: 0)
                     Button("Remove") { viewModel.clearLocation() }
@@ -215,7 +223,7 @@ private struct LocationAttachRow: View {
                 }
                 .frame(minHeight: BumpHitTarget.min)
                 if viewModel.locationIssue == .noPlaces {
-                    FieldHint(text: String(localized: "No places found here. Type the shop name yourself."))
+                    FieldHint(text: "No places found here. Type the shop name yourself.")
                 }
             } else {
                 Button {
@@ -225,7 +233,7 @@ private struct LocationAttachRow: View {
                         if viewModel.isLocating {
                             ProgressView()
                         } else {
-                            Image(systemName: "location.circle.fill")
+                            Image(systemName: "location.circle")
                                 .foregroundStyle(BumpColor.brand)
                                 .accessibilityHidden(true)
                         }
@@ -240,11 +248,11 @@ private struct LocationAttachRow: View {
 
                 switch viewModel.locationIssue {
                 case .denied:
-                    FieldHint(text: String(localized: "Location is off. Turn it on in Settings to pin this shop."), tone: .error)
+                    FieldHint(text: "Location is off. Turn it on in Settings to pin this shop.", tone: .error)
                 case .noFix:
-                    FieldHint(text: String(localized: "Couldn't get your location. Try again."), tone: .error)
+                    FieldHint(text: "Couldn't get your location. Try again.", tone: .error)
                 default:
-                    FieldHint(text: String(localized: "Optional. Fills in nearby shops and pins this one for nearby searches."))
+                    FieldHint(text: "Optional. Fills in nearby shops and pins this one for nearby searches.")
                 }
             }
         }

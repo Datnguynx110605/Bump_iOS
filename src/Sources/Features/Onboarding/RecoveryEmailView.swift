@@ -16,10 +16,10 @@ struct RecoveryEmailView: View {
         AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text(purpose.emailTitle)
-                    .font(.largeTitle.bold())
+                    .font(BumpFont.display)
                 Text(purpose.emailSubtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
 
@@ -32,7 +32,7 @@ struct RecoveryEmailView: View {
                     .autocorrectionDisabled()
                     .focused($isFocused)
                 if !email.isEmpty && !isValid {
-                    FieldHint(text: String(localized: "Enter a valid email address."), tone: .error)
+                    FieldHint(text: "Enter a valid email address.", tone: .error)
                 }
             }
 

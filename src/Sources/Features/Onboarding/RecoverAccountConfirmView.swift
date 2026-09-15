@@ -13,10 +13,10 @@ struct RecoverAccountConfirmView: View {
         AuthFormLayout {
             VStack(alignment: .leading, spacing: BumpSpacing.s) {
                 Text("Recover your account")
-                    .font(.largeTitle.bold())
+                    .font(BumpFont.display)
                 Text("We found a deleted account for \(email). Recovering it will restore your profile and data.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(BumpFont.callout)
+                    .foregroundStyle(BumpColor.textSecondary)
             }
             .padding(.top, BumpSpacing.l)
 
@@ -27,7 +27,7 @@ struct RecoverAccountConfirmView: View {
             Button {
                 Task { await recover() }
             } label: {
-                Text("Recover Account")
+                Text("Recover account")
             }
             .buttonStyle(.bumpPrimary(isLoading: isLoading))
             .disabled(isLoading)

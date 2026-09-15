@@ -39,7 +39,7 @@ struct EditProfileView: View {
                             }
                             .overlay(alignment: .bottomTrailing) {
                                 Image(systemName: "camera.circle.fill")
-                                    .font(.title2)
+                                    .font(BumpFont.title)
                                     .foregroundStyle(.white, BumpColor.brandFill)
                             }
                         }
@@ -49,7 +49,7 @@ struct EditProfileView: View {
                     .listRowBackground(Color.clear)
 
                     if account?.avatar != nil {
-                        Button("Remove Photo", role: .destructive) {
+                        Button("Remove photo", role: .destructive) {
                             showingRemovePhotoConfirm = true
                         }
                         .frame(maxWidth: .infinity)
@@ -58,17 +58,19 @@ struct EditProfileView: View {
                     }
                 }
 
-                Section("Username") {
+                Section {
                     TextField("username", text: $name)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .onChange(of: name) { _, newValue in name = AccountNameRule.sanitize(newValue) }
                     FieldHint(
-                        text: name.isEmpty ? String(localized: "Lowercase letters and numbers only.") : String(localized: "Looks good."),
+                        text: name.isEmpty ? "Lowercase letters and numbers only." : "Looks good.",
                         tone: name.isEmpty ? .neutral : .success)
+                } header: {
+                    Text("Username").bumpSectionLabel()
                 }
 
-                Section("Bio") {
+                Section {
                     TextField("Tell people about yourself", text: $bio, axis: .vertical)
                         .lineLimit(3...6)
                     // Same 2000-character ceiling and same counter as the sign-up bio and
@@ -76,10 +78,12 @@ struct EditProfileView: View {
                     // and came back a 400 after the round trip.
                     if let remaining = FreeTextRule.remaining(bio) {
                         FieldHint(
-                            text: String(localized: "\(remaining) characters left"),
+                            text: "\(remaining) characters left",
                             tone: remaining < 0 ? .error : .neutral
                         )
                     }
+                } header: {
+                    Text("Bio").bumpSectionLabel()
                 }
 
                 if let errorMessage {
@@ -88,8 +92,10 @@ struct EditProfileView: View {
                 }
             }
         }
+        .listRowBackground(BumpColor.surfaceSecondary)
         .bumpScrollBackground()
-        .navigationTitle("Edit Profile")
+        .tint(BumpColor.brand)
+        .navigationTitle("Edit profile")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -110,7 +116,7 @@ struct EditProfileView: View {
             isPresented: $showingRemovePhotoConfirm,
             titleVisibility: .visible
         ) {
-            Button("Remove Photo", role: .destructive) {
+            Button("Remove photo", role: .destructive) {
                 Task { await removeAvatar() }
             }
         }

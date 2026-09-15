@@ -13,9 +13,9 @@ struct ActivityHistoryView: View {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.comments.isEmpty {
                     EmptyStateView(
-                        icon: "bubble.left.and.bubble.right.fill",
-                        title: String(localized: "No comments yet"),
-                        message: String(localized: "Comments you leave on posts show up here.")
+                        icon: "bubble.left.and.bubble.right",
+                        title: "Nothing here yet",
+                        message: "Every comment you leave on a post is kept here."
                     )
                 } else {
                     List {
@@ -26,12 +26,16 @@ struct ActivityHistoryView: View {
                                 onEdited: { viewModel.updateComment(comment, content: $0) }
                             )
                             .listRowBackground(BumpColor.surface)
+                            .listRowSeparatorTint(BumpColor.hairline)
                             .task { await viewModel.loadMoreIfNeeded(current: comment) }
                         }
                         if viewModel.isLoadingMore {
                             ProgressView()
+                                .tint(BumpColor.brand)
                                 .frame(maxWidth: .infinity)
+                                .padding(.vertical, BumpSpacing.m)
                                 .listRowBackground(BumpColor.surface)
+                                .listRowSeparator(.hidden)
                         }
                     }
                     .listStyle(.plain)
@@ -48,7 +52,7 @@ struct ActivityHistoryView: View {
             }
             await viewModel?.loadInitialIfNeeded()
         }
-        .navigationTitle("Activity History")
+        .navigationTitle("Activity history")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -37,22 +37,49 @@ private struct NotificationsListView: View {
     var body: some View {
         Group {
             if viewModel.isLoading && viewModel.notifications.isEmpty {
-                LoadingView()
+                VStack(spacing: 0) {
+                    ForEach(0..<6, id: \.self) { _ in
+                        HStack(alignment: .top, spacing: BumpSpacing.ms) {
+                            Circle().fill(BumpColor.fill).frame(width: 44, height: 44)
+                            VStack(alignment: .leading, spacing: BumpSpacing.s) {
+                                BumpSkeletonBlock(width: 140, height: 12)
+                                BumpSkeletonBlock(height: 12)
+                            }
+                        }
+                        .padding(.horizontal, BumpSpacing.m)
+                        .padding(.vertical, BumpSpacing.ms)
+                    }
+                    Spacer()
+                }
+                .bumpPage()
             } else if let errorMessage = viewModel.errorMessage, viewModel.notifications.isEmpty {
                 ErrorStateView(message: errorMessage) { Task { await viewModel.reload() } }
             } else if viewModel.notifications.isEmpty {
-                EmptyStateView(icon: "bell", title: String(localized: "No notifications yet"), message: String(localized: "Likes, comments, and new followers show up here."))
+                EmptyStateView(icon: "bell", title: "All quiet", message: "Likes, comments and new followers will turn up here.")
             } else {
                 List {
                     ForEach(viewModel.notifications) { notification in
                         rowContent(for: notification)
                             .listRowBackground(BumpColor.surface)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
                             .task { await viewModel.loadMoreIfNeeded(current: notification) }
+
+                        // The app draws its own warm hairline rather than `List`'s cool
+                        // system separator, inset past the avatar so the column of faces
+                        // reads as one rail.
+                        BumpDivider(inset: BumpSpacing.m + 44 + BumpSpacing.ms)
+                            .listRowBackground(BumpColor.surface)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
                     }
                     if viewModel.isLoadingMore {
                         ProgressView()
+                            .tint(BumpColor.brand)
                             .frame(maxWidth: .infinity)
+                            .padding(.vertical, BumpSpacing.m)
                             .listRowBackground(BumpColor.surface)
+                            .listRowSeparator(.hidden)
                     }
                 }
                 .listStyle(.plain)
@@ -79,7 +106,7 @@ private struct NotificationRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: BumpSpacing.ms) {
-            AvatarView(url: notification.actorAvatar?.url, size: 40)
+            AvatarView(url: notification.actorAvatar?.url, size: 44)
                 .overlay(alignment: .bottomTrailing) {
                     if let badge {
                         Image(systemName: badge.symbol)
@@ -92,21 +119,24 @@ private struct NotificationRow: View {
                     }
                 }
 
-            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(notification.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
                 Text(notification.content)
-                    .font(.subheadline)
+                    .font(BumpFont.callout)
                     .foregroundStyle(BumpColor.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(notification.createdAt.relativeDescription)
-                    .font(.caption)
-                    .foregroundStyle(BumpColor.textSecondary)
+                    .font(BumpFont.meta)
+                    .foregroundStyle(BumpColor.textTertiary)
+                    .padding(.top, 2)
             }
 
             Spacer(minLength: 0)
         }
-        .padding(.vertical, BumpSpacing.s)
+        .padding(.horizontal, BumpSpacing.m)
+        .padding(.vertical, BumpSpacing.ms)
         .accessibilityElement(children: .combine)
     }
 

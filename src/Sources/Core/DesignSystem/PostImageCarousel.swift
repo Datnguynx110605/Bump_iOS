@@ -3,24 +3,30 @@ import SwiftUI
 /// Square, horizontally-paged image carousel shared by feed rows, post detail, and
 /// comment images so multi-photo posts and comments all page the same way.
 ///
+/// Defaults to **radius 0**: in an editorial layout the photo runs to the screen edges and
+/// is clipped by the screen itself. Hosts that are genuinely inset (a comment attachment)
+/// pass a radius explicitly.
+///
 /// Pages are sized from a measured width, but photos are always *decoded* at one fixed
-/// size. Feeding the measured width into the decode target — as this did before — makes
-/// the decode cache key vary with layout, so the same photo gets downsampled and cached
-/// more than once.
+/// size. Feeding the measured width into the decode target makes the decode cache key vary
+/// with layout, so the same photo gets downsampled and cached more than once.
 struct PostImageCarousel: View {
     let imageURLs: [String]
-    /// 0 when the carousel bleeds to the edges of a card that does its own clipping.
-    var cornerRadius: CGFloat = BumpRadius.card
+    /// 0 for full-bleed feed and detail photos; set only by inset hosts.
+    var cornerRadius: CGFloat = 0
     @State private var currentIndex: Int?
 
     private var pageIndex: Int { currentIndex ?? 0 }
 
+    /// Past this many photos a dot row stops being scannable and starts being a smear,
+    /// so the indicator falls back to a count.
+    private static let maxDots = 6
+
     var body: some View {
-        // The pages need the carousel's own width, and that width differs per host (a
-        // feed card is inset, post detail is not), so it has to be measured. What the
-        // GeometryReader no longer feeds is the *decode* size — that's fixed below, so
-        // the same photo can't land in the decode cache several times over under
-        // near-identical measured widths.
+        // The pages need the carousel's own width, and that width differs per host, so it
+        // has to be measured. What the GeometryReader no longer feeds is the *decode*
+        // size — that's fixed below, so the same photo can't land in the decode cache
+        // several times over under near-identical measured widths.
         GeometryReader { proxy in
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
@@ -30,7 +36,7 @@ struct PostImageCarousel: View {
                             case .success(let image):
                                 image.resizable().scaledToFill()
                             case .empty:
-                                BumpColor.fill.overlay(ProgressView())
+                                BumpColor.fill
                             case .failure:
                                 BumpColor.fill.overlay(
                                     Image(systemName: "photo")
@@ -53,9 +59,10 @@ struct PostImageCarousel: View {
         }
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        .overlay(alignment: .bottomTrailing) {
+        .overlay(alignment: .bottom) {
             if imageURLs.count > 1 {
-                pageCounter
+                indicator
+                    .padding(.bottom, BumpSpacing.ms)
             }
         }
         .accessibilityElement(children: .ignore)
@@ -91,16 +98,34 @@ struct PostImageCarousel: View {
         return CGSize(width: side, height: side)
     }()
 
-    /// A numeric badge instead of a dot row: it stays legible past three photos, needs no
-    /// per-dot views, and reads correctly at large Dynamic Type sizes.
-    private var pageCounter: some View {
-        Text("\(pageIndex + 1)/\(imageURLs.count)")
-            .font(.caption2.weight(.semibold).monospacedDigit())
-            .foregroundStyle(.white)
-            .padding(.vertical, BumpSpacing.xs)
+    @ViewBuilder
+    private var indicator: some View {
+        if imageURLs.count <= Self.maxDots {
+            // Dots sit on their own scrim rather than directly on the photo: a white dot
+            // on a white plate is invisible, and the 3:1 non-text requirement can't be met
+            // against "whatever pixel happens to be underneath".
+            HStack(spacing: 5) {
+                ForEach(0..<imageURLs.count, id: \.self) { index in
+                    Circle()
+                        .fill(.white)
+                        .opacity(index == pageIndex ? 1 : 0.45)
+                        .frame(width: 6, height: 6)
+                        .scaleEffect(index == pageIndex ? 1.15 : 1)
+                }
+            }
+            .padding(.vertical, 6)
             .padding(.horizontal, BumpSpacing.s)
             .background(BumpColor.overlayChrome, in: Capsule())
-            .padding(BumpSpacing.s)
+            .bumpAnimation(BumpMotion.standard, value: pageIndex)
             .accessibilityHidden(true)
+        } else {
+            Text("\(pageIndex + 1)/\(imageURLs.count)")
+                .font(.system(.caption2, design: .rounded, weight: .semibold).monospacedDigit())
+                .foregroundStyle(.white)
+                .padding(.vertical, BumpSpacing.xs)
+                .padding(.horizontal, BumpSpacing.s)
+                .background(BumpColor.overlayChrome, in: Capsule())
+                .accessibilityHidden(true)
+        }
     }
 }
