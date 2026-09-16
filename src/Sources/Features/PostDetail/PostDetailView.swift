@@ -348,9 +348,10 @@ private struct PostHeaderSection: View {
                 PostImageCarousel(imageURLs: post.images.map(\.url))
             }
 
-            VStack(alignment: .leading, spacing: BumpSpacing.m) {
-                actionBar
+            actionBar
+                .padding(.horizontal, BumpSpacing.s)
 
+            VStack(alignment: .leading, spacing: BumpSpacing.m) {
                 if let caption = post.caption, !caption.isEmpty {
                     Text(caption)
                         .font(BumpFont.body)
@@ -394,7 +395,6 @@ private struct PostHeaderSection: View {
                 count: post.commentAmount.value,
                 accessibilityLabel: String(localized: "Comments")
             )
-            .padding(.leading, BumpSpacing.s)
 
             Spacer()
 
@@ -419,8 +419,9 @@ private struct PostHeaderSection: View {
     /// **centres** it: correct for an icon-only control, wrong for a digit, because it
     /// parked ~17pt of dead space on each side. The number ended up 48pt from the heart
     /// and 48pt from the comment bubble — exactly equidistant, so it read as belonging to
-    /// neither. Growing the hit area away from the heart instead keeps the full 44pt touch
-    /// target while leaving the digit beside the glyph it counts.
+    /// neither. Growing the hit area away from the heart instead keeps the digit beside
+    /// the glyph it counts; the extension is full-height but only ~26pt wide, because any
+    /// more pushes the comment bubble off the spacing the feed row uses.
     private var likePair: some View {
         HStack(spacing: 0) {
             BumpToggleIconButton(
@@ -443,7 +444,7 @@ private struct PostHeaderSection: View {
                     .font(BumpFont.numeric)
                     .foregroundStyle(BumpColor.textSecondary)
                     .contentTransition(.numericText())
-                    .padding(.trailing, BumpSpacing.m)
+                    .padding(.trailing, BumpSpacing.s)
                     .frame(minHeight: BumpHitTarget.min)
                     .contentShape(Rectangle())
             }

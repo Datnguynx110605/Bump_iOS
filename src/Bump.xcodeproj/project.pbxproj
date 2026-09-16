@@ -32,7 +32,6 @@
 		31265380D15459248102ACD3 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E5C2B553DCE27157C162F2 /* Validation.swift */; };
 		31D608C2ECEED00301346FA3 /* ChangeEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4D2C181499A0C4D36F7B99 /* ChangeEmailView.swift */; };
 		3367211D8010D6406D1F9E70 /* FeedRefreshSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979FC19C41FF99C2D60D6ACB /* FeedRefreshSignal.swift */; };
-		34E218FB185AE839CD90ACC7 /* BumpCaptureUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E28A33BF92E806852F5360 /* BumpCaptureUITests.swift */; };
 		3B3CC2F2BA5CBE88AE102D3E /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D24565905F7226C769EC1F3 /* CreateAccountView.swift */; };
 		3B4F7BE6A5B5EB2187ED3B49 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0119592AE9DDD5E302BC74 /* ProfileView.swift */; };
 		3B97E0E4E402EC063DA482F9 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9281C8556B9E42D148F832 /* HTTPMethod.swift */; };
@@ -46,7 +45,6 @@
 		51642DBB205D9701928D57AE /* NotificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330EABF4AF39EC7A36F0B47E /* NotificationModels.swift */; };
 		52270B9A9320D834FE767B6C /* BlockedAccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA8B90AB77837FBE38610BC /* BlockedAccountsView.swift */; };
 		5528F98DEFF0D12282476D83 /* StateViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC0AA27DF0E8224F330C088 /* StateViews.swift */; };
-		615DB879A3D45266583D32CD /* BumpSmokeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43478D17C6972D476FDD5127 /* BumpSmokeUITests.swift */; };
 		6365B5B6D8B5451390CBA2A7 /* DemoURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05562DA01128C1D754C794A /* DemoURLProtocol.swift */; };
 		66CBC909AA9B7D76A9A80BEC /* BlockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE81DFE3A81352068182311 /* BlockModels.swift */; };
 		66E43E7A01D6C241B5003474 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DD7AAE97C98D2C555BEBF8 /* HapticFeedback.swift */; };
@@ -134,7 +132,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		02E28A33BF92E806852F5360 /* BumpCaptureUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpCaptureUITests.swift; sourceTree = "<group>"; };
 		033FB587BC49360BB07782EB /* ReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportService.swift; sourceTree = "<group>"; };
 		05923A2AB7D851718F91A9DA /* AppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePreference.swift; sourceTree = "<group>"; };
 		06271A72FC5CC2767C3DE31D /* LanguagePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagePreference.swift; sourceTree = "<group>"; };
@@ -143,7 +140,7 @@
 		0DEF5A3B629D69B650E568DC /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		0EA9A52F5540BB0C62A8D5FB /* MultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartFormData.swift; sourceTree = "<group>"; };
 		10D735438BEB0338B2A41F81 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
-		124EC4B958C2C3F3F9DD4FAB /* BumpUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BumpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		124EC4B958C2C3F3F9DD4FAB /* BumpUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BumpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		143D73083207D43A031FCD65 /* BumpLogoShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpLogoShape.swift; sourceTree = "<group>"; };
 		181D0E443B6B5B26B8841038 /* ShopCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCache.swift; sourceTree = "<group>"; };
 		1AA38457FBC6CDF186DF502A /* AuthorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorRowView.swift; sourceTree = "<group>"; };
@@ -161,12 +158,11 @@
 		330EABF4AF39EC7A36F0B47E /* NotificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModels.swift; sourceTree = "<group>"; };
 		33A112CEE3783FBA224F9AF8 /* CommentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentRowView.swift; sourceTree = "<group>"; };
 		3594662C05F3F19567D718DF /* CommentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentService.swift; sourceTree = "<group>"; };
-		35C48D2C67239E987D10A28C /* Bump.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bump.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		35C48D2C67239E987D10A28C /* Bump.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bump.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38D2F37C0BF286CA0A2D09D4 /* FollowModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowModels.swift; sourceTree = "<group>"; };
 		3A4D2C181499A0C4D36F7B99 /* ChangeEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeEmailView.swift; sourceTree = "<group>"; };
 		405950A5DB4C8B531F89AE04 /* NavigationAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationAppearance.swift; sourceTree = "<group>"; };
 		41781E51B1DB494CB9AA8CD9 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
-		43478D17C6972D476FDD5127 /* BumpSmokeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpSmokeUITests.swift; sourceTree = "<group>"; };
 		45B48E49A7509431CCB4D380 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		48BB14359A6A206C22BA9B76 /* ReactorsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactorsListView.swift; sourceTree = "<group>"; };
 		4A83CC399278D879FBCE09A7 /* DemoContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoContent.swift; sourceTree = "<group>"; };
@@ -280,15 +276,6 @@
 				EABAAC04812D9DD2DE9D0582 /* CreatePostViewModel.swift */,
 			);
 			path = CreatePost;
-			sourceTree = "<group>";
-		};
-		0DBA1FDA58043671EC6F04C5 /* UITests */ = {
-			isa = PBXGroup;
-			children = (
-				02E28A33BF92E806852F5360 /* BumpCaptureUITests.swift */,
-				43478D17C6972D476FDD5127 /* BumpSmokeUITests.swift */,
-			);
-			path = UITests;
 			sourceTree = "<group>";
 		};
 		0F4934399A25DFBCF87111B5 /* Root */ = {
@@ -484,7 +471,6 @@
 			children = (
 				5C6C480D76E2B099031BC8A0 /* Resources */,
 				AC71AE913C61AB7228822CF8 /* Sources */,
-				0DBA1FDA58043671EC6F04C5 /* UITests */,
 				CAE34889F9B581D432D791CE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -724,8 +710,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34E218FB185AE839CD90ACC7 /* BumpCaptureUITests.swift in Sources */,
-				615DB879A3D45266583D32CD /* BumpSmokeUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -990,6 +974,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Generated/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -1015,6 +1000,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Generated/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -1036,6 +1022,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1055,6 +1042,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
