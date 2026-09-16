@@ -27,7 +27,7 @@ struct BumpApp: App {
         if DemoMode.isEnabled {
             // Skip the one-time intro so a freshly installed demo build lands on the feed,
             // and pre-answer the notification prompt so it can't appear over a capture.
-            UserDefaults.standard.set(true, forKey: "hasSeenIntroWalkthrough")
+            UserDefaults.standard.set(!DemoMode.showsIntro, forKey: "hasSeenIntroWalkthrough")
             UserDefaults.standard.set(false, forKey: NotificationPreference.key)
         }
         #endif
@@ -40,7 +40,7 @@ struct BumpApp: App {
                     #if DEBUG
                     // Puts the app in its signed-in state without a round trip. The token
                     // carries the claims `AuthSession` reads; nothing verifies a signature.
-                    if DemoMode.isEnabled, !environment.authSession.isAuthenticated {
+                    if DemoMode.isEnabled, !DemoMode.isSignedOut, !environment.authSession.isAuthenticated {
                         environment.authSession.setTokens(
                             accessToken: DemoMode.accessToken,
                             refreshToken: "demo-refresh"

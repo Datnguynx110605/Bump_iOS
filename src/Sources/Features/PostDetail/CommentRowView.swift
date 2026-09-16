@@ -24,79 +24,102 @@ struct CommentRowView: View {
         _displayedLikeCount = State(initialValue: comment.reactionAmount.value)
     }
 
+    /// Everything below the author line is indented to start under the *name*, not under
+    /// the avatar. Without it a comment reads as a caption that happens to follow a face:
+    /// the body ran the full width of the screen while the divider between comments was
+    /// already inset past the avatar, so the text crossed a rail the list had drawn.
+    static let contentInset: CGFloat = 36 + BumpSpacing.s
+
     var body: some View {
         VStack(alignment: .leading, spacing: BumpSpacing.xs) {
-            NavigationLink(value: AppRoute.account(comment.accountId)) {
-                AuthorRowView(accountId: comment.accountId)
-            }
-            .buttonStyle(.plain)
+                NavigationLink(value: AppRoute.account(comment.accountId)) {
+                    AuthorRowView(accountId: comment.accountId)
+                }
+                .buttonStyle(.plain)
 
-            if let content = comment.content, !content.isEmpty {
-                Text(content)
-                    .font(BumpFont.body)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            if !comment.images.isEmpty {
-                PostImageCarousel(imageURLs: comment.images.map(\.url))
-            }
-
-            HStack(spacing: BumpSpacing.xs) {
-                BumpToggleIconButton(
-                    isOn: isLiked,
-                    onImage: "heart.fill",
-                    offImage: "heart",
-                    label: isLiked ? String(localized: "Unlike comment") : String(localized: "Like comment"),
-                    activeColor: BumpColor.like,
-                    size: BumpIconSize.small
-                ) {
-                    Task {
-                        let toggle = await environment.reactionStore.toggleComment(comment.id)
-                        isLiked = toggle.isLiked
-                        displayedLikeCount += toggle.countDelta
-                        if toggle.countDelta > 0 { HapticFeedback.reacted() }
-                    }
+                VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+                if let content = comment.content, !content.isEmpty {
+                    Text(content)
+                        .font(BumpFont.body)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
-                NavigationLink(value: AppRoute.commentReactors(comment.id)) {
-                    Text("\(displayedLikeCount)")
+                if !comment.images.isEmpty {
+                    PostImageCarousel(imageURLs: comment.images.map(\.url))
+                }
+
+                HStack(spacing: BumpSpacing.xs) {
+                    // The toggle centres a 17pt glyph inside a 44pt tap target, so without
+                    // pulling that slack back the heart would start 13pt right of the text
+                    // column it belongs to.
+                    //
+                    // Heart and count as one unit, the same way `PostDetailView.likePair`
+                    // does it: `.bumpIcon` centres the digit in a 44pt box, which parked it
+                    // equidistant from the heart and the timestamp so it read as belonging to
+                    // neither. The tap area grows trailing instead, keeping the full target.
+                    HStack(spacing: 0) {
+                        BumpToggleIconButton(
+                            isOn: isLiked,
+                            onImage: "heart.fill",
+                            offImage: "heart",
+                            label: isLiked ? String(localized: "Unlike comment") : String(localized: "Like comment"),
+                            activeColor: BumpColor.like,
+                            size: BumpIconSize.small
+                        ) {
+                            Task {
+                                let toggle = await environment.reactionStore.toggleComment(comment.id)
+                                isLiked = toggle.isLiked
+                                displayedLikeCount += toggle.countDelta
+                                if toggle.countDelta > 0 { HapticFeedback.reacted() }
+                            }
+                        }
+
+                        NavigationLink(value: AppRoute.commentReactors(comment.id)) {
+                            Text("\(displayedLikeCount)")
+                                .font(BumpFont.meta)
+                                .foregroundStyle(BumpColor.textSecondary)
+                                .contentTransition(.numericText())
+                                .padding(.trailing, BumpSpacing.m)
+                                .frame(minHeight: BumpHitTarget.min)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.bumpSurface)
+                        .accessibilityLabel(String(localized: "See who liked this"))
+                        .accessibilityValue(Text("\(displayedLikeCount)"))
+                    }
+                    .padding(.leading, -(BumpHitTarget.min - BumpIconSize.small) / 2)
+
+                    Text(comment.createdAt.relativeDescription)
                         .font(BumpFont.meta)
                         .foregroundStyle(BumpColor.textSecondary)
-                        .contentTransition(.numericText())
-                }
-                .buttonStyle(.bumpIcon)
-                .accessibilityLabel(String(localized: "See who liked this"))
-                .accessibilityValue(Text("\(displayedLikeCount)"))
 
-                Text(comment.createdAt.relativeDescription)
-                    .font(BumpFont.meta)
-                    .foregroundStyle(BumpColor.textSecondary)
+                    Spacer()
 
-                Spacer()
-
-                Menu {
-                    if isMine {
-                        if onEdited != nil {
-                            Button("Edit", systemImage: "pencil") { showingEditSheet = true }
+                    Menu {
+                        if isMine {
+                            if onEdited != nil {
+                                Button("Edit", systemImage: "pencil") { showingEditSheet = true }
+                            }
+                            if let onDelete {
+                                Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
+                            }
+                        } else {
+                            Button("Report", systemImage: "flag") { showingReportSheet = true }
+                            Button("Block author", systemImage: "hand.raised", role: .destructive) {
+                                showingBlockConfirm = true
+                            }
                         }
-                        if let onDelete {
-                            Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
-                        }
-                    } else {
-                        Button("Report", systemImage: "flag") { showingReportSheet = true }
-                        Button("Block author", systemImage: "hand.raised", role: .destructive) {
-                            showingBlockConfirm = true
-                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: menuIconSize))
+                            .foregroundStyle(BumpColor.textSecondary)
+                            .frame(minWidth: BumpHitTarget.min, minHeight: BumpHitTarget.min)
+                            .contentShape(Rectangle())
                     }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: menuIconSize))
-                        .foregroundStyle(BumpColor.textSecondary)
-                        .frame(minWidth: BumpHitTarget.min, minHeight: BumpHitTarget.min)
-                        .contentShape(Rectangle())
+                    .accessibilityLabel(String(localized: "More actions"))
                 }
-                .accessibilityLabel(String(localized: "More actions"))
             }
+            .padding(.leading, Self.contentInset)
         }
         .task { isLiked = environment.reactionStore.isLiked(comment: comment.id) }
         // `displayedLikeCount` is seeded in `init`, and SwiftUI keys this row on the

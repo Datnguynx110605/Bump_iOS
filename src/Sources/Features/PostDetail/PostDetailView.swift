@@ -195,7 +195,7 @@ private struct PostDetailContent: View {
                         .task { await viewModel.loadMoreCommentsIfNeeded(current: comment) }
 
                         if comment.id != comments.last?.id {
-                            BumpDivider(inset: BumpSpacing.m + 32 + BumpSpacing.s)
+                            BumpDivider(inset: BumpSpacing.m + CommentRowView.contentInset)
                         }
                     }
                 }

@@ -107,8 +107,7 @@ struct PostImageCarousel: View {
             HStack(spacing: 5) {
                 ForEach(0..<imageURLs.count, id: \.self) { index in
                     Circle()
-                        .fill(.white)
-                        .opacity(index == pageIndex ? 1 : 0.45)
+                        .fill(index == pageIndex ? Color.white : BumpColor.overlayChromeMuted)
                         .frame(width: 6, height: 6)
                         .scaleEffect(index == pageIndex ? 1.15 : 1)
                 }

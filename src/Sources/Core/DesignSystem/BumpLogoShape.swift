@@ -3,125 +3,127 @@ import SwiftUI
 /// The exact colors baked into the app icon PNG. Declared here rather than read from the
 /// asset catalog so the icon renderer and the in-app mark are driven by one source —
 /// `Tools/RenderAppIcon.swift` compiles this very file.
+///
+/// **One flat color, no gradient.** The app's design language is flat and opaque
+/// everywhere else (see the header of `Theme.swift`), and the tile is the same coffee
+/// brown as `BumpColor.brandFill` in light mode — so the icon on the home screen, the
+/// splash, and every filled button in the app are literally the same color.
 enum BumpBrandPalette {
-    static let gradientStart = Color(.sRGB, red: 0.788, green: 0.482, blue: 0.290, opacity: 1)
-    static let gradientEnd = Color(.sRGB, red: 0.231, green: 0.141, blue: 0.082, opacity: 1)
-
-    static var gradient: LinearGradient {
-        LinearGradient(
-            colors: [gradientStart, gradientEnd],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
+    static let tile = Color(.sRGB, red: 0.290, green: 0.184, blue: 0.133, opacity: 1)
+    static let mark = Color.white
 }
 
-/// Bump's brand mark: a location pin with a five-point star punched out of its head. The
-/// pin says "a place"; the star says "worth rating" — the app's one repeated motif across
-/// every post, shop, and profile (`RatingStarsView`), and a claim that holds for any kind
-/// of spot rather than one narrower than the app itself (a coffee cup, say).
+/// Bump's brand mark: a plate and a coffee cup, side by side. Between them they name the
+/// two things the app is for — a meal worth the trip and a coffee worth the corner table
+/// — in one silhouette that still reads at home-screen size.
 ///
-/// The star is a subpath of the same `Path` as the pin, so the whole mark renders as one
-/// filled shape with the even-odd rule and can be tinted, scaled, or animated as one unit.
-/// **Fill with `FillStyle(eoFill: true)`** — the nested subpath is meaningless without it.
+/// The whole mark is a single `Path` whose holes (the plate's well, the cup's handle) are
+/// subpaths, so it renders as one filled shape and can be tinted, scaled, or animated as a
+/// unit. **Fill with `FillStyle(eoFill: true)`** — the nested subpaths are meaningless
+/// without it.
+///
+/// Two details that are easy to get wrong:
+///
+/// - The handle's hole is a D, not a circle. A full circle centred on the cup wall would
+///   cut a bite out of the wall itself, because even-odd treats any enclosed subpath as a
+///   hole wherever it lands. Flattening its left edge against the wall keeps the cup solid.
+/// - The body and the handle are drawn as **one** outline rather than as two overlapping
+///   shapes, for the same reason: under even-odd, an overlap is a hole.
 struct BumpLogoShape: Shape {
-    /// The drawn mark spans y ∈ [0.080, 0.895] of its frame and only 0.57 of its width,
-    /// so sizing by the frame makes it look far smaller than it is. Tiles size against
-    /// `inkHeightFraction` and nudge by `inkCenterOffset` to centre the ink optically.
-    static let inkHeightFraction: CGFloat = 0.815
-    static let inkCenterOffset: CGFloat = 0.0125
+    /// The mark is wide and short, so it is laid out in an *ink box* — a 1 × `inkAspect`
+    /// rectangle that the drawing exactly fills — and that box is fitted to the width of
+    /// whatever frame the shape is given, centred vertically. Sizing by frame height (the
+    /// obvious thing) makes the mark overflow its tile, because the ink is barely half as
+    /// tall as it is wide.
+    static let inkAspect: CGFloat = 0.49
+
+    // Plate, seen from above: an even ring, bottom-aligned with the cup.
+    private let plateRadius: CGFloat = 0.245
+    private let plateWellRatio: CGFloat = 0.55
+
+    // Cup, seen from the side.
+    private let cupLeft: CGFloat = 0.610
+    private let cupRight: CGFloat = 0.900
+    private let cupTop: CGFloat = 0.070
+    private let cupBaseCorner: CGFloat = 0.075
+    private let handleCenterY: CGFloat = 0.245
+    private let handleOuterRadius: CGFloat = 0.100
+    private let handleInnerRadius: CGFloat = 0.052
 
     func path(in rect: CGRect) -> Path {
-        let u = min(rect.width, rect.height)
-        let cx = rect.midX
-        let cy = rect.minY + 0.365 * u
+        // Fit the ink box to the frame's width, centred vertically.
+        let scale = rect.width
+        let originY = rect.midY - Self.inkAspect * scale / 2
+        func p(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
+            CGPoint(x: rect.minX + x * scale, y: originY + y * scale)
+        }
 
         var path = Path()
-        addPin(to: &path, cx: cx, cy: cy, u: u, minY: rect.minY)
-        addStar(to: &path, cx: cx, cy: cy + 0.010 * u, u: u)
+        addPlate(to: &path, scale: scale, point: p)
+        addCup(to: &path, scale: scale, point: p)
         return path
     }
 
-    // MARK: - Pin silhouette
+    // MARK: - Plate
 
-    /// A circular head that tapers into a point: two symmetric curves leave the circle at
-    /// `anchorAngle` and meet at the tip, with control points placed along the circle's
-    /// tangent so the join is smooth rather than kinked.
-    private func addPin(to path: inout Path, cx: CGFloat, cy: CGFloat, u: CGFloat, minY: CGFloat) {
-        let radius = 0.285 * u
-        let tipY = minY + 0.895 * u
-        let anchorAngle = 34.0
-        let pull = 0.245 * u
-
-        func onCircle(_ degrees: Double) -> CGPoint {
-            let rad = degrees * .pi / 180
-            return CGPoint(x: cx + radius * cos(rad), y: cy + radius * sin(rad))
+    /// Outer disc and inner well as two concentric circles. Even-odd turns the inner one
+    /// into the hole, which is what makes a flat circle read as a plate rather than a dot.
+    private func addPlate(to path: inout Path, scale: CGFloat, point p: (CGFloat, CGFloat) -> CGPoint) {
+        let center = p(plateRadius, plateRadius)
+        for radius in [plateRadius, plateRadius * plateWellRatio] {
+            path.addEllipse(in: CGRect(
+                x: center.x - radius * scale,
+                y: center.y - radius * scale,
+                width: radius * 2 * scale,
+                height: radius * 2 * scale
+            ))
         }
-        func tangent(_ degrees: Double) -> CGPoint {
-            let rad = degrees * .pi / 180
-            return CGPoint(x: sin(rad), y: -cos(rad))
-        }
-
-        let thetaRight = anchorAngle
-        let thetaLeft = 180 - anchorAngle
-        let leftAnchor = onCircle(thetaLeft)
-        let rightAnchor = onCircle(thetaRight)
-        let tip = CGPoint(x: cx, y: tipY)
-
-        let leftTangent = tangent(thetaLeft)
-        let control1 = CGPoint(x: leftAnchor.x + pull * leftTangent.x, y: leftAnchor.y + pull * leftTangent.y)
-        let rightTangent = tangent(thetaRight)
-        let control2 = CGPoint(x: rightAnchor.x - pull * rightTangent.x, y: rightAnchor.y - pull * rightTangent.y)
-
-        path.move(to: rightAnchor)
-        path.addArc(
-            center: CGPoint(x: cx, y: cy),
-            radius: radius,
-            startAngle: .degrees(thetaRight),
-            endAngle: .degrees(thetaLeft),
-            clockwise: true
-        )
-        path.addCurve(to: tip, control1: control1, control2: CGPoint(x: tip.x - 0.085 * u, y: tip.y - 0.095 * u))
-        path.addCurve(to: rightAnchor, control1: CGPoint(x: tip.x + 0.085 * u, y: tip.y - 0.095 * u), control2: control2)
-        path.closeSubpath()
     }
 
-    // MARK: - Star cutout
+    // MARK: - Cup
 
-    /// A five-point star, centred in the pin's head, as a single cutout. Straight edges
-    /// rather than rounded points — at icon sizes a rounded star reads as a blob, while a
-    /// crisp star silhouette matches the `star.fill` glyph used for ratings everywhere
-    /// else in the app.
-    private func addStar(to path: inout Path, cx: CGFloat, cy: CGFloat, u: CGFloat) {
-        let outerRadius = 0.130 * u
-        let innerRadius = outerRadius * 0.46
-        let points = 5
-        let step = Double.pi / Double(points)
-        // Point-up: the first vertex sits straight above centre.
-        let start = -Double.pi / 2
+    /// Body and handle are drawn as one outline — down the right wall, out around the
+    /// handle, back onto the wall — so the two never overlap as separate subpaths.
+    private func addCup(to path: inout Path, scale: CGFloat, point p: (CGFloat, CGFloat) -> CGPoint) {
+        let bottom = plateRadius * 2          // the cup stands on the plate's baseline
+        let handleCenter = p(cupRight, handleCenterY)
 
-        func vertex(_ index: Int) -> CGPoint {
-            let radius = index.isMultiple(of: 2) ? outerRadius : innerRadius
-            let angle = start + Double(index) * step
-            return CGPoint(x: cx + radius * cos(angle), y: cy + radius * sin(angle))
-        }
+        path.move(to: p(cupLeft, cupTop))
+        path.addLine(to: p(cupRight, cupTop))
+        path.addLine(to: p(cupRight, handleCenterY - handleOuterRadius))
+        path.addArc(
+            center: handleCenter,
+            radius: handleOuterRadius * scale,
+            startAngle: .degrees(-90),
+            endAngle: .degrees(90),
+            clockwise: false
+        )
+        path.addLine(to: p(cupRight, bottom - cupBaseCorner))
+        path.addQuadCurve(to: p(cupRight - cupBaseCorner, bottom), control: p(cupRight, bottom))
+        path.addLine(to: p(cupLeft + cupBaseCorner, bottom))
+        path.addQuadCurve(to: p(cupLeft, bottom - cupBaseCorner), control: p(cupLeft, bottom))
+        path.closeSubpath()
 
-        path.move(to: vertex(0))
-        for index in 1..<(points * 2) {
-            path.addLine(to: vertex(index))
-        }
+        // The handle's hole, flattened against the cup wall.
+        path.move(to: p(cupRight, handleCenterY - handleInnerRadius))
+        path.addArc(
+            center: handleCenter,
+            radius: handleInnerRadius * scale,
+            startAngle: .degrees(-90),
+            endAngle: .degrees(90),
+            clockwise: false
+        )
         path.closeSubpath()
     }
 }
 
 extension BumpLogoShape {
-    /// The white mark, scaled so its *drawn* height is `inkHeight` and optically centred.
-    static func mark(inkHeight: CGFloat, color: Color = .white) -> some View {
-        let frame = inkHeight / inkHeightFraction
-        return BumpLogoShape()
+    /// The mark at a given drawn width. Height follows from `inkAspect`, so the returned
+    /// view is exactly as large as the ink — nothing to centre by hand.
+    static func mark(inkWidth: CGFloat, color: Color = BumpBrandPalette.mark) -> some View {
+        BumpLogoShape()
             .fill(color, style: FillStyle(eoFill: true))
-            .frame(width: frame, height: frame)
-            .offset(y: frame * inkCenterOffset)
+            .frame(width: inkWidth, height: inkWidth * inkAspect)
     }
 }
 
@@ -131,12 +133,15 @@ extension BumpLogoShape {
 struct BumpLogoMark: View {
     var size: CGFloat = 96
 
+    /// The share of the tile the mark spans, matching `Tools/RenderAppIcon.swift`.
+    static let markWidthFraction: CGFloat = 0.62
+
     var body: some View {
         RoundedRectangle(cornerRadius: size * 0.2237, style: .continuous)
-            .fill(BumpBrandPalette.gradient)
+            .fill(BumpBrandPalette.tile)
             .frame(width: size, height: size)
             .overlay {
-                BumpLogoShape.mark(inkHeight: size * 0.60)
+                BumpLogoShape.mark(inkWidth: size * Self.markWidthFraction)
             }
             .accessibilityHidden(true)
     }

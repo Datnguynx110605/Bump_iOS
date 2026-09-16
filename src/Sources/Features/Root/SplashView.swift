@@ -18,12 +18,10 @@ struct SplashView: View {
 
     var body: some View {
         ZStack {
-            BumpBrandPalette.gradient
+            BumpBrandPalette.tile
                 .ignoresSafeArea()
 
-            BumpLogoShape()
-                .fill(Color.white, style: FillStyle(eoFill: true))
-                .frame(width: 160, height: 160)
+            BumpLogoShape.mark(inkWidth: 190)
                 .offset(y: dropOffset)
                 .scaleEffect(scale)
                 .opacity(logoOpacity)

@@ -18,8 +18,8 @@ enum RenderAppIcon {
         ? CommandLine.arguments[1]
         : "Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png"
     let icon = ZStack {
-        BumpBrandPalette.gradient
-        BumpLogoShape.mark(inkHeight: side * 0.60)
+        BumpBrandPalette.tile
+        BumpLogoShape.mark(inkWidth: side * BumpLogoMark.markWidthFraction)
     }
     .frame(width: side, height: side)
 

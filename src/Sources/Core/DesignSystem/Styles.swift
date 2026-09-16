@@ -57,7 +57,7 @@ struct BumpSecondaryButtonStyle: ButtonStyle {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous)
-                    .strokeBorder(isProminent ? BumpColor.brand.opacity(0.45) : BumpColor.border, lineWidth: BumpStroke.regular)
+                    .strokeBorder(isProminent ? BumpColor.brandBorder : BumpColor.border, lineWidth: BumpStroke.regular)
             )
             .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.35)
             .scaleEffect(configuration.isPressed ? 0.975 : 1)

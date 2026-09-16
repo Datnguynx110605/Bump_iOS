@@ -62,7 +62,7 @@ struct SquareCropView: View {
         .mask(Rectangle().frame(width: frameSide, height: frameSide))
         .overlay(
             Rectangle()
-                .stroke(Color.white.opacity(0.85), lineWidth: 1)
+                .stroke(Color.white, lineWidth: 1)
                 .frame(width: frameSide, height: frameSide)
                 .allowsHitTesting(false)
         )

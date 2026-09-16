@@ -40,7 +40,7 @@ struct AvatarView: View {
             .overlay {
                 Image(systemName: "person.fill")
                     .font(.system(size: size * 0.42))
-                    .foregroundStyle(BumpColor.brand.opacity(0.55))
+                    .foregroundStyle(BumpColor.brandMuted)
             }
     }
 }

@@ -32,6 +32,7 @@
 		31265380D15459248102ACD3 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E5C2B553DCE27157C162F2 /* Validation.swift */; };
 		31D608C2ECEED00301346FA3 /* ChangeEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4D2C181499A0C4D36F7B99 /* ChangeEmailView.swift */; };
 		3367211D8010D6406D1F9E70 /* FeedRefreshSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979FC19C41FF99C2D60D6ACB /* FeedRefreshSignal.swift */; };
+		34E218FB185AE839CD90ACC7 /* BumpCaptureUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E28A33BF92E806852F5360 /* BumpCaptureUITests.swift */; };
 		3B3CC2F2BA5CBE88AE102D3E /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D24565905F7226C769EC1F3 /* CreateAccountView.swift */; };
 		3B4F7BE6A5B5EB2187ED3B49 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0119592AE9DDD5E302BC74 /* ProfileView.swift */; };
 		3B97E0E4E402EC063DA482F9 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9281C8556B9E42D148F832 /* HTTPMethod.swift */; };
@@ -133,6 +134,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		02E28A33BF92E806852F5360 /* BumpCaptureUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpCaptureUITests.swift; sourceTree = "<group>"; };
 		033FB587BC49360BB07782EB /* ReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportService.swift; sourceTree = "<group>"; };
 		05923A2AB7D851718F91A9DA /* AppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePreference.swift; sourceTree = "<group>"; };
 		06271A72FC5CC2767C3DE31D /* LanguagePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagePreference.swift; sourceTree = "<group>"; };
@@ -141,7 +143,7 @@
 		0DEF5A3B629D69B650E568DC /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		0EA9A52F5540BB0C62A8D5FB /* MultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartFormData.swift; sourceTree = "<group>"; };
 		10D735438BEB0338B2A41F81 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
-		124EC4B958C2C3F3F9DD4FAB /* BumpUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BumpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		124EC4B958C2C3F3F9DD4FAB /* BumpUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BumpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		143D73083207D43A031FCD65 /* BumpLogoShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpLogoShape.swift; sourceTree = "<group>"; };
 		181D0E443B6B5B26B8841038 /* ShopCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCache.swift; sourceTree = "<group>"; };
 		1AA38457FBC6CDF186DF502A /* AuthorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorRowView.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 		0DBA1FDA58043671EC6F04C5 /* UITests */ = {
 			isa = PBXGroup;
 			children = (
+				02E28A33BF92E806852F5360 /* BumpCaptureUITests.swift */,
 				43478D17C6972D476FDD5127 /* BumpSmokeUITests.swift */,
 			);
 			path = UITests;
@@ -721,6 +724,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34E218FB185AE839CD90ACC7 /* BumpCaptureUITests.swift in Sources */,
 				615DB879A3D45266583D32CD /* BumpSmokeUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1032,7 +1036,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1052,7 +1055,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (

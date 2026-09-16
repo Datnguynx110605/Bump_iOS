@@ -48,6 +48,10 @@ struct PostRowView: View {
             }
             .buttonStyle(.bumpSurface)
 
+            // `s`, not `m`: the trailing save button centres a glyph inside a 44pt box,
+            // so 8pt of padding is what puts the *glyph* on the same 16pt margin as the
+            // caption underneath. The leading like label is wider than 44pt and so has no
+            // centring slack of its own — it makes the difference up itself, below.
             actionBar
                 .padding(.horizontal, BumpSpacing.s)
 
@@ -97,6 +101,7 @@ struct PostRowView: View {
                 )
             }
             .buttonStyle(.bumpIcon)
+            .padding(.leading, BumpSpacing.s)
             .accessibilityLabel(isLiked ? String(localized: "Unlike") : String(localized: "Like"))
             .accessibilityValue(Text("\(displayedLikeCount)"))
 

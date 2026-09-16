@@ -33,7 +33,7 @@ struct EditProfileView: View {
                             ZStack {
                                 AvatarView(url: account?.avatar?.url, size: 88)
                                 if isUploadingAvatar {
-                                    BumpColor.overlayScrim.clipShape(Circle()).frame(width: 88, height: 88)
+                                    BumpColor.overlayChrome.clipShape(Circle()).frame(width: 88, height: 88)
                                     ProgressView().tint(.white)
                                 }
                             }

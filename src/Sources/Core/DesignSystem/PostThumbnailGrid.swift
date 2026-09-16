@@ -68,15 +68,16 @@ struct PostThumbnailGrid: View {
                 // knows does. Without it a carousel is indistinguishable from a single
                 // shot until you open it.
                 if post.images.count > 1 {
-                    // The one shadow left in the system, and it isn't elevation: a white
-                    // glyph sitting directly on an arbitrary photo has no guaranteed
-                    // contrast, and a tight dark halo is what gets it to 3:1 against a
-                    // pale image without covering the photo with a plate.
+                    // A white glyph sitting directly on an arbitrary photo has no
+                    // guaranteed contrast. It gets an opaque chip rather than a soft dark
+                    // halo — the same chip the carousel's counter uses, so every mark that
+                    // sits on a photo in this app is the same solid espresso.
                     Image(systemName: "square.on.square")
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(.white)
-                        .shadow(color: .black.opacity(0.45), radius: 2, y: 0)
-                        .padding(6)
+                        .padding(4)
+                        .background(BumpColor.overlayChrome, in: RoundedRectangle(cornerRadius: 5, style: .continuous))
+                        .padding(5)
                         .accessibilityHidden(true)
                 }
             }

@@ -22,6 +22,16 @@ enum DemoMode {
         ProcessInfo.processInfo.arguments.contains(launchArgument)
     }
 
+    /// Capture-only variants: the walkthrough and the signed-out onboarding are part of
+    /// the shot list, and demo mode otherwise skips straight past both.
+    static var showsIntro: Bool {
+        ProcessInfo.processInfo.arguments.contains("-BumpDemoShowIntro")
+    }
+
+    static var isSignedOut: Bool {
+        ProcessInfo.processInfo.arguments.contains("-BumpDemoSignedOut")
+    }
+
     /// A session whose only protocol is `DemoURLProtocol`, so no request can escape to the
     /// network even by accident.
     ///

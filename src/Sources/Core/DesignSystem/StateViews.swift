@@ -132,7 +132,7 @@ struct EmptyStateView: View {
         VStack(spacing: BumpSpacing.m) {
             Image(systemName: icon)
                 .font(.system(size: iconSize, weight: .light))
-                .foregroundStyle(BumpColor.brand.opacity(0.65))
+                .foregroundStyle(BumpColor.brandMuted)
                 .accessibilityHidden(true)
 
             VStack(spacing: BumpSpacing.s) {
@@ -179,7 +179,7 @@ struct ErrorStateView: View {
         VStack(spacing: BumpSpacing.m) {
             Image(systemName: "antenna.radiowaves.left.and.right.slash")
                 .font(.system(size: iconSize, weight: .light))
-                .foregroundStyle(BumpColor.danger.opacity(0.75))
+                .foregroundStyle(BumpColor.danger)
                 .accessibilityHidden(true)
 
             // One message, not two. `APIError.userMessage(for:)` already returns a
@@ -262,7 +262,7 @@ struct InlineErrorBanner: View {
             .padding(.horizontal, BumpSpacing.m)
             .padding(.vertical, BumpSpacing.ms)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(BumpColor.danger.opacity(0.10), in: RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous))
+            .background(BumpColor.dangerWash, in: RoundedRectangle(cornerRadius: BumpRadius.control, style: .continuous))
             .accessibilityElement(children: .combine)
     }
 }

@@ -83,6 +83,10 @@ private struct NotificationsListView: View {
                     }
                 }
                 .listStyle(.plain)
+                // The hairline is its own row, and List floors every row at 44pt — which
+                // is what put ~68pt between notifications instead of the 24pt the
+                // skeleton above shows.
+                .environment(\.defaultMinListRowHeight, 0)
                 .bumpScrollBackground()
                 .refreshable { await viewModel.reload() }
             }
@@ -127,9 +131,12 @@ private struct NotificationRow: View {
                     .font(BumpFont.callout)
                     .foregroundStyle(BumpColor.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
+                // A timestamp is the only place this line appears, so it is content and
+                // takes `textSecondary`. `textTertiary` is ~1.7:1 on a light page and this
+                // file's own palette reserves it for glyphs that carry nothing.
                 Text(notification.createdAt.relativeDescription)
                     .font(BumpFont.meta)
-                    .foregroundStyle(BumpColor.textTertiary)
+                    .foregroundStyle(BumpColor.textSecondary)
                     .padding(.top, 2)
             }
 

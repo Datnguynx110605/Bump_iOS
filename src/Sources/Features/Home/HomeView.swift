@@ -243,7 +243,7 @@ private struct NearbyShopCard: View {
             HStack(alignment: .top, spacing: BumpSpacing.ms) {
                 Text("\(rank)")
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
-                    .foregroundStyle(BumpColor.brand.opacity(0.35))
+                    .foregroundStyle(BumpColor.brandFaint)
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: BumpSpacing.xs) {

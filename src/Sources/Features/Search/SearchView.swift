@@ -46,37 +46,35 @@ private struct SearchResultsView: View {
         environment.blockStore.visible(viewModel.accounts) { $0.id }
     }
 
-    /// True exactly when `shopDirectory` is what the screen is showing. Keying the
-    /// loader on this rather than on `scope` covers both ways in — tapping the Shops
-    /// chip, and clearing the query while already on it, which changes no scope at all.
+    /// True exactly when `shopDirectory` is what the screen is showing — which is
+    /// whenever the field is empty, whatever scope is selected underneath.
     private var showsDirectory: Bool {
-        viewModel.scope == .shops
-            && viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            scopeChips
-
-            if viewModel.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                // The Shops scope has a whole directory to show before anyone types, so
-                // it opens onto that instead of a prompt. Posts and people have no
-                // equivalent browse endpoint, so they keep the prompt.
-                if showsDirectory {
-                    shopDirectory
-                } else {
-                    EmptyStateView(
-                        icon: "magnifyingglass",
-                        title: "What are you after?",
-                        message: "Search a shop, a post, or someone worth following."
-                    )
-                }
-            } else if viewModel.isLoading && isCurrentScopeEmpty {
-                loadingForCurrentScope
-            } else if let errorMessage = viewModel.errorMessage, isCurrentScopeEmpty {
-                ErrorStateView(message: errorMessage) { viewModel.retrySearch() }
+            // **Browse before search.** This screen used to open on a prompt — an icon
+            // and "What are you after?" — with the shop directory hidden one chip away
+            // under Shops. A discovery tab whose default state is a dead end is the
+            // single worst thing a content app can do with its second tab, so the
+            // directory is now the landing state and the prompt is gone.
+            //
+            // The scope chips come back the moment there is a query, because that is the
+            // only moment they mean anything: with an empty field they described a filter
+            // over nothing, while appearing to contradict the shop list below them.
+            if showsDirectory {
+                shopDirectory
             } else {
-                results
+                scopeChips
+
+                if viewModel.isLoading && isCurrentScopeEmpty {
+                    loadingForCurrentScope
+                } else if let errorMessage = viewModel.errorMessage, isCurrentScopeEmpty {
+                    ErrorStateView(message: errorMessage) { viewModel.retrySearch() }
+                } else {
+                    results
+                }
             }
         }
         .bumpPage()

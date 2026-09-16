@@ -111,11 +111,22 @@ enum BumpColor {
     /// page in dark mode, so dark mode steps up to a lighter roast that still clears
     /// 4.5:1 for white text (5.1:1) while staying visually distinct from the surface under it.
     static let brandFill = Color.adaptive(light: UIColor(red: 0.290, green: 0.184, blue: 0.133, alpha: 1), dark: UIColor(red: 0.588, green: 0.388, blue: 0.247, alpha: 1))
-    /// Low-tint brand wash for chip fills and selected states. A token rather than a
-    /// scattered `brand.opacity(0.12)` so the tint is identical everywhere and can be
-    /// corrected in one place — opacity over a warm page and over an espresso page do not
-    /// land in the same spot.
-    static let brandWash = Color.adaptive(light: UIColor(red: 0.290, green: 0.184, blue: 0.133, alpha: 0.10), dark: UIColor(red: 0.859, green: 0.643, blue: 0.420, alpha: 0.16))
+    /// Low-tint brand wash for chip fills and selected states.
+    ///
+    /// **Flat, not transparent.** Every color in this palette is opaque: the value below
+    /// is the brand color already composited onto the page, computed once here rather
+    /// than left to the compositor at every call site. A translucent fill borrows
+    /// whatever is behind it, which on a photo-heavy screen means the same token renders
+    /// a different color in every row — the opposite of what a token is for.
+    static let brandWash = Color.adaptive(light: UIColor(red: 0.911, green: 0.883, blue: 0.849, alpha: 1), dark: UIColor(red: 0.229, green: 0.172, blue: 0.127, alpha: 1))
+    /// The brand at reduced emphasis for large decorative glyphs (empty states, avatar
+    /// placeholders). Pre-composited onto the page for the same reason as `brandWash`.
+    static let brandMuted = Color.adaptive(light: UIColor(red: 0.556, green: 0.485, blue: 0.437, alpha: 1), dark: UIColor(red: 0.580, green: 0.435, blue: 0.294, alpha: 1))
+    /// The faintest brand step: the oversized rank numerals on the nearby strip, which
+    /// are ornament rather than content.
+    static let brandFaint = Color.adaptive(light: UIColor(red: 0.739, green: 0.689, blue: 0.650, alpha: 1), dark: UIColor(red: 0.372, green: 0.278, blue: 0.193, alpha: 1))
+    /// 1pt outline on a brand-tinted control (the prominent secondary button).
+    static let brandBorder = Color.adaptive(light: UIColor(red: 0.632, green: 0.569, blue: 0.527, alpha: 1), dark: UIColor(red: 0.513, green: 0.384, blue: 0.259, alpha: 1))
 
     // Status colors are tuned to clear 4.5:1 against the surface they appear on —
     // the warm page in light mode, espresso in dark. `rating` is the exception: it tints
@@ -125,6 +136,8 @@ enum BumpColor {
     static let rating = Color.adaptive(light: UIColor(red: 0.776, green: 0.533, blue: 0.035, alpha: 1), dark: UIColor(red: 1.0, green: 0.76, blue: 0.22, alpha: 1))
     static let success = Color.adaptive(light: UIColor(red: 0.106, green: 0.533, blue: 0.271, alpha: 1), dark: UIColor(red: 0.27, green: 0.80, blue: 0.46, alpha: 1))
     static let danger = Color.adaptive(light: UIColor(red: 0.80, green: 0.15, blue: 0.15, alpha: 1), dark: UIColor(red: 1.0, green: 0.42, blue: 0.40, alpha: 1))
+    /// Backing for an inline error banner — `danger` composited onto the page.
+    static let dangerWash = Color.adaptive(light: UIColor(red: 0.962, green: 0.880, blue: 0.851, alpha: 1), dark: UIColor(red: 0.198, green: 0.116, blue: 0.104, alpha: 1))
 
     /// The 0.5pt rule between rows and sections. Warm rather than the system's cool gray,
     /// and defined per theme so it never disappears in one of them — a divider that only
@@ -134,12 +147,17 @@ enum BumpColor {
     /// `hairline` on purpose so an interactive edge never reads as a divider.
     static let border = Color.adaptive(light: UIColor(red: 0.804, green: 0.741, blue: 0.659, alpha: 1), dark: UIColor(red: 0.373, green: 0.302, blue: 0.255, alpha: 1))
 
-    static let overlayScrim = Color.black.opacity(0.45)
-    /// Backing for small controls and badges that sit directly on a photo (page dots,
-    /// a remove button, an image counter). Heavier than `overlayScrim` on purpose: a
-    /// modal scrim covers the whole screen, while these are small shapes that have to
-    /// clear 3:1 against whatever pixel happens to be under them.
-    static let overlayChrome = Color.black.opacity(0.55)
+    /// Backing for anything that sits directly on a photo: page dots, an image counter,
+    /// a remove button, the busy state over an avatar.
+    ///
+    /// Solid espresso rather than translucent black. A photo can be any color, so a
+    /// translucent chip has no guaranteed contrast against the pixels beneath it; an
+    /// opaque chip always clears 3:1 for the white glyph on top of it, and it is the one
+    /// dark surface the palette already owns.
+    static let overlayChrome = Color(.sRGB, red: 0.109, green: 0.082, blue: 0.071, opacity: 1)
+    /// The muted state of a white element on `overlayChrome` (an inactive page dot),
+    /// as a color rather than as opacity.
+    static let overlayChromeMuted = Color(.sRGB, red: 0.541, green: 0.522, blue: 0.514, opacity: 1)
 }
 
 /// The type scale. Every role is SF Rounded — the brand's voice is warm and soft rather
