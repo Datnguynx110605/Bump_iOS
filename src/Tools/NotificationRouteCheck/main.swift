@@ -8,6 +8,10 @@
 // from that projection the endpoint still answered 200 with nulls, every route came back
 // nil, and the whole notification list silently stopped being tappable.
 //
+// It also guards the APNs payload, whose `type`/`targetId` keys are read by
+// AppRoute(pushPayload:) in NotificationModels.swift and written by Bump_Server's
+// ApnsService — a second contract with nothing enforcing it at compile time.
+//
 //   cd Bump_Client/src
 //   swiftc -o /tmp/routecheck \
 //       Sources/Core/Models/NotificationModels.swift \
@@ -81,4 +85,26 @@ let future = try! APICoding.decoder.decode(
 assert(future.route == nil, "unknown type should yield no route")
 assert(future.title == "New comment", "unknown type must not break the rest of the decode")
 
-print("route resolution OK — 4 notification types, null-field regression, unknown type")
+// The same four types again, this time through the APNs payload. Nothing enforces the
+// contract between the two repositories at compile time: Bump_Server writes `type` and
+// `targetId` as custom keys on the push, and this initializer is the only thing that reads
+// them. APNs delivers the payload as a dictionary, so the integer arrives as NSNumber.
+for (raw, route) in expected {
+    let userInfo: [AnyHashable: Any] = [
+        "notificationId": "6C1B0F3E-2A44-4E1C-9C21-6C4D0A1B2E33",
+        "type": raw,
+        "targetId": target.uuidString,
+    ]
+    assert(AppRoute(pushPayload: userInfo) == route, "push type \(raw) routed to the wrong screen")
+}
+
+// A malformed or partial payload must yield no route rather than a wrong one: a tap that
+// does nothing beats a tap that opens someone else's post.
+assert(AppRoute(pushPayload: ["type": 1]) == nil, "missing targetId must not route")
+assert(AppRoute(pushPayload: ["targetId": target.uuidString]) == nil, "missing type must not route")
+assert(AppRoute(pushPayload: ["type": 99, "targetId": target.uuidString]) == nil, "unknown push type must not route")
+assert(
+    AppRoute(pushPayload: ["type": 1, "targetId": "not-a-uuid"]) == nil,
+    "unparseable targetId must not route")
+
+print("route resolution OK — 4 notification types over REST and APNs, null-field regression, unknown type")

@@ -58,6 +58,14 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
     settings:
+      configs:
+        # Xcode builds get sandbox tokens and TestFlight builds get production ones; the
+        # two APNs hosts do not accept each other's. The isSandbox flag the app sends at
+        # registration comes from the same #if DEBUG, so the two cannot disagree.
+        Debug:
+          CODE_SIGN_ENTITLEMENTS: Entitlements/Bump.Debug.entitlements
+        Release:
+          CODE_SIGN_ENTITLEMENTS: Entitlements/Bump.Release.entitlements
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.bump.client
         PRODUCT_NAME: Bump

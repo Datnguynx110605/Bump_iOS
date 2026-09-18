@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct BumpApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var environment = AppEnvironment(
         baseURL: AppConfig.baseURL,
         session: BumpApp.session

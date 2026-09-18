@@ -44,7 +44,14 @@ struct SettingsView: View {
                 Section {
                     Toggle("Push notifications", isOn: $notificationsEnabled)
                         .onChange(of: notificationsEnabled) { _, isOn in
-                            if isOn { LocalNotificationScheduler.requestAuthorizationIfNeeded() }
+                            // The server decides delivery now, so the toggle has to reach it:
+                            // a client-side check would never be consulted again.
+                            if isOn {
+                                PushRegistration.shared.requestAuthorizationIfNeeded()
+                                Task { await PushRegistration.shared.sync() }
+                            } else {
+                                Task { await PushRegistration.shared.retire() }
+                            }
                         }
                     Picker("Language", selection: $languagePreference.language) {
                         ForEach(AppLanguage.allCases) { language in
@@ -97,7 +104,14 @@ struct SettingsView: View {
                 titleVisibility: .visible
             ) {
                 Button("Log out", role: .destructive) {
-                    authSession.signOut()
+                    // Retired before the access token is cleared, or the request arrives
+                    // unauthenticated and this device keeps receiving the account's
+                    // notifications. It swallows its own failures, so sign-out is never
+                    // blocked by one.
+                    Task {
+                        await PushRegistration.shared.retire()
+                        authSession.signOut()
+                    }
                 }
             }
             .confirmationDialog(

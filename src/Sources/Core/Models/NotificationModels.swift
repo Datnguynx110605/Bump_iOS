@@ -70,3 +70,18 @@ extension NotificationType {
         }
     }
 }
+
+// Resolves the custom keys on an APNs payload to a destination. The server describes the
+// event with the same `type` and `targetId` the REST DTO carries, and the mapping from
+// those to a screen stays here, in `NotificationType.route(for:)`, rather than being
+// baked into the push by the server.
+extension AppRoute {
+    init?(pushPayload userInfo: [AnyHashable: Any]) {
+        guard let rawType = userInfo["type"] as? Int,
+              let type = NotificationType(rawValue: rawType),
+              let idString = userInfo["targetId"] as? String,
+              let id = UUID(uuidString: idString) else { return nil }
+
+        self = type.route(for: id)
+    }
+}

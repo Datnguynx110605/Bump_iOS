@@ -36,7 +36,7 @@ struct RootView: View {
         .onChange(of: authSession.isAuthenticated, initial: true) { _, isAuthenticated in
             if isAuthenticated {
                 if scenePhase == .active { environment.notificationHubClient.start() }
-                if NotificationPreference.isEnabled { LocalNotificationScheduler.requestAuthorizationIfNeeded() }
+                PushRegistration.shared.start()
                 Task { await environment.followStore.primeIfNeeded() }
                 Task { await environment.blockStore.primeIfNeeded() }
             } else {

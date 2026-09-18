@@ -69,8 +69,13 @@ final class AppEnvironment {
         self.shopCache = ShopCache(shopService: shopService)
         self.accountCache = AccountCache(accountService: accountService)
 
+        // Taps arrive on PushRegistration, which AppDelegate owns, so the app graph hands it
+        // the pieces it cannot reach: the API surface, the session it gates uploads on, and
+        // where to send a route.
         let notificationRouteSignal = notificationRouteSignal
-        self.notificationHubClient.onNotificationTapped = { [weak notificationRouteSignal] route in
+        PushRegistration.shared.service = self.notificationService
+        PushRegistration.shared.authSession = authSession
+        PushRegistration.shared.onNotificationTapped = { [weak notificationRouteSignal] route in
             notificationRouteSignal?.open(route)
         }
     }

@@ -1,6 +1,5 @@
 import Foundation
 import SignalRClient
-import UserNotifications
 
 private struct NotificationPushDto: Decodable {
     let id: UUID
@@ -20,10 +19,12 @@ private struct ActorAvatarPushDto: Decodable {
     let url: String
 }
 
+/// Keeps the in-app notification list live. It draws no banners: iOS drops this socket
+/// seconds after the app backgrounds, so every banner comes from APNs instead — see
+/// `PushRegistration`.
 @MainActor
-final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotificationCenterDelegate {
+final class NotificationHubClient: NSObject, HubConnectionDelegate {
     var onNotification: ((NotificationSummaryDto) -> Void)?
-    var onNotificationTapped: ((AppRoute) -> Void)?
 
     private let baseURL: URL
     private let authSession: AuthSession
@@ -33,7 +34,6 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotifi
         self.baseURL = baseURL
         self.authSession = authSession
         super.init()
-        UNUserNotificationCenter.current().delegate = self
     }
 
     func start() {
@@ -67,8 +67,6 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotifi
                     actorAccountId: payload.actorAccountId,
                     actorAvatar: payload.actorAvatar.map { AvatarDto(url: $0.url, createdAt: Date()) }
                 ))
-                let route = payload.type.flatMap { type in payload.targetId.map { type.route(for: $0) } }
-                LocalNotificationScheduler.notify(title: payload.title, body: payload.content, route: route)
             }
         }
 
@@ -90,26 +88,4 @@ final class NotificationHubClient: NSObject, HubConnectionDelegate, UNUserNotifi
     }
 
     nonisolated func connectionDidClose(error: Error?) {}
-
-    nonisolated func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        completionHandler([.banner, .sound])
-    }
-
-    nonisolated func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse,
-        withCompletionHandler completionHandler: @escaping () -> Void
-    ) {
-        let userInfo = response.notification.request.content.userInfo
-        Task { @MainActor [weak self] in
-            if let route = AppRoute(notificationUserInfo: userInfo) {
-                self?.onNotificationTapped?(route)
-            }
-            completionHandler()
-        }
-    }
 }
