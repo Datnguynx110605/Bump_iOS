@@ -90,38 +90,42 @@ private struct CreatePostForm: View {
             }
 
             Section {
-                TextField("Shop name", text: $viewModel.shopName)
-                    .onChange(of: viewModel.shopName) { _, newValue in viewModel.searchShops(keyword: newValue) }
-                if ShopFieldRule.isTooLong(viewModel.shopName) {
-                    FieldHint(
-                        text: "Shop name is too long (max \(ShopFieldRule.maxLength) characters).",
-                        tone: .error
-                    )
-                }
-                ForEach(viewModel.shopSuggestions) { shop in
-                    Button {
-                        viewModel.selectShop(shop)
-                    } label: {
-                        PlaceSuggestionRow(name: shop.name, detail: shop.address, icon: "mappin.circle")
+                if viewModel.isPlacePicked {
+                    PickedPlaceRow(viewModel: viewModel)
+                } else {
+                    TextField("Shop name", text: $viewModel.shopName)
+                        .onChange(of: viewModel.shopName) { _, newValue in viewModel.searchShops(keyword: newValue) }
+                    if ShopFieldRule.isTooLong(viewModel.shopName) {
+                        FieldHint(
+                            text: "Shop name is too long (max \(ShopFieldRule.maxLength) characters).",
+                            tone: .error
+                        )
                     }
-                    .accessibilityHint(String(localized: "Fills in this shop"))
-                }
-                ForEach(viewModel.nearbyPlaces) { place in
-                    Button {
-                        viewModel.selectPlace(place)
-                    } label: {
-                        PlaceSuggestionRow(name: place.name, detail: place.address, icon: "storefront")
+                    ForEach(viewModel.shopSuggestions) { shop in
+                        Button {
+                            viewModel.selectShop(shop)
+                        } label: {
+                            PlaceSuggestionRow(name: shop.name, detail: shop.address, icon: "mappin.circle")
+                        }
+                        .accessibilityHint(String(localized: "Fills in this shop"))
                     }
-                    .accessibilityHint(String(localized: "Fills in this place"))
+                    ForEach(viewModel.nearbyPlaces) { place in
+                        Button {
+                            viewModel.selectPlace(place)
+                        } label: {
+                            PlaceSuggestionRow(name: place.name, detail: place.address, icon: "storefront")
+                        }
+                        .accessibilityHint(String(localized: "Fills in this place"))
+                    }
+                    TextField("Address", text: $viewModel.shopAddress)
+                    if ShopFieldRule.isTooLong(viewModel.shopAddress) {
+                        FieldHint(
+                            text: "Address is too long (max \(ShopFieldRule.maxLength) characters).",
+                            tone: .error
+                        )
+                    }
+                    LocationAttachRow(viewModel: viewModel)
                 }
-                TextField("Address", text: $viewModel.shopAddress)
-                if ShopFieldRule.isTooLong(viewModel.shopAddress) {
-                    FieldHint(
-                        text: "Address is too long (max \(ShopFieldRule.maxLength) characters).",
-                        tone: .error
-                    )
-                }
-                LocationAttachRow(viewModel: viewModel)
             } header: {
                 Text("The place").bumpSectionLabel()
             }
@@ -176,6 +180,40 @@ private struct CreatePostForm: View {
 }
 
 /// One tappable place, whether it came from Bump's own shop list or from the map.
+/// The place once it has been picked, in place of the fields it fills.
+///
+/// Those fields stayed editable before, which was a lie: the server resolves a picked
+/// place from Apple and never reads the name and address sent with it, so typing over
+/// them changed nothing that got posted. A confirmed row with a way back to typing says
+/// the same thing honestly — and keeps a real identifier from being paired with text
+/// describing somewhere else.
+private struct PickedPlaceRow: View {
+    let viewModel: CreatePostViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+            HStack(spacing: BumpSpacing.s) {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundStyle(BumpColor.success)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: BumpSpacing.xs) {
+                    Text(viewModel.shopName)
+                        .font(BumpFont.control)
+                        .foregroundStyle(BumpColor.textPrimary)
+                    Text(viewModel.shopAddress)
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundStyle(BumpColor.textSecondary)
+                }
+                Spacer(minLength: 0)
+                Button("Change") { viewModel.clearPickedPlace() }
+                    .buttonStyle(.bumpText)
+            }
+            .frame(minHeight: BumpHitTarget.min)
+            FieldHint(text: "Confirmed on Apple Maps. Directions open this exact place.")
+        }
+    }
+}
+
 private struct PlaceSuggestionRow: View {
     let name: String
     let detail: String

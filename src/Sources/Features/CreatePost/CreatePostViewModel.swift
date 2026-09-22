@@ -9,6 +9,15 @@ final class CreatePostViewModel {
     var rating = 5
     var selectedImages: [Data] = []
 
+    /// Apple's identifier for the picked place, and the only shop field the server
+    /// trusts. While it is set, the name and address on this screen are Apple's copy for
+    /// the user to read — the server resolves its own from the identifier and ignores
+    /// anything sent alongside it — which is why the fields go read-only rather than
+    /// staying editable and lying about what gets posted.
+    private(set) var placeId: String?
+
+    var isPlacePicked: Bool { placeId != nil }
+
     /// Only ever set as a pair, and only meaningful for a shop nobody has posted yet:
     /// the server reuses an existing (name, address) row and never overwrites its
     /// coordinate, so this is what puts a brand-new shop on the nearby map.
@@ -86,7 +95,23 @@ final class CreatePostViewModel {
         shopName = place.name
         shopAddress = place.address
         coordinate = place.coordinate
+        placeId = place.placeId
         nearbyPlaces = []
+        shopSuggestions = []
+        locationIssue = nil
+    }
+
+    /// Back to typing. The name and address go with the identifier because they were
+    /// Apple's words, not the user's — leaving them behind would seed a hand-typed shop
+    /// with text that describes a place the post is no longer about.
+    func clearPickedPlace() {
+        placeId = nil
+        shopName = ""
+        shopAddress = ""
+        pickedShopName = nil
+        coordinate = nil
+        nearbyPlaces = []
+        shopSuggestions = []
         locationIssue = nil
     }
 
@@ -94,7 +119,8 @@ final class CreatePostViewModel {
     /// part — each one cost the user a pick, a pinch and a confirm — so the check leads
     /// with them, but a typed shop name or caption is worth just as much a confirmation.
     var hasUnsavedWork: Bool {
-        !selectedImages.isEmpty
+        isPlacePicked
+            || !selectedImages.isEmpty
             || !shopName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             || !shopAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             || !caption.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -105,8 +131,7 @@ final class CreatePostViewModel {
     /// characters over the limit used to cost a full multi-megabyte upload and come back
     /// as a 400.
     var isValid: Bool {
-        ShopFieldRule.isValid(shopName)
-            && ShopFieldRule.isValid(shopAddress)
+        (isPlacePicked || (ShopFieldRule.isValid(shopName) && ShopFieldRule.isValid(shopAddress)))
             && FreeTextRule.isValid(caption)
             && (1...5).contains(rating)
     }
@@ -141,10 +166,14 @@ final class CreatePostViewModel {
         }
     }
 
+    /// Picking a shop Bump already holds carries its identifier forward when it has one,
+    /// so posting about a verified shop stays verified instead of quietly re-creating it
+    /// from its own strings.
     func selectShop(_ shop: ShopSummaryDto) {
         pickedShopName = shop.name
         shopName = shop.name
         shopAddress = shop.address
+        placeId = shop.placeId
         shopSuggestions = []
         nearbyPlaces = []
     }
@@ -152,6 +181,10 @@ final class CreatePostViewModel {
     /// Attaching a location is optional, so a shop can be typed in full and posted with no
     /// pin — and a shop with no pin is invisible to the nearby search for good. Rather
     /// than require the button, resolve a coordinate here when none was attached.
+    ///
+    /// Never called for a picked place: that coordinate is Apple's own, and geocoding the
+    /// address a second time or falling back to where the phone is standing could only
+    /// make it worse.
     private func resolvedCoordinate(forAddress address: String) async -> PostCoordinate? {
         if let coordinate { return coordinate }
 
@@ -174,11 +207,22 @@ final class CreatePostViewModel {
         defer { isSubmitting = false }
         do {
             let uploads = selectedImages.map { ImageUpload(filename: "photo.jpg", mimeType: "image/jpeg", data: $0) }
+            let trimmedName = shopName.trimmingCharacters(in: .whitespacesAndNewlines)
             let trimmedAddress = shopAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+            // A picked place is described entirely by its identifier. The server resolves
+            // the name, address and coordinate from Apple and does not read the ones sent
+            // with them, so sending this screen's copies would be noise at best and a
+            // disagreement with what actually gets stored at worst.
+            let isTyped = placeId == nil
+            var coordinate: PostCoordinate?
+            if isTyped {
+                coordinate = await resolvedCoordinate(forAddress: trimmedAddress)
+            }
             _ = try await postService.create(
-                shopName: shopName.trimmingCharacters(in: .whitespacesAndNewlines),
-                shopAddress: trimmedAddress,
-                coordinate: await resolvedCoordinate(forAddress: trimmedAddress),
+                placeId: placeId,
+                shopName: isTyped ? trimmedName : nil,
+                shopAddress: isTyped ? trimmedAddress : nil,
+                coordinate: coordinate,
                 caption: caption.isEmpty ? nil : caption,
                 rate: rating,
                 images: uploads

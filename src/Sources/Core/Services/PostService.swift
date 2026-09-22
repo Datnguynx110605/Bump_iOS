@@ -3,17 +3,22 @@ import Foundation
 struct PostService {
     let api: APIClient
 
+    /// Either a place identifier or a typed name and address. With an identifier the
+    /// server resolves the shop from Apple and ignores any shop text sent with it, so the
+    /// caller sends one or the other rather than both.
     func create(
-        shopName: String,
-        shopAddress: String,
+        placeId: String?,
+        shopName: String?,
+        shopAddress: String?,
         coordinate: PostCoordinate?,
         caption: String?,
         rate: Int,
         images: [ImageUpload]
     ) async throws -> PostDto {
         var form = MultipartFormData()
-        form.addField(name: "shopName", value: shopName)
-        form.addField(name: "shopAddress", value: shopAddress)
+        if let placeId { form.addField(name: "placeId", value: placeId) }
+        if let shopName { form.addField(name: "shopName", value: shopName) }
+        if let shopAddress { form.addField(name: "shopAddress", value: shopAddress) }
         // The server rejects a half-supplied pair ("Latitude and longitude must be
         // provided together"), so both fields are added or neither is.
         if let coordinate {
