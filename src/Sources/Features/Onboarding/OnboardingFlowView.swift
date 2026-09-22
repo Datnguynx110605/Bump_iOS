@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingFlowView: View {
     @State private var path: [OnboardingRoute] = []
+    @State private var showEula = !EulaAcceptance.shared.hasAccepted
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -31,5 +32,9 @@ struct OnboardingFlowView: View {
         // transparent, so this is what keeps them all on the app's warm surface instead
         // of the system's default white.
         .background(BumpColor.surface)
+        // Apple requires acceptance before account creation/login; gate the whole flow.
+        .fullScreenCover(isPresented: $showEula) {
+            EulaView(onAccept: { showEula = false })
+        }
     }
 }
