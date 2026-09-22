@@ -163,14 +163,20 @@ private final class Delegate: NSObject, CLLocationManagerDelegate {
     }
 }
 
-/// A place MapKit knows about at a coordinate. Purely a naming aid for the post form:
-/// Bump's own shop rows are searched separately, so this only has to supply the two
-/// strings the form asks for plus the pin they belong to.
+/// A place MapKit knows about at a coordinate.
+///
+/// No longer only a naming aid. `placeId` is Apple's own identifier for the place, and it
+/// is the one field the server trusts: a post carrying it has its shop resolved from
+/// Apple rather than from whatever name and address the app sent, which is what keeps a
+/// shop that does not exist out of the catalogue and an Apple Maps pin on the right
+/// building. Nil for a POI Apple has no identifier for, which posts on the unverified
+/// tier exactly as a hand-typed shop does.
 struct NearbyPlace: Identifiable, Equatable {
     let id = UUID()
     let name: String
     let address: String
     let coordinate: PostCoordinate
+    let placeId: String?
 }
 
 /// Turns a raw fix into something a human can put in a form.
@@ -197,7 +203,12 @@ enum PlaceLookup {
         // A POI without a name is not something anyone can pick out of a list.
         let places = response.mapItems.compactMap { item -> NearbyPlace? in
             guard let name = item.name, let address = formatted(item.placemark) else { return nil }
-            return NearbyPlace(name: name, address: address, coordinate: PostCoordinate(item.placemark.coordinate))
+            return NearbyPlace(
+                name: name,
+                address: address,
+                coordinate: PostCoordinate(item.placemark.coordinate),
+                placeId: item.identifier?.rawValue
+            )
         }
         return Array(places.prefix(maxPlaces))
     }
