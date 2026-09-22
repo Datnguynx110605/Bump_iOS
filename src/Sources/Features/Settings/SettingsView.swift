@@ -68,6 +68,14 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink { LicenseAgreementView() } label: {
+                        Label("License agreement", systemImage: "doc.text")
+                    }
+                } header: {
+                    Text("Legal").bumpSectionLabel()
+                }
+
+                Section {
                     Button("Log out", role: .destructive) {
                         showingLogOutConfirm = true
                     }

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Apple's standard EULA (the Minimum Terms every app implicitly agrees to unless a
 /// custom one is supplied): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-private let eulaText = """
+let eulaText = """
 This application is licensed to You for use only under the terms of this License Agreement. \
 The Application is licensed, not sold, to You by Bump for use strictly in accordance with the \
 terms of this Agreement.
