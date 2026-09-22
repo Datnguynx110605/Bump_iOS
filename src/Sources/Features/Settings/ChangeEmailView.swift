@@ -11,6 +11,7 @@ struct ChangeEmailView: View {
 
     @State private var step: ChangeEmailStep = .enterEmail
     @State private var email = ""
+    @State private var currentPassword = ""
     @State private var otp = ""
     @State private var isLoading = false
     @State private var errorMessage: String?
@@ -32,6 +33,12 @@ struct ChangeEmailView: View {
                     } else {
                         Text("The address must already have an account with Bump — this flow moves your login to an existing address, it can't register a brand-new one.")
                     }
+                }
+                Section {
+                    SecureField("Current password", text: $currentPassword)
+                        .textContentType(.password)
+                } footer: {
+                    Text("Confirm it's you before we move your login.")
                 }
             case .enterOtp:
                 Section {
@@ -82,7 +89,7 @@ struct ChangeEmailView: View {
 
     private var isPrimaryActionEnabled: Bool {
         switch step {
-        case .enterEmail: return EmailRule.isValid(email)
+        case .enterEmail: return EmailRule.isValid(email) && !currentPassword.isEmpty
         case .enterOtp: return otp.count == 6
         }
     }
@@ -112,7 +119,9 @@ struct ChangeEmailView: View {
         defer { isLoading = false }
         do {
             let registrationToken = try await environment.emailService.verify(email: email, otp: otp)
-            try await environment.accountService.changeEmail(registrationToken: registrationToken)
+            try await environment.accountService.changeEmail(
+                registrationToken: registrationToken,
+                currentPassword: currentPassword)
             didSave = true
         } catch {
             errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't update your email."))

@@ -40,9 +40,11 @@ struct AccountService {
         ))
     }
 
-    func changeEmail(registrationToken: String) async throws {
+    func changeEmail(registrationToken: String, currentPassword: String) async throws {
         let _: EmptyResponse = try await api.send(.json(
-            path: "api/v1/Account/me/email", method: .put, body: ChangeEmailRequest(registrationToken: registrationToken)
+            path: "api/v1/Account/me/email",
+            method: .put,
+            body: ChangeEmailRequest(registrationToken: registrationToken, currentPassword: currentPassword)
         ))
     }
 

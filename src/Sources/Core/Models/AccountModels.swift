@@ -47,6 +47,7 @@ struct ChangePasswordRequest: Encodable {
 
 struct ChangeEmailRequest: Encodable {
     let registrationToken: String
+    let currentPassword: String
 }
 
 struct RecoverAccountRequest: Encodable {
