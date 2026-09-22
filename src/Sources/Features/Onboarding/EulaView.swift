@@ -79,6 +79,8 @@ Agreement.
 struct EulaView: View {
     var onAccept: () -> Void
 
+    @State private var hasTickedAgree = false
+
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -95,16 +97,25 @@ struct EulaView: View {
             }
 
             VStack(spacing: BumpSpacing.m) {
-                Button("Accept") {
+                Button {
+                    hasTickedAgree.toggle()
+                } label: {
+                    HStack(spacing: BumpSpacing.s) {
+                        Image(systemName: hasTickedAgree ? "checkmark.square.fill" : "square")
+                            .foregroundStyle(hasTickedAgree ? BumpColor.brand : BumpColor.textSecondary)
+                        Text("I have read and agree to the License Agreement")
+                            .font(BumpFont.callout)
+                            .foregroundStyle(BumpColor.textPrimary)
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Button("Continue") {
                     EulaAcceptance.shared.hasAccepted = true
                     onAccept()
                 }
                 .buttonStyle(.bumpPrimary)
-
-                Button("Decline", role: .destructive) {
-                    exit(0)
-                }
-                .buttonStyle(.bumpText)
+                .disabled(!hasTickedAgree)
             }
             .padding(.horizontal, BumpSpacing.l)
             .padding(.bottom, BumpSpacing.l)
