@@ -485,7 +485,7 @@ private struct PostHeaderSection: View {
             if let shop {
                 BumpDivider()
                 Button {
-                    AppleMaps.openDirections(shopName: shop.name, address: shop.address)
+                    AppleMaps.openDirections(placeId: shop.placeId, shopName: shop.name, address: shop.address)
                 } label: {
                     Label("Get directions", systemImage: "arrow.triangle.turn.up.right.circle")
                 }

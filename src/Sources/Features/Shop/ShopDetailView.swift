@@ -28,7 +28,7 @@ struct ShopDetailView: View {
                                         RatingStarsView(rating: shop.rate.value, size: BumpIconSize.small)
                                             .padding(.top, BumpSpacing.xs)
                                         Button {
-                                            AppleMaps.openDirections(shopName: shop.name, address: shop.address)
+                                            AppleMaps.openDirections(placeId: shop.placeId, shopName: shop.name, address: shop.address)
                                         } label: {
                                             Label("Get directions", systemImage: "arrow.triangle.turn.up.right.circle")
                                         }
