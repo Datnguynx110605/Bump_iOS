@@ -30,19 +30,31 @@ struct SplashView: View {
         .onAppear {
             // Reduce Motion still gets the mark, just without the settle. The dwell time
             // is unchanged so the launch doesn't feel different in length, only in travel.
-            withAnimation(reduceMotion ? .easeOut(duration: 0.2) : BumpMotion.bouncy) {
+            withAnimation(reduceMotion ? BumpMotion.fade : BumpMotion.bouncy) {
                 dropOffset = 0
                 scale = 1
                 logoOpacity = 1
             }
             Task {
-                try? await Task.sleep(for: .milliseconds(900))
-                withAnimation(.easeOut(duration: 0.35)) {
+                try? await Task.sleep(for: Self.dwell)
+                // Guarded like the settle above it. This line used to animate
+                // unconditionally on a hardcoded 0.35s while the line directly above it
+                // respected the setting — the same function disagreeing with itself.
+                withAnimation(reduceMotion ? nil : BumpMotion.fade) {
                     isFadingOut = true
                 }
-                try? await Task.sleep(for: .milliseconds(350))
+                // Derived from the fade, not a second magic number that happened to
+                // match it. Handing control over before the splash has finished fading
+                // shows the root view punching through a half-transparent tile.
+                try? await Task.sleep(for: reduceMotion ? .zero : Self.fadeOut)
                 onFinished()
             }
         }
     }
+
+    /// How long the mark holds before handing over. Long enough to read as intentional,
+    /// short enough that it never becomes the thing standing between you and the app.
+    private static let dwell: Duration = .milliseconds(900)
+    /// Matches `BumpMotion.fade`, which is what actually drives the fade.
+    private static let fadeOut: Duration = .milliseconds(220)
 }
