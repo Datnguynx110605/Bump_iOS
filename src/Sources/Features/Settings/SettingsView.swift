@@ -18,7 +18,7 @@ struct SettingsView: View {
             Form {
                 Section {
                     NavigationLink { EditProfileView() } label: {
-                        Label("Edit profile", systemImage: "person")
+                        BumpLabel("Edit profile", glyph: .person)
                     }
                 } header: {
                     Text("You").bumpSectionLabel()
@@ -26,16 +26,16 @@ struct SettingsView: View {
 
                 Section {
                     NavigationLink { ChangePasswordView() } label: {
-                        Label("Change password", systemImage: "lock")
+                        BumpLabel("Change password", glyph: .lock)
                     }
                     NavigationLink { ChangeEmailView() } label: {
-                        Label("Change email", systemImage: "envelope")
+                        BumpLabel("Change email", glyph: .envelope)
                     }
                     NavigationLink { BlockedAccountsView() } label: {
-                        Label("Blocked accounts", systemImage: "hand.raised")
+                        BumpLabel("Blocked accounts", glyph: .handRaised)
                     }
                     NavigationLink { ActivityHistoryView() } label: {
-                        Label("Activity history", systemImage: "clock.arrow.circlepath")
+                        BumpLabel("Activity history", glyph: .history)
                     }
                 } header: {
                     Text("Account & privacy").bumpSectionLabel()
@@ -69,7 +69,7 @@ struct SettingsView: View {
 
                 Section {
                     NavigationLink { LicenseAgreementView() } label: {
-                        Label("License agreement", systemImage: "doc.text")
+                        BumpLabel("License agreement", glyph: .document)
                     }
                 } header: {
                     Text("Legal").bumpSectionLabel()

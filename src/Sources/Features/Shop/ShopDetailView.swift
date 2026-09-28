@@ -30,15 +30,14 @@ struct ShopDetailView: View {
                                         Button {
                                             AppleMaps.openDirections(placeId: shop.placeId, shopName: shop.name, address: shop.address)
                                         } label: {
-                                            Label("Get directions", systemImage: "arrow.triangle.turn.up.right.circle")
+                                            BumpLabel("Get directions", glyph: .directions, size: BumpIconSize.small)
                                         }
                                         .buttonStyle(.bumpText)
                                     }
                                     Spacer()
                                     BumpToggleIconButton(
                                         isOn: viewModel.isSaved,
-                                        onImage: "bookmark.fill",
-                                        offImage: "bookmark",
+                                        glyph: .bookmark,
                                         label: viewModel.isSaved ? String(localized: "Remove from saved") : String(localized: "Save shop")
                                     ) {
                                         Task { viewModel.isSaved = await environment.saveStore.toggleShop(shopId) }
@@ -53,7 +52,7 @@ struct ShopDetailView: View {
 
                             if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
                                 EmptyStateView(
-                                    icon: "camera",
+                                    glyph: .camera,
                                     title: "Nobody's posted here yet",
                                     message: "Be the first to say what this place is like."
                                 )

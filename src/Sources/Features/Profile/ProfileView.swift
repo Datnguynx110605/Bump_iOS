@@ -32,7 +32,7 @@ struct ProfileView: View {
 
                             if viewModel.posts.isEmpty && !viewModel.isLoadingPosts {
                                 EmptyStateView(
-                                    icon: "camera",
+                                    glyph: .camera,
                                     title: isOwnProfile ? "Share your first spot" : "Nothing posted yet",
                                     message: isOwnProfile ? "Rate a place you love and it lands right here." : nil
                                 )
@@ -77,31 +77,31 @@ struct ProfileView: View {
                 if isOwnProfile {
                     HStack(spacing: BumpSpacing.s) {
                         NavigationLink(value: AppRoute.saved) {
-                            Image(systemName: "bookmark")
+                            BumpBarIcon(.bookmark)
                         }
                         .accessibilityLabel(String(localized: "Saved"))
                         Button { showingSettings = true } label: {
-                            Image(systemName: "gearshape")
+                            BumpBarIcon(.gear)
                         }
                         .accessibilityLabel(String(localized: "Settings"))
                     }
                 } else {
                     Menu {
-                        Button("Report account", systemImage: "flag") { showingReportSheet = true }
+                        BumpMenuButton(title: "Report account", glyph: .flag) { showingReportSheet = true }
                         if environment.blockStore.isBlocked(accountId) {
-                            Button("Unblock account", systemImage: "hand.raised.slash") {
+                            BumpMenuButton(title: "Unblock account", glyph: .handRaised, variant: .slashed) {
                                 Task {
                                     await environment.blockStore.unblock(accountId)
                                     environment.feedRefreshSignal.bump()
                                 }
                             }
                         } else {
-                            Button("Block account", systemImage: "hand.raised", role: .destructive) {
+                            BumpMenuButton(title: "Block account", glyph: .handRaised, role: .destructive) {
                                 showingBlockConfirm = true
                             }
                         }
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        BumpBarIcon(.ellipsis, .circled)
                     }
                     .accessibilityLabel(String(localized: "More actions"))
                 }
@@ -190,7 +190,7 @@ private struct ProfileHeaderView: View {
                 Text(bio)
                     .font(BumpFont.callout)
                     .foregroundStyle(BumpColor.textSecondary)
-                    .lineSpacing(2)
+                    .lineSpacing(BumpLeading.prose)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 

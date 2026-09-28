@@ -26,7 +26,7 @@ struct BlockedAccountsView: View {
                 ErrorStateView(message: errorMessage) { Task { await load(cursor: nil) } }
             } else if visible.isEmpty {
                 EmptyStateView(
-                    icon: "hand.raised",
+                    glyph: .handRaised,
                     title: "No blocked accounts",
                     message: "Accounts you block are hidden from your feed, search, and comments. They show up here so you can undo it."
                 )
@@ -112,7 +112,7 @@ private struct BlockedAccountRow: View {
                     .foregroundStyle(BumpColor.textPrimary)
                     .lineLimit(1)
                 Text("Blocked \(block.blockedAt.relativeDescription)")
-                    .font(.system(.caption, design: .rounded))
+                    .font(BumpFont.caption)
                     .foregroundStyle(BumpColor.textSecondary)
             }
             .accessibilityElement(children: .combine)

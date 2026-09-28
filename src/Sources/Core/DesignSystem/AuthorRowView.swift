@@ -14,6 +14,7 @@ struct AuthorRowView: View {
     var trailingText: String? = nil
     var showsChevron: Bool = false
     @Environment(AppEnvironment.self) private var environment
+    @ScaledMetric private var chevronSize: CGFloat = BumpIconSize.xs
 
     private var account: AccountSummaryDto? { environment.accountCache.accounts[accountId] }
 
@@ -47,10 +48,8 @@ struct AuthorRowView: View {
             Spacer(minLength: BumpSpacing.xs)
 
             if showsChevron {
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
+                BumpIcon(.chevronRight, size: chevronSize)
                     .foregroundStyle(BumpColor.textTertiary)
-                    .accessibilityHidden(true)
             }
         }
         .accessibilityElement(children: .combine)

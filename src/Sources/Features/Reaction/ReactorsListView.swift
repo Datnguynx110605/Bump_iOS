@@ -14,7 +14,7 @@ struct ReactorsListView: View {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.reactors.isEmpty {
                     EmptyStateView(
-                        icon: "heart",
+                        glyph: .heart,
                         title: "No likes yet",
                         message: "The first one always shows up eventually."
                     )

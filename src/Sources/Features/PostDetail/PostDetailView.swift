@@ -45,24 +45,24 @@ struct PostDetailView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     if let post = viewModel?.post, post.accountId == authSession.accountId {
-                        Button("Edit post", systemImage: "pencil") {
+                        BumpMenuButton(title: "Edit post", glyph: .textLines) {
                             showingEditSheet = true
                         }
-                        Button("Delete post", systemImage: "trash", role: .destructive) {
+                        BumpMenuButton(title: "Delete post", glyph: .xmark, role: .destructive) {
                             showingDeleteConfirm = true
                         }
                     } else {
-                        Button("Report post", systemImage: "flag") {
+                        BumpMenuButton(title: "Report post", glyph: .flag) {
                             showingReportSheet = true
                         }
                         if viewModel?.post != nil {
-                            Button("Block author", systemImage: "hand.raised", role: .destructive) {
+                            BumpMenuButton(title: "Block author", glyph: .handRaised, role: .destructive) {
                                 showingBlockConfirm = true
                             }
                         }
                     }
                 } label: {
-                    Image(systemName: "ellipsis.circle")
+                    BumpBarIcon(.ellipsis, .circled)
                 }
                 .accessibilityLabel(String(localized: "More actions"))
             }
@@ -230,8 +230,7 @@ private struct PostDetailContent: View {
 
             HStack(alignment: .bottom, spacing: BumpSpacing.xs) {
                 SquarePhotoAttachmentPicker(images: $viewModel.selectedCommentImages, maxCount: 6) {
-                    Image(systemName: "photo.on.rectangle")
-                        .font(.system(size: BumpIconSize.medium, weight: .light))
+                    BumpIcon(.photos, size: BumpIconSize.medium)
                         .foregroundStyle(BumpColor.textSecondary)
                         .frame(minWidth: BumpHitTarget.min, minHeight: BumpHitTarget.min)
                         .contentShape(Rectangle())
@@ -253,7 +252,7 @@ private struct PostDetailContent: View {
                         if viewModel.isSubmittingComment {
                             ProgressView().tint(.white)
                         } else {
-                            Image(systemName: "arrow.up")
+                            BumpIcon(.arrowUp, size: BumpIconSize.small)
                                 .font(BumpFont.subheadline)
                                 .foregroundStyle(.white)
                         }
@@ -296,7 +295,7 @@ private struct NewCommentsPill: View {
 
     var body: some View {
         Button(action: action) {
-            Label("New comments", systemImage: "arrow.up")
+            BumpLabel("New comments", glyph: .arrowUp, size: BumpIconSize.xs)
                 .font(BumpFont.control)
                 .foregroundStyle(.white)
                 .padding(.horizontal, BumpSpacing.m)
@@ -356,7 +355,7 @@ private struct PostHeaderSection: View {
                     Text(caption)
                         .font(BumpFont.body)
                         .foregroundStyle(BumpColor.textPrimary)
-                        .lineSpacing(3)
+                        .lineSpacing(BumpLeading.prose)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
@@ -391,7 +390,7 @@ private struct PostHeaderSection: View {
             likePair
 
             ReactionCountLabel(
-                systemImage: "bubble.right",
+                glyph: .comment,
                 count: post.commentAmount.value,
                 accessibilityLabel: String(localized: "Comments")
             )
@@ -400,8 +399,7 @@ private struct PostHeaderSection: View {
 
             BumpToggleIconButton(
                 isOn: isSaved,
-                onImage: "bookmark.fill",
-                offImage: "bookmark",
+                glyph: .bookmark,
                 label: isSaved ? String(localized: "Remove from saved") : String(localized: "Save post")
             ) {
                 Task { isSaved = await environment.saveStore.togglePost(post.id) }
@@ -426,8 +424,7 @@ private struct PostHeaderSection: View {
         HStack(spacing: 0) {
             BumpToggleIconButton(
                 isOn: isLiked,
-                onImage: "heart.fill",
-                offImage: "heart",
+                glyph: .heart,
                 label: isLiked ? String(localized: "Unlike") : String(localized: "Like"),
                 activeColor: BumpColor.like
             ) {
@@ -461,7 +458,7 @@ private struct PostHeaderSection: View {
         VStack(alignment: .leading, spacing: BumpSpacing.s) {
             NavigationLink(value: AppRoute.shop(post.shopId)) {
                 HStack(alignment: .firstTextBaseline, spacing: BumpSpacing.s) {
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                         Text(shop?.name ?? String(localized: "Finding the spot…"))
                             .font(BumpFont.headline)
                             .foregroundStyle(BumpColor.textPrimary)
@@ -474,8 +471,7 @@ private struct PostHeaderSection: View {
                     }
                     Spacer(minLength: BumpSpacing.s)
                     RatingStarsView(rating: post.rate.value, size: BumpIconSize.small)
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
+                    BumpIcon(.chevronRight, size: BumpIconSize.xs)
                         .foregroundStyle(BumpColor.textTertiary)
                         .accessibilityHidden(true)
                 }
@@ -487,7 +483,7 @@ private struct PostHeaderSection: View {
                 Button {
                     AppleMaps.openDirections(placeId: shop.placeId, shopName: shop.name, address: shop.address)
                 } label: {
-                    Label("Get directions", systemImage: "arrow.triangle.turn.up.right.circle")
+                    BumpLabel("Get directions", glyph: .directions, size: BumpIconSize.small)
                 }
                 .buttonStyle(.bumpText)
             }

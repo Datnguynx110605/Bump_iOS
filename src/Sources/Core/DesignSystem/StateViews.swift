@@ -35,7 +35,7 @@ struct BumpSkeletonBlock: View {
             .frame(width: width, height: height)
             .frame(maxWidth: width == nil ? .infinity : nil, alignment: .leading)
             .opacity(isPulsing ? 0.55 : 1)
-            .animation(reduceMotion ? nil : .easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: isPulsing)
+            .animation(reduceMotion ? nil : BumpMotion.pulse, value: isPulsing)
             .onAppear { isPulsing = true }
     }
 }
@@ -113,7 +113,7 @@ struct PeopleSkeletonList: View {
 /// is not focusable, so `HomeView`'s discovery action was the one way off an empty feed
 /// and VoiceOver could not reach it.
 struct EmptyStateView: View {
-    let icon: String
+    let glyph: BumpGlyph
     /// `LocalizedStringKey`, **not** a pre-resolved `String`.
     ///
     /// `String(localized:)` resolves against the process locale, which the app's in-app
@@ -130,10 +130,8 @@ struct EmptyStateView: View {
 
     var body: some View {
         VStack(spacing: BumpSpacing.m) {
-            Image(systemName: icon)
-                .font(.system(size: iconSize, weight: .light))
+            BumpIcon(glyph, size: iconSize)
                 .foregroundStyle(BumpColor.brandMuted)
-                .accessibilityHidden(true)
 
             VStack(spacing: BumpSpacing.s) {
                 Text(title)
@@ -145,7 +143,7 @@ struct EmptyStateView: View {
                         .font(BumpFont.callout)
                         .foregroundStyle(BumpColor.textSecondary)
                         .multilineTextAlignment(.center)
-                        .lineSpacing(2)
+                        .lineSpacing(BumpLeading.prose)
                 }
             }
             .accessibilityElement(children: .combine)
@@ -177,10 +175,8 @@ struct ErrorStateView: View {
 
     var body: some View {
         VStack(spacing: BumpSpacing.m) {
-            Image(systemName: "antenna.radiowaves.left.and.right.slash")
-                .font(.system(size: iconSize, weight: .light))
+            BumpIcon(.signal, .slashed, size: iconSize)
                 .foregroundStyle(BumpColor.danger)
-                .accessibilityHidden(true)
 
             // One message, not two. `APIError.userMessage(for:)` already returns a
             // complete, friendly sentence ("Couldn't connect. Check your connection and
@@ -190,7 +186,7 @@ struct ErrorStateView: View {
                 .font(BumpFont.headline)
                 .foregroundStyle(BumpColor.textPrimary)
                 .multilineTextAlignment(.center)
-                .lineSpacing(2)
+                .lineSpacing(BumpLeading.prose)
 
             if let onRetry {
                 Button(retryTitle, action: onRetry)
@@ -219,25 +215,30 @@ struct FieldHint: View {
     let text: LocalizedStringKey
     var tone: Tone = .neutral
 
+    @ScaledMetric private var glyphSize: CGFloat = BumpIconSize.xs
+
     var body: some View {
-        Label {
-            Text(text)
-        } icon: {
-            if let icon {
-                Image(systemName: icon)
+        // A neutral hint carries no glyph at all rather than a hidden one holding its
+        // place: the text is the whole message, and an empty indent in front of it reads
+        // as a missing icon.
+        HStack(alignment: .firstTextBaseline, spacing: BumpSpacing.xs) {
+            if let glyph {
+                BumpIcon(glyph, .circledFilled, size: glyphSize)
+                    .alignmentGuide(.firstTextBaseline) { $0[.bottom] - glyphSize * 0.18 }
             }
+            Text(text)
         }
-        .font(.system(.caption, design: .rounded, weight: .medium))
+        .font(BumpFont.caption)
         .foregroundStyle(color)
         .padding(.horizontal, BumpSpacing.xs)
         .bumpAnimation(BumpMotion.quick, value: tone)
     }
 
-    private var icon: String? {
+    private var glyph: BumpGlyph? {
         switch tone {
         case .neutral: return nil
-        case .success: return "checkmark.circle.fill"
-        case .error: return "exclamationmark.circle.fill"
+        case .success: return .check
+        case .error: return .exclamation
         }
     }
 
@@ -256,8 +257,10 @@ struct InlineErrorBanner: View {
     let message: String
 
     var body: some View {
-        Label(message, systemImage: "exclamationmark.triangle.fill")
-            .font(.system(.footnote, design: .rounded, weight: .medium))
+        BumpLabel(glyph: .warning, variant: .filled, size: BumpIconSize.small) {
+            Text(message)
+        }
+            .font(BumpFont.meta)
             .foregroundStyle(BumpColor.danger)
             .padding(.horizontal, BumpSpacing.m)
             .padding(.vertical, BumpSpacing.ms)

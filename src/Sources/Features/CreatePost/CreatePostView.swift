@@ -75,7 +75,7 @@ private struct CreatePostForm: View {
         Form {
             Section {
                 SquarePhotoAttachmentPicker(images: $viewModel.selectedImages, maxCount: 6) {
-                    Label("Add photos", systemImage: "photo.on.rectangle")
+                    BumpLabel("Add photos", glyph: .photos, size: BumpIconSize.small)
                         .foregroundStyle(BumpColor.brand)
                         .frame(minHeight: BumpHitTarget.min)
                 }
@@ -105,7 +105,7 @@ private struct CreatePostForm: View {
                         Button {
                             viewModel.selectShop(shop)
                         } label: {
-                            PlaceSuggestionRow(name: shop.name, detail: shop.address, icon: "mappin.circle")
+                            PlaceSuggestionRow(name: shop.name, detail: shop.address, glyph: .mappin)
                         }
                         .accessibilityHint(String(localized: "Fills in this shop"))
                     }
@@ -113,7 +113,7 @@ private struct CreatePostForm: View {
                         Button {
                             viewModel.selectPlace(place)
                         } label: {
-                            PlaceSuggestionRow(name: place.name, detail: place.address, icon: "storefront")
+                            PlaceSuggestionRow(name: place.name, detail: place.address, glyph: .storefront)
                         }
                         .accessibilityHint(String(localized: "Fills in this place"))
                     }
@@ -193,7 +193,7 @@ private struct PickedPlaceRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BumpSpacing.xs) {
             HStack(spacing: BumpSpacing.s) {
-                Image(systemName: "checkmark.seal.fill")
+                BumpIcon(.seal, .filled, size: BumpIconSize.small)
                     .foregroundStyle(BumpColor.success)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: BumpSpacing.xs) {
@@ -201,7 +201,7 @@ private struct PickedPlaceRow: View {
                         .font(BumpFont.control)
                         .foregroundStyle(BumpColor.textPrimary)
                     Text(viewModel.shopAddress)
-                        .font(.system(.caption, design: .rounded))
+                        .font(BumpFont.caption)
                         .foregroundStyle(BumpColor.textSecondary)
                 }
                 Spacer(minLength: 0)
@@ -217,19 +217,18 @@ private struct PickedPlaceRow: View {
 private struct PlaceSuggestionRow: View {
     let name: String
     let detail: String
-    let icon: String
+    let glyph: BumpGlyph
 
     var body: some View {
         HStack(spacing: BumpSpacing.s) {
-            Image(systemName: icon)
+            BumpIcon(glyph, size: BumpIconSize.small)
                 .foregroundStyle(BumpColor.brand)
-                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(name)
                     .font(BumpFont.control)
                     .foregroundStyle(BumpColor.textPrimary)
                 Text(detail)
-                    .font(.system(.caption, design: .rounded))
+                    .font(BumpFont.caption)
                     .foregroundStyle(BumpColor.textSecondary)
             }
             Spacer(minLength: 0)
@@ -249,7 +248,7 @@ private struct LocationAttachRow: View {
         VStack(alignment: .leading, spacing: BumpSpacing.xs) {
             if viewModel.coordinate != nil {
                 HStack(spacing: BumpSpacing.s) {
-                    Image(systemName: "mappin.circle.fill")
+                    BumpIcon(.mappin, .circledFilled, size: BumpIconSize.small)
                         .foregroundStyle(BumpColor.success)
                         .accessibilityHidden(true)
                     Text("Location attached")
@@ -271,7 +270,7 @@ private struct LocationAttachRow: View {
                         if viewModel.isLocating {
                             ProgressView()
                         } else {
-                            Image(systemName: "location.circle")
+                            BumpIcon(.location, .circled, size: BumpIconSize.small)
                                 .foregroundStyle(BumpColor.brand)
                                 .accessibilityHidden(true)
                         }

@@ -20,13 +20,13 @@ struct SquarePhotoAttachmentPicker<Content: View>: View {
     var body: some View {
         Menu {
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                Button("Take photo", systemImage: "camera") {
+                BumpMenuButton(title: "Take photo", glyph: .camera) {
                     flowSeedImages = []
                     showingFlow = true
                 }
                 .disabled(remainingSlots == 0)
             }
-            Button("Choose from library", systemImage: "photo.on.rectangle") {
+            BumpMenuButton(title: "Choose from library", glyph: .photos) {
                 showingLibraryPicker = true
             }
             .disabled(remainingSlots == 0)
@@ -139,8 +139,7 @@ struct AttachmentThumbnail: View {
             .clipShape(RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous))
             .overlay(alignment: .topTrailing) {
                 Button(action: onRemove) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.body)
+                    BumpIcon(.xmark, .circledFilled, size: BumpIconSize.medium)
                         // Deliberately darker than `overlayScrim`: this backs a white glyph
                         // over an arbitrary photo, where the job is legibility rather than
                         // the flat dimming that token is tuned for.
@@ -149,7 +148,7 @@ struct AttachmentThumbnail: View {
                         .frame(width: BumpHitTarget.min, height: BumpHitTarget.min, alignment: .topTrailing)
                         .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bumpIcon)
                 .accessibilityLabel(String(localized: "Remove photo"))
             }
     }

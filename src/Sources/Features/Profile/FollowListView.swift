@@ -15,7 +15,7 @@ struct FollowListView: View {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.rows.isEmpty {
                     EmptyStateView(
-                        icon: "person.2",
+                        glyph: .people,
                         title: "No \(kind.displayNameLowercased) yet"
                     )
                 } else {

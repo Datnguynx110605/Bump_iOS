@@ -13,7 +13,7 @@ struct ActivityHistoryView: View {
                     ErrorStateView(message: errorMessage) { Task { await viewModel.loadInitialIfNeeded() } }
                 } else if viewModel.comments.isEmpty {
                     EmptyStateView(
-                        icon: "bubble.left.and.bubble.right",
+                        glyph: .comments,
                         title: "Nothing here yet",
                         message: "Every comment you leave on a post is kept here."
                     )

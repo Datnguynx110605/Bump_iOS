@@ -13,7 +13,7 @@ struct WelcomeView: View {
                 BumpLogoMark(size: 104)
 
                 Text("Bump")
-                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .font(BumpFont.display)
                     .foregroundStyle(BumpColor.textPrimary)
 
                 Text("The best places, found the way they always were — through people who've been.")

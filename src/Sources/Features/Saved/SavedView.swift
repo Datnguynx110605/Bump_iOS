@@ -65,7 +65,7 @@ struct SavedView: View {
             ErrorStateView(message: errorMessage) { Task { await viewModel.loadPosts() } }
         } else if visiblePosts(viewModel).isEmpty {
             EmptyStateView(
-                icon: "bookmark",
+                glyph: .bookmark,
                 title: "Nothing saved yet",
                 message: "Tap the bookmark on any post and it waits for you here."
             )
@@ -88,7 +88,7 @@ struct SavedView: View {
             ErrorStateView(message: errorMessage) { Task { await viewModel.loadShops() } }
         } else if viewModel.shops.isEmpty {
             EmptyStateView(
-                icon: "bookmark",
+                glyph: .bookmark,
                 title: "No shops saved yet",
                 message: "Save a place and you'll find it again in one tap."
             )
@@ -101,8 +101,7 @@ struct SavedView: View {
                                 .fill(BumpColor.surfaceTertiary)
                                 .frame(width: 44, height: 44)
                                 .overlay {
-                                    Image(systemName: "cup.and.saucer")
-                                        .font(.system(size: BumpIconSize.small, weight: .light))
+                                    BumpIcon(.storefront, size: BumpIconSize.small)
                                         .foregroundStyle(BumpColor.brand)
                                 }
                                 .accessibilityHidden(true)
@@ -112,7 +111,7 @@ struct SavedView: View {
                                     .foregroundStyle(BumpColor.textPrimary)
                                     .lineLimit(1)
                                 Text(shop.address)
-                                    .font(.system(.caption, design: .rounded))
+                                    .font(BumpFont.caption)
                                     .foregroundStyle(BumpColor.textSecondary)
                                     .lineLimit(1)
                             }
@@ -126,7 +125,7 @@ struct SavedView: View {
                     .listRowSeparatorTint(BumpColor.hairline)
                     .task { await viewModel.loadMoreShopsIfNeeded(current: shop) }
                     .swipeActions(edge: .trailing) {
-                        Button("Unsave", systemImage: "bookmark.slash") {
+                        BumpMenuButton(title: "Unsave", glyph: .bookmark, variant: .slashed) {
                             Task {
                                 await environment.saveStore.toggleShop(shop.id)
                                 viewModel.removeSavedShop(shop.id)

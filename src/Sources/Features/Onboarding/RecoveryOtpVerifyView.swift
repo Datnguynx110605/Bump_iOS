@@ -29,7 +29,7 @@ struct RecoveryOtpVerifyView: View {
             VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 TextField("000000", text: $otp)
                     .textFieldStyle(.bump)
-                    .font(.system(.title, design: .monospaced, weight: .semibold))
+                    .font(BumpFont.code)
                     .kerning(6)
                     .multilineTextAlignment(.center)
                     .keyboardType(.numberPad)

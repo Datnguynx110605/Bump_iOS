@@ -86,7 +86,7 @@ struct EulaView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: BumpSpacing.m) {
                     Text("License Agreement")
-                        .font(.system(.title2, design: .rounded, weight: .bold))
+                        .font(BumpFont.title)
                         .foregroundStyle(BumpColor.textPrimary)
 
                     Text(eulaText)
@@ -101,14 +101,21 @@ struct EulaView: View {
                     hasTickedAgree.toggle()
                 } label: {
                     HStack(spacing: BumpSpacing.s) {
-                        Image(systemName: hasTickedAgree ? "checkmark.square.fill" : "square")
+                        BumpIcon(.checkbox, hasTickedAgree ? .filled : .outline, size: BumpIconSize.medium)
                             .foregroundStyle(hasTickedAgree ? BumpColor.brand : BumpColor.textSecondary)
                         Text("I have read and agree to the License Agreement")
                             .font(BumpFont.callout)
                             .foregroundStyle(BumpColor.textPrimary)
                     }
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bumpSurface)
+                // The row is the control, not just the box: a checkbox glyph alone is a
+                // ~22pt target, and the label beside it is the part people actually aim
+                // at. Combining them also stops VoiceOver reading the tick and its text
+                // as two unrelated elements.
+                .frame(minHeight: BumpHitTarget.min)
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(hasTickedAgree ? [.isSelected] : [])
 
                 Button("Continue") {
                     EulaAcceptance.shared.hasAccepted = true

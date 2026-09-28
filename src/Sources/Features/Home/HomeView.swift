@@ -84,7 +84,7 @@ private struct HomeListView: View {
 
                     if visiblePosts.isEmpty {
                         EmptyStateView(
-                            icon: "sparkles",
+                            glyph: .sparkle,
                             title: "Your feed is quiet",
                             message: "Follow a few people and react to the places you like — their posts land here.",
                             actionTitle: "Find shops & people",
@@ -150,7 +150,7 @@ private struct NearbySection: View {
         switch viewModel.nearby {
         case .needsPermission:
             NearbyNotice(
-                icon: "location",
+                glyph: .location,
                 title: "See the best spots around you",
                 message: "Share your location and Bump shows the top-rated shops within five kilometres.",
                 actionTitle: "Use my location",
@@ -169,7 +169,7 @@ private struct NearbySection: View {
 
         case .locationOff:
             NearbyNotice(
-                icon: "location.slash",
+                glyph: .location, variant: .slashed,
                 title: "Location is off",
                 message: "Turn location on in Settings to see top-rated shops near you.",
                 actionTitle: "Open Settings",
@@ -181,7 +181,7 @@ private struct NearbySection: View {
 
         case .failed:
             NearbyNotice(
-                icon: "exclamationmark.triangle",
+                glyph: .warning,
                 title: "Couldn't find shops nearby",
                 message: "Check your connection and try again.",
                 actionTitle: "Try again",
@@ -193,7 +193,7 @@ private struct NearbySection: View {
         case .loaded(let shops):
             if shops.isEmpty {
                 NearbyNotice(
-                    icon: "mappin.slash",
+                    glyph: .mappin, variant: .slashed,
                     title: "Nothing highly rated yet",
                     message: "No shop near you has cleared four stars. Be the first to post one.",
                     actionTitle: nil,
@@ -242,7 +242,7 @@ private struct NearbyShopCard: View {
         NavigationLink(value: AppRoute.shop(shop.id)) {
             HStack(alignment: .top, spacing: BumpSpacing.ms) {
                 Text("\(rank)")
-                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .font(BumpFont.display)
                     .foregroundStyle(BumpColor.brandFaint)
                     .accessibilityHidden(true)
 
@@ -256,7 +256,7 @@ private struct NearbyShopCard: View {
                         .foregroundStyle(BumpColor.textSecondary)
                         .lineLimit(2)
                     RatingStarsView(rating: shop.rate.value)
-                        .padding(.top, 1)
+                        .padding(.top, BumpSpacing.xs)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -283,7 +283,8 @@ private struct NearbyNotice: View {
         case muted
     }
 
-    let icon: String
+    let glyph: BumpGlyph
+    var variant: BumpGlyphVariant = .outline
     let title: LocalizedStringKey
     let message: LocalizedStringKey
     var actionTitle: LocalizedStringKey?
@@ -294,10 +295,8 @@ private struct NearbyNotice: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: BumpSpacing.ms) {
-            Image(systemName: icon)
-                .font(.system(size: iconSize, weight: .light))
+            BumpIcon(glyph, variant, size: iconSize)
                 .foregroundStyle(tint)
-                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(title)

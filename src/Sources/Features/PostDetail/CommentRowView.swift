@@ -35,7 +35,7 @@ struct CommentRowView: View {
                 NavigationLink(value: AppRoute.account(comment.accountId)) {
                     AuthorRowView(accountId: comment.accountId)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bumpSurface)
 
                 VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 if let content = comment.content, !content.isEmpty {
@@ -60,8 +60,7 @@ struct CommentRowView: View {
                     HStack(spacing: 0) {
                         BumpToggleIconButton(
                             isOn: isLiked,
-                            onImage: "heart.fill",
-                            offImage: "heart",
+                            glyph: .heart,
                             label: isLiked ? String(localized: "Unlike comment") : String(localized: "Like comment"),
                             activeColor: BumpColor.like,
                             size: BumpIconSize.small
@@ -98,20 +97,19 @@ struct CommentRowView: View {
                     Menu {
                         if isMine {
                             if onEdited != nil {
-                                Button("Edit", systemImage: "pencil") { showingEditSheet = true }
+                                BumpMenuButton(title: "Edit", glyph: .textLines) { showingEditSheet = true }
                             }
                             if let onDelete {
-                                Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
+                                BumpMenuButton(title: "Delete", glyph: .xmark, role: .destructive, action: onDelete)
                             }
                         } else {
-                            Button("Report", systemImage: "flag") { showingReportSheet = true }
-                            Button("Block author", systemImage: "hand.raised", role: .destructive) {
+                            BumpMenuButton(title: "Report", glyph: .flag) { showingReportSheet = true }
+                            BumpMenuButton(title: "Block author", glyph: .handRaised, role: .destructive) {
                                 showingBlockConfirm = true
                             }
                         }
                     } label: {
-                        Image(systemName: "ellipsis")
-                            .font(.system(size: menuIconSize))
+                        BumpIcon(.ellipsis, size: menuIconSize)
                             .foregroundStyle(BumpColor.textSecondary)
                             .frame(minWidth: BumpHitTarget.min, minHeight: BumpHitTarget.min)
                             .contentShape(Rectangle())

@@ -38,8 +38,7 @@ struct AvatarView: View {
         Circle()
             .fill(BumpColor.surfaceTertiary)
             .overlay {
-                Image(systemName: "person.fill")
-                    .font(.system(size: size * 0.42))
+                BumpIcon(.person, .filled, size: size * 0.52)
                     .foregroundStyle(BumpColor.brandMuted)
             }
     }

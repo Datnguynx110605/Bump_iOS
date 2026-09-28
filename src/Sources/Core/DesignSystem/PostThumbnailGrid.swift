@@ -17,6 +17,10 @@ struct PostThumbnailGrid: View {
     private static let spacing: CGFloat = 2
     private let columns = Array(repeating: GridItem(.flexible(), spacing: spacing), count: 3)
 
+    /// The multi-photo badge's glyph. Scaled like every other icon in the app: it used to
+    /// be pinned at 11pt, which is the one size Dynamic Type could never grow.
+    @ScaledMetric private var badgeGlyphSize: CGFloat = BumpIconSize.xs
+
     /// One decode size for every cell, derived from the column width rather than
     /// measured per cell, so all thumbnails share cache entries.
     private static let decodeSize: CGSize = {
@@ -57,8 +61,7 @@ struct PostThumbnailGrid: View {
                     // A text-only post still needs to read as a post rather than as a
                     // failed photo, so it gets the caption glyph on a tonal tile.
                     BumpColor.surfaceTertiary.overlay {
-                        Image(systemName: "text.alignleft")
-                            .font(.system(size: BumpIconSize.small, weight: .light))
+                        BumpIcon(.textLines, size: BumpIconSize.small)
                             .foregroundStyle(BumpColor.textSecondary)
                     }
                 }
@@ -72,13 +75,11 @@ struct PostThumbnailGrid: View {
                     // guaranteed contrast. It gets an opaque chip rather than a soft dark
                     // halo — the same chip the carousel's counter uses, so every mark that
                     // sits on a photo in this app is the same solid espresso.
-                    Image(systemName: "square.on.square")
-                        .font(.system(size: 11, weight: .semibold))
+                    BumpIcon(.copy, size: badgeGlyphSize)
                         .foregroundStyle(.white)
-                        .padding(4)
-                        .background(BumpColor.overlayChrome, in: RoundedRectangle(cornerRadius: 5, style: .continuous))
-                        .padding(5)
-                        .accessibilityHidden(true)
+                        .padding(BumpSpacing.xs)
+                        .background(BumpColor.overlayChrome, in: RoundedRectangle(cornerRadius: BumpRadius.small, style: .continuous))
+                        .padding(BumpSpacing.xs)
                 }
             }
             .clipped()

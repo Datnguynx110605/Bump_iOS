@@ -94,7 +94,7 @@ struct PostRowView: View {
                 }
             } label: {
                 ReactionCountLabel(
-                    systemImage: isLiked ? "heart.fill" : "heart",
+                    glyph: .heart,
                     count: displayedLikeCount,
                     isActive: isLiked,
                     accessibilityLabel: String(localized: "Likes")
@@ -107,7 +107,7 @@ struct PostRowView: View {
 
             NavigationLink(value: AppRoute.post(post.id)) {
                 ReactionCountLabel(
-                    systemImage: "bubble.right",
+                    glyph: .comment,
                     count: post.commentAmount.value,
                     accessibilityLabel: String(localized: "Comments")
                 )
@@ -118,8 +118,7 @@ struct PostRowView: View {
 
             BumpToggleIconButton(
                 isOn: isSaved,
-                onImage: "bookmark.fill",
-                offImage: "bookmark",
+                glyph: .bookmark,
                 label: isSaved ? String(localized: "Remove from saved") : String(localized: "Save post")
             ) {
                 Task { isSaved = await environment.saveStore.togglePost(post.id) }
@@ -157,7 +156,7 @@ struct PostRowView: View {
                     .font(BumpFont.callout)
                     .foregroundStyle(BumpColor.textSecondary)
                     .lineLimit(3)
-                    .lineSpacing(1)
+                    .lineSpacing(BumpLeading.prose)
                     .multilineTextAlignment(.leading)
             }
         }

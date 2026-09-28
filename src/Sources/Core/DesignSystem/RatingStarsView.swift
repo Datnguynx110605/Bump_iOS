@@ -9,16 +9,20 @@ import SwiftUI
 /// they are a meaningful non-text element and owe 3:1 against the surface. `hairline`
 /// measures about 1.3:1 on a light page, which is a decorative rule, not a gauge.
 struct RatingStarsView: View {
+    /// Deliberately off the 4pt grid. Five stars have to read as one rating, and at
+    /// `BumpSpacing.xs` they separate into five individual glyphs; this is optical
+    /// spacing inside a single component, not layout spacing between components.
+    fileprivate static let clusterGap: CGFloat = 2
+
     let rating: Int
     var maxRating: Int = 5
     var size: CGFloat = BumpIconSize.xs
     @ScaledMetric private var scale: CGFloat = 1
 
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: Self.clusterGap) {
             ForEach(0..<maxRating, id: \.self) { index in
-                Image(systemName: index < rating ? "star.fill" : "star")
-                    .font(.system(size: size * scale))
+                BumpIcon(.star, index < rating ? .filled : .outline, size: size * scale)
                     .foregroundStyle(index < rating ? BumpColor.rating : BumpColor.textSecondary)
             }
         }
@@ -46,8 +50,7 @@ struct RatingPickerView: View {
                     rating = value
                     HapticFeedback.selected()
                 } label: {
-                    Image(systemName: value <= rating ? "star.fill" : "star")
-                        .font(.system(size: starSize))
+                    BumpIcon(.star, value <= rating ? .filled : .outline, size: starSize)
                         .foregroundStyle(value <= rating ? BumpColor.rating : BumpColor.textSecondary)
                         .scaleEffect(value == rating ? 1.12 : 1)
                         .bumpAnimation(BumpMotion.bouncy, value: rating)

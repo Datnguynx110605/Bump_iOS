@@ -1,7 +1,7 @@
 import SwiftUI
 
 private struct IntroPage {
-    let icon: String
+    let glyph: BumpGlyph
     let title: String
     let message: String
 }
@@ -14,9 +14,9 @@ struct IntroWalkthroughView: View {
     @State private var pageIndex = 0
 
     private let pages: [IntroPage] = [
-        IntroPage(icon: "fork.knife", title: String(localized: "Find places worth the trip"), message: String(localized: "Real photos and honest ratings from people who actually went.")),
-        IntroPage(icon: "camera", title: String(localized: "Share what you find"), message: String(localized: "Snap it, rate it, post it. Thirty seconds, start to finish.")),
-        IntroPage(icon: "bubble.left.and.bubble.right", title: String(localized: "Help someone decide"), message: String(localized: "A like or a comment is often all it takes to point a friend somewhere good."))
+        IntroPage(glyph: .forkKnife, title: String(localized: "Find places worth the trip"), message: String(localized: "Real photos and honest ratings from people who actually went.")),
+        IntroPage(glyph: .camera, title: String(localized: "Share what you find"), message: String(localized: "Snap it, rate it, post it. Thirty seconds, start to finish.")),
+        IntroPage(glyph: .comments, title: String(localized: "Help someone decide"), message: String(localized: "A like or a comment is often all it takes to point a friend somewhere good."))
     ]
 
     var body: some View {
@@ -77,8 +77,7 @@ private struct IntroPageView: View {
     var body: some View {
         VStack(spacing: BumpSpacing.l) {
             Spacer(minLength: BumpSpacing.l)
-            Image(systemName: page.icon)
-                .font(.system(size: iconSize, weight: .ultraLight))
+            BumpIcon(page.glyph, size: iconSize)
                 .foregroundStyle(BumpColor.brand)
                 .accessibilityHidden(true)
             VStack(spacing: BumpSpacing.s) {

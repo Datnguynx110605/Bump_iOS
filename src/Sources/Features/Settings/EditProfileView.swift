@@ -38,7 +38,7 @@ struct EditProfileView: View {
                                 }
                             }
                             .overlay(alignment: .bottomTrailing) {
-                                Image(systemName: "camera.circle.fill")
+                                BumpIcon(.camera, .circledFilled, size: BumpIconSize.large)
                                     .font(BumpFont.title)
                                     .foregroundStyle(.white, BumpColor.brandFill)
                             }

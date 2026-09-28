@@ -54,6 +54,17 @@ enum BumpStroke {
     static let regular: CGFloat = 1
 }
 
+/// Extra leading for running prose, on top of what the text style already carries.
+///
+/// One value, not a scale. The app had five different hand-picked numbers, and two of
+/// them were on *the same post caption* — 1pt in the feed row, 3pt on the post detail —
+/// so the same sentence set differently depending on where you read it. Density between
+/// those two screens is carried by the feed's 3-line clamp, which is a limit on how much
+/// text shows rather than a reason to re-space it.
+enum BumpLeading {
+    static let prose: CGFloat = 2
+}
+
 /// Apple's minimum comfortable tap area. Icon-only controls are visually smaller than
 /// this, so they expand their hit region to it rather than growing the glyph.
 enum BumpHitTarget {
@@ -182,8 +193,17 @@ enum BumpFont {
     static let callout = Font.system(.subheadline, design: .rounded, weight: .regular)
     /// Timestamps, distances, counts-in-prose. Always on `textSecondary`.
     static let meta = Font.system(.footnote, design: .rounded, weight: .medium)
+    /// The smallest role that still carries words: a field hint, a character counter, a
+    /// photo-count badge. One step below `meta` and never used for running content —
+    /// anything a user has to *read* rather than *check* belongs on `callout` or higher.
+    static let caption = Font.system(.caption, design: .rounded, weight: .medium)
     /// Button and chip text.
     static let control = Font.system(.subheadline, design: .rounded, weight: .semibold)
+    /// A one-time code being typed in. Monospaced *by design*, not just in its digits:
+    /// a 6-digit code is read back character by character against the message it came
+    /// from, and an even advance is what makes that possible. The only role in the app
+    /// that is not SF Rounded, and the exception is the point.
+    static let code = Font.system(.title, design: .monospaced, weight: .semibold)
     /// Counts next to an icon. Monospaced digits so a like count ticking 99 → 100 doesn't
     /// shove the row next to it sideways.
     static let numeric = Font.system(.subheadline, design: .rounded, weight: .semibold).monospacedDigit()
@@ -230,6 +250,11 @@ enum BumpMotion {
     static let bouncy = Animation.spring(response: 0.40, dampingFraction: 0.62)
     /// Pure fades, where a spring on opacity would just look indecisive.
     static let fade = Animation.easeOut(duration: 0.22)
+    /// The skeleton's breathing. Slow and symmetric on purpose: a placeholder that
+    /// pulses at interaction speed reads as a control waiting to be tapped, and one that
+    /// eases asymmetrically reads as a heartbeat. This is the one loop in the app, so it
+    /// is the one animation allowed to repeat forever.
+    static let pulse = Animation.easeInOut(duration: 1.1).repeatForever(autoreverses: true)
 }
 
 extension View {

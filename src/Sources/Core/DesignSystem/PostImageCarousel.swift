@@ -39,8 +39,7 @@ struct PostImageCarousel: View {
                                 BumpColor.fill
                             case .failure:
                                 BumpColor.fill.overlay(
-                                    Image(systemName: "photo")
-                                        .font(.title2)
+                                    BumpIcon(.photo, size: BumpIconSize.large)
                                         .foregroundStyle(BumpColor.textTertiary)
                                 )
                             }
@@ -104,7 +103,7 @@ struct PostImageCarousel: View {
             // Dots sit on their own scrim rather than directly on the photo: a white dot
             // on a white plate is invisible, and the 3:1 non-text requirement can't be met
             // against "whatever pixel happens to be underneath".
-            HStack(spacing: 5) {
+            HStack(spacing: BumpSpacing.xs) {
                 ForEach(0..<imageURLs.count, id: \.self) { index in
                     Circle()
                         .fill(index == pageIndex ? Color.white : BumpColor.overlayChromeMuted)
@@ -112,14 +111,14 @@ struct PostImageCarousel: View {
                         .scaleEffect(index == pageIndex ? 1.15 : 1)
                 }
             }
-            .padding(.vertical, 6)
+            .padding(.vertical, BumpSpacing.s)
             .padding(.horizontal, BumpSpacing.s)
             .background(BumpColor.overlayChrome, in: Capsule())
             .bumpAnimation(BumpMotion.standard, value: pageIndex)
             .accessibilityHidden(true)
         } else {
             Text("\(pageIndex + 1)/\(imageURLs.count)")
-                .font(.system(.caption2, design: .rounded, weight: .semibold).monospacedDigit())
+                .font(BumpFont.caption.monospacedDigit())
                 .foregroundStyle(.white)
                 .padding(.vertical, BumpSpacing.xs)
                 .padding(.horizontal, BumpSpacing.s)

@@ -55,7 +55,7 @@ private struct NotificationsListView: View {
             } else if let errorMessage = viewModel.errorMessage, viewModel.notifications.isEmpty {
                 ErrorStateView(message: errorMessage) { Task { await viewModel.reload() } }
             } else if viewModel.notifications.isEmpty {
-                EmptyStateView(icon: "bell", title: "All quiet", message: "Likes, comments and new followers will turn up here.")
+                EmptyStateView(glyph: .bell, title: "All quiet", message: "Likes, comments and new followers will turn up here.")
             } else {
                 List {
                     ForEach(viewModel.notifications) { notification in
@@ -108,22 +108,29 @@ private struct NotificationsListView: View {
 private struct NotificationRow: View {
     let notification: NotificationSummaryDto
 
+    /// The badge scales as one piece. It used to pin its glyph at 9pt inside an 18pt
+    /// disc, which made it the only mark in the app Dynamic Type could not reach — and
+    /// 9pt is below the size any of this app's text is ever allowed to be.
+    @ScaledMetric private var badgeDiameter: CGFloat = 18
+
     var body: some View {
         HStack(alignment: .top, spacing: BumpSpacing.ms) {
             AvatarView(url: notification.actorAvatar?.url, size: 44)
                 .overlay(alignment: .bottomTrailing) {
                     if let badge {
-                        Image(systemName: badge.symbol)
-                            .font(.system(size: 9, weight: .bold))
+                        BumpIcon(badge.glyph, .filled, size: badgeDiameter * 0.58)
                             .foregroundStyle(.white)
-                            .frame(width: 18, height: 18)
+                            .frame(width: badgeDiameter, height: badgeDiameter)
                             .background(badge.tint, in: Circle())
-                            .overlay(Circle().strokeBorder(BumpColor.surface, lineWidth: 2))
-                            .offset(x: 3, y: 3)
+                            // A ring in the page colour, not a gap: the badge overhangs
+                            // the avatar, and on a flat page a knocked-out ring is what
+                            // separates two adjacent circles without a shadow.
+                            .overlay(Circle().strokeBorder(BumpColor.surface, lineWidth: BumpStroke.regular * 2))
+                            .offset(x: badgeDiameter * 0.17, y: badgeDiameter * 0.17)
                     }
                 }
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(notification.title)
                     .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
@@ -137,7 +144,6 @@ private struct NotificationRow: View {
                 Text(notification.createdAt.relativeDescription)
                     .font(BumpFont.meta)
                     .foregroundStyle(BumpColor.textSecondary)
-                    .padding(.top, 2)
             }
 
             Spacer(minLength: 0)
@@ -149,11 +155,11 @@ private struct NotificationRow: View {
 
     /// Small glyph on the actor's avatar saying *why* this arrived, so the list is
     /// scannable without reading every line.
-    private var badge: (symbol: String, tint: Color)? {
+    private var badge: (glyph: BumpGlyph, tint: Color)? {
         switch notification.type {
-        case .follow: return ("person.fill", BumpColor.brandFill)
-        case .postReaction, .commentReaction: return ("heart.fill", BumpColor.like)
-        case .comment: return ("bubble.right.fill", BumpColor.success)
+        case .follow: return (.person, BumpColor.brandFill)
+        case .postReaction, .commentReaction: return (.heart, BumpColor.like)
+        case .comment: return (.comment, BumpColor.success)
         case nil: return nil
         }
     }

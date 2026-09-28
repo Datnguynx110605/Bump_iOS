@@ -165,17 +165,17 @@ struct BumpChip: View {
     /// `String(localized:)` resolve against the *process* locale instead and stay English
     /// when the user picks Tiếng Việt — which is why the scopes expose a `titleKey`.
     let title: LocalizedStringKey
-    var systemImage: String? = nil
+    var glyph: BumpGlyph? = nil
     let isSelected: Bool
     let action: () -> Void
+
+    @ScaledMetric private var glyphSize: CGFloat = BumpIconSize.xs
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: BumpSpacing.xs) {
-                if let systemImage {
-                    Image(systemName: systemImage)
-                        .font(.footnote.weight(.semibold))
-                        .accessibilityHidden(true)
+                if let glyph {
+                    BumpIcon(glyph, size: glyphSize)
                 }
                 Text(title)
             }

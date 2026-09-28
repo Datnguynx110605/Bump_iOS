@@ -151,7 +151,7 @@ private struct SearchResultsView: View {
                 }
             } else {
                 EmptyStateView(
-                    icon: "storefront",
+                    glyph: .storefront,
                     title: "No shops yet",
                     message: "Shops show up here the moment someone posts about one. Be the first."
                 )
@@ -196,7 +196,7 @@ private struct SearchResultsView: View {
         case .posts:
             if visiblePosts.isEmpty {
                 EmptyStateView(
-                    icon: "photo",
+                    glyph: .photo,
                     title: "No posts match that",
                     message: "Try a shorter word, or search shops instead."
                 )
@@ -214,7 +214,7 @@ private struct SearchResultsView: View {
         case .shops:
             if viewModel.shops.isEmpty {
                 EmptyStateView(
-                    icon: "storefront",
+                    glyph: .storefront,
                     title: "No shops match that",
                     message: "Check the spelling, or try the name of the street."
                 )
@@ -237,7 +237,7 @@ private struct SearchResultsView: View {
         case .accounts:
             if visibleAccounts.isEmpty {
                 EmptyStateView(
-                    icon: "person.2",
+                    glyph: .people,
                     title: "No one by that name",
                     message: "Usernames are lowercase and have no spaces."
                 )
@@ -273,13 +273,12 @@ private struct ShopResultRow: View {
                 .fill(BumpColor.surfaceTertiary)
                 .frame(width: 44, height: 44)
                 .overlay {
-                    Image(systemName: "cup.and.saucer")
-                        .font(.system(size: BumpIconSize.small, weight: .light))
+                    BumpIcon(.storefront, size: BumpIconSize.small)
                         .foregroundStyle(BumpColor.brand)
                 }
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(shop.name)
                     .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
@@ -294,8 +293,7 @@ private struct ShopResultRow: View {
 
             RatingStarsView(rating: shop.rate.value)
 
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+            BumpIcon(.chevronRight, size: BumpIconSize.xs)
                 .foregroundStyle(BumpColor.textTertiary)
                 .accessibilityHidden(true)
         }
@@ -312,7 +310,7 @@ private struct AccountResultRow: View {
         HStack(spacing: BumpSpacing.ms) {
             AvatarView(url: account.avatar?.url, size: 44)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: BumpSpacing.xs) {
                 Text(account.name.value)
                     .font(BumpFont.subheadline)
                     .foregroundStyle(BumpColor.textPrimary)
@@ -327,8 +325,7 @@ private struct AccountResultRow: View {
 
             Spacer(minLength: 0)
 
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+            BumpIcon(.chevronRight, size: BumpIconSize.xs)
                 .foregroundStyle(BumpColor.textTertiary)
                 .accessibilityHidden(true)
         }
