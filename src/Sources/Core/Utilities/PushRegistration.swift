@@ -30,8 +30,6 @@ final class PushRegistration: NSObject, UNUserNotificationCenterDelegate {
     /// reissue a token after a restore from backup, an OS upgrade or a reinstall, and the
     /// registration callback is the only place the app is told.
     func start() {
-        guard !isDemo else { return }
-
         if NotificationPreference.isEnabled { requestAuthorizationIfNeeded() }
 
         UIApplication.shared.registerForRemoteNotifications()
@@ -40,22 +38,10 @@ final class PushRegistration: NSObject, UNUserNotificationCenterDelegate {
     }
 
     func requestAuthorizationIfNeeded() {
-        guard !isDemo else { return }
-
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
             guard granted else { return }
             Task { @MainActor in UIApplication.shared.registerForRemoteNotifications() }
         }
-    }
-
-    /// Demo mode runs in the simulator against fixtures: it can never obtain a token, and
-    /// the permission prompt would appear over a screenshot capture.
-    private var isDemo: Bool {
-        #if DEBUG
-        return DemoMode.isEnabled
-        #else
-        return false
-        #endif
     }
 
     func received(token: String) {
