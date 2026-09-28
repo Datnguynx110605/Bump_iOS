@@ -19,7 +19,7 @@
 //     address at 200 and requires both to be non-empty. Trailing whitespace must not
 //     count toward the limit, because the view model trims before sending.
 //
-//   cd Bump_Client/src
+//   cd Bump_iOS/src
 //   swiftc -o /tmp/shopbrowsecheck \
 //       Sources/Core/Models/ShopModels.swift \
 //       Sources/Core/Models/Pagination.swift \

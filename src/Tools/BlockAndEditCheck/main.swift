@@ -17,7 +17,7 @@
 //     decide when to fetch the next page. It replaced an exact-tail comparison that
 //     stalled whenever the real last row was filtered out of the rendered list.
 //
-//   cd Bump_Client/src
+//   cd Bump_iOS/src
 //   swiftc -o /tmp/blockeditcheck \
 //       Sources/Core/Models/BlockModels.swift \
 //       Sources/Core/Models/AccountModels.swift \

@@ -12,7 +12,7 @@
 // AppRoute(pushPayload:) in NotificationModels.swift and written by Bump_Server's
 // ApnsService — a second contract with nothing enforcing it at compile time.
 //
-//   cd Bump_Client/src
+//   cd Bump_iOS/src
 //   swiftc -o /tmp/routecheck \
 //       Sources/Core/Models/NotificationModels.swift \
 //       Sources/Core/Models/AccountModels.swift \

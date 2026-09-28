@@ -14,7 +14,7 @@
 //     Both ends have to clamp; an out-of-range `scrollPosition(id:)` scrolls nowhere and
 //     strands the user mid-carousel.
 //
-//   cd Bump_Client/src
+//   cd Bump_iOS/src
 //   swiftc -o /tmp/uxpasscheck Tools/UxPassCheck/*.swift && /tmp/uxpasscheck
 
 import Foundation
