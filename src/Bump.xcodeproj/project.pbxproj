@@ -35,6 +35,7 @@
 		3B3CC2F2BA5CBE88AE102D3E /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D24565905F7226C769EC1F3 /* CreateAccountView.swift */; };
 		3B4F7BE6A5B5EB2187ED3B49 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0119592AE9DDD5E302BC74 /* ProfileView.swift */; };
 		3B97E0E4E402EC063DA482F9 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D9281C8556B9E42D148F832 /* HTTPMethod.swift */; };
+		3CD4198470F88D4269EFBD26 /* BumpIconGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC854D57736B0A695FCD955 /* BumpIconGeometry.swift */; };
 		3D8384D19D6F3657F163239B /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41781E51B1DB494CB9AA8CD9 /* APIClient.swift */; };
 		3E7D4FC65612CB7E2EB3F555 /* AutoRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6843C2B248E7F675D917F4 /* AutoRefresh.swift */; };
 		4158F211A2B316A8AD1A94A8 /* RecoveryOtpVerifyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B76328DB635678A6416049F /* RecoveryOtpVerifyView.swift */; };
@@ -47,6 +48,7 @@
 		51642DBB205D9701928D57AE /* NotificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330EABF4AF39EC7A36F0B47E /* NotificationModels.swift */; };
 		52270B9A9320D834FE767B6C /* BlockedAccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA8B90AB77837FBE38610BC /* BlockedAccountsView.swift */; };
 		5528F98DEFF0D12282476D83 /* StateViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC0AA27DF0E8224F330C088 /* StateViews.swift */; };
+		59F674992CB15B745075A2F9 /* BumpIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6532822B38B70A8F181FFB3 /* BumpIcon.swift */; };
 		6365B5B6D8B5451390CBA2A7 /* DemoURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05562DA01128C1D754C794A /* DemoURLProtocol.swift */; };
 		66CBC909AA9B7D76A9A80BEC /* BlockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE81DFE3A81352068182311 /* BlockModels.swift */; };
 		66E43E7A01D6C241B5003474 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DD7AAE97C98D2C555BEBF8 /* HapticFeedback.swift */; };
@@ -144,7 +146,6 @@
 		0DEF5A3B629D69B650E568DC /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		0EA9A52F5540BB0C62A8D5FB /* MultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartFormData.swift; sourceTree = "<group>"; };
 		10D735438BEB0338B2A41F81 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
-		124EC4B958C2C3F3F9DD4FAB /* BumpUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BumpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		143D73083207D43A031FCD65 /* BumpLogoShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpLogoShape.swift; sourceTree = "<group>"; };
 		181D0E443B6B5B26B8841038 /* ShopCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCache.swift; sourceTree = "<group>"; };
 		1AA38457FBC6CDF186DF502A /* AuthorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorRowView.swift; sourceTree = "<group>"; };
@@ -162,7 +163,7 @@
 		330EABF4AF39EC7A36F0B47E /* NotificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModels.swift; sourceTree = "<group>"; };
 		33A112CEE3783FBA224F9AF8 /* CommentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentRowView.swift; sourceTree = "<group>"; };
 		3594662C05F3F19567D718DF /* CommentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentService.swift; sourceTree = "<group>"; };
-		35C48D2C67239E987D10A28C /* Bump.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bump.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		35C48D2C67239E987D10A28C /* Bump.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bump.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38D2F37C0BF286CA0A2D09D4 /* FollowModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowModels.swift; sourceTree = "<group>"; };
 		3A4D2C181499A0C4D36F7B99 /* ChangeEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeEmailView.swift; sourceTree = "<group>"; };
 		405950A5DB4C8B531F89AE04 /* NavigationAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationAppearance.swift; sourceTree = "<group>"; };
@@ -216,10 +217,12 @@
 		A723D2A993F3A90B5E1813BA /* AuthFormLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFormLayout.swift; sourceTree = "<group>"; };
 		A798ED8F328C69A5BB208E7B /* FollowStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowStore.swift; sourceTree = "<group>"; };
 		ABA9F3CFAFEB19D1D9C35670 /* OtpVerifyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtpVerifyView.swift; sourceTree = "<group>"; };
+		AFC854D57736B0A695FCD955 /* BumpIconGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpIconGeometry.swift; sourceTree = "<group>"; };
 		B1DA2E572772D1C58450C6D4 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		B51468446DBD554D13269C65 /* ActivityHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHistoryView.swift; sourceTree = "<group>"; };
 		B5825E14B07E76CB111F363B /* KeychainTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainTokenStore.swift; sourceTree = "<group>"; };
 		B62D21B92FCC8266837DA4CB /* RecoveryEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryEmailView.swift; sourceTree = "<group>"; };
+		B6532822B38B70A8F181FFB3 /* BumpIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BumpIcon.swift; sourceTree = "<group>"; };
 		B6C77C334E2C1D4EA454641F /* RecoverAccountConfirmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverAccountConfirmView.swift; sourceTree = "<group>"; };
 		B7124E7368BD148543D5B769 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		B8FCC23E698507CA8590E324 /* BlockService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockService.swift; sourceTree = "<group>"; };
@@ -284,13 +287,6 @@
 				EABAAC04812D9DD2DE9D0582 /* CreatePostViewModel.swift */,
 			);
 			path = CreatePost;
-			sourceTree = "<group>";
-		};
-		0DBA1FDA58043671EC6F04C5 /* UITests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = UITests;
 			sourceTree = "<group>";
 		};
 		0F4934399A25DFBCF87111B5 /* Root */ = {
@@ -424,6 +420,8 @@
 			children = (
 				1AA38457FBC6CDF186DF502A /* AuthorRowView.swift */,
 				0DEF5A3B629D69B650E568DC /* AvatarView.swift */,
+				B6532822B38B70A8F181FFB3 /* BumpIcon.swift */,
+				AFC854D57736B0A695FCD955 /* BumpIconGeometry.swift */,
 				143D73083207D43A031FCD65 /* BumpLogoShape.swift */,
 				3151A3D6E6B6B633E01944CE /* CachedAsyncImage.swift */,
 				7CBFF5D158499199050C6616 /* CameraCaptureView.swift */,
@@ -488,7 +486,6 @@
 			children = (
 				5C6C480D76E2B099031BC8A0 /* Resources */,
 				AC71AE913C61AB7228822CF8 /* Sources */,
-				0DBA1FDA58043671EC6F04C5 /* UITests */,
 				CAE34889F9B581D432D791CE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -602,7 +599,6 @@
 			isa = PBXGroup;
 			children = (
 				35C48D2C67239E987D10A28C /* Bump.app */,
-				124EC4B958C2C3F3F9DD4FAB /* BumpUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -657,23 +653,6 @@
 			productReference = 35C48D2C67239E987D10A28C /* Bump.app */;
 			productType = "com.apple.product-type.application";
 		};
-		071CB3317B72E07D05818A7B /* BumpUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 10648FB031597BCAAB4CA730 /* Build configuration list for PBXNativeTarget "BumpUITests" */;
-			buildPhases = (
-				5A6BA1EFEC9F6D1DD0449EE7 /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = BumpUITests;
-			packageProductDependencies = (
-			);
-			productName = BumpUITests;
-			productReference = 124EC4B958C2C3F3F9DD4FAB /* BumpUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -682,11 +661,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-					071CB3317B72E07D05818A7B = {
-						TestTargetID = 00C85804C471F5C176A3E74C;
-					};
-				};
 			};
 			buildConfigurationList = BC411A406F890754C4155341 /* Build configuration list for PBXProject "Bump" */;
 			developmentRegion = en;
@@ -706,7 +680,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				071CB3317B72E07D05818A7B /* BumpUITests */,
 				00C85804C471F5C176A3E74C /* Bump */,
 			);
 		};
@@ -726,13 +699,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		5A6BA1EFEC9F6D1DD0449EE7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		FE0F5C4391E5A8973C5A7FE4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -761,6 +727,8 @@
 				C0113705506FF70E8427EE61 /* BlockStore.swift in Sources */,
 				52270B9A9320D834FE767B6C /* BlockedAccountsView.swift in Sources */,
 				946A62E395198AE85F43E26B /* BumpApp.swift in Sources */,
+				59F674992CB15B745075A2F9 /* BumpIcon.swift in Sources */,
+				3CD4198470F88D4269EFBD26 /* BumpIconGeometry.swift in Sources */,
 				EA9A456C7BC3CB44E2323A39 /* BumpLogoShape.swift in Sources */,
 				88B827862C8221E026968FE0 /* CachedAsyncImage.swift in Sources */,
 				B41B53E0421F6D81E05D156E /* CameraCaptureView.swift in Sources */,
@@ -999,6 +967,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Generated/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -1025,6 +994,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = Q2JQDP325X;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Generated/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -1042,56 +1012,9 @@
 			};
 			name = Debug;
 		};
-		E57E728126F0D4F78B2599AD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bump.client.uitests;
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Bump;
-			};
-			name = Release;
-		};
-		F586BD2FE87C8AABE75EEF54 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bump.client.uitests;
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Bump;
-			};
-			name = Debug;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		10648FB031597BCAAB4CA730 /* Build configuration list for PBXNativeTarget "BumpUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F586BD2FE87C8AABE75EEF54 /* Debug */,
-				E57E728126F0D4F78B2599AD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		BC411A406F890754C4155341 /* Build configuration list for PBXProject "Bump" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
