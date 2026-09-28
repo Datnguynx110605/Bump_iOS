@@ -199,22 +199,6 @@
         }
       }
     },
-    "Accounts you block are hidden from your feed, search, and comments. They show up here so you can undo it.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accounts you block are hidden from your feed, search, and comments. They show up here so you can undo it."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tài khoản bạn chặn sẽ bị ẩn khỏi bảng tin, tìm kiếm và bình luận. Chúng hiện ở đây để bạn có thể bỏ chặn."
-          }
-        }
-      }
-    },
     "Activity history": {
       "extractionState": "manual",
       "localizations": {
@@ -3663,23 +3647,6 @@
         }
       }
     },
-    "The first one always shows up eventually.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The first one always shows up eventually."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lượt đầu tiên rồi cũng sẽ đến thôi."
-          }
-        }
-      }
-    },
     "The place": {
       "extractionState": "manual",
       "localizations": {
@@ -4149,23 +4116,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bạn đang báo cáo vì lý do gì?"
-          }
-        }
-      }
-    },
-    "You": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bạn"
           }
         }
       }

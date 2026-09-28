@@ -140,8 +140,6 @@ struct EditCommentSheet: View {
                             tone: remaining < 0 ? .error : .neutral
                         )
                     }
-                } header: {
-                    Text("Comment").bumpSectionLabel()
                 }
 
                 if !comment.images.isEmpty {
