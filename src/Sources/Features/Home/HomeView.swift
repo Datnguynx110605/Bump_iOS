@@ -15,19 +15,23 @@ struct HomeView: View {
 
     @Environment(AppEnvironment.self) private var environment
     @State private var viewModel: HomeViewModel?
+    /// Shared by the feed rows and the post destination so a tapped photo grows into the
+    /// detail screen. Declared here because the source and the destination have to sit
+    /// in the same namespace, and this is the nearest view that owns both.
+    @Namespace private var feedZoom
 
     var body: some View {
         NavigationStack {
             Group {
                 if let viewModel {
-                    HomeListView(viewModel: viewModel, onDiscover: onDiscover)
+                    HomeListView(viewModel: viewModel, onDiscover: onDiscover, zoomNamespace: feedZoom)
                         .autoRefresh(every: .seconds(60)) { await viewModel.refreshIfStale() }
                 } else {
                     LoadingView()
                 }
             }
             .navigationTitle("Bump")
-            .appRouteDestinations()
+            .appRouteDestinations(zoomSource: feedZoom)
         }
         .task {
             if viewModel == nil {
@@ -48,6 +52,7 @@ struct HomeView: View {
 private struct HomeListView: View {
     let viewModel: HomeViewModel
     let onDiscover: () -> Void
+    let zoomNamespace: Namespace.ID
     @Environment(AppEnvironment.self) private var environment
 
     /// Blocking is queued server-side, so the page already on screen still contains the
@@ -104,7 +109,7 @@ private struct HomeListView: View {
                         }
                     } else {
                         ForEach(visiblePosts) { item in
-                            PostRowView(item: item)
+                            PostRowView(item: item, zoomNamespace: zoomNamespace)
                                 .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
                         }
 

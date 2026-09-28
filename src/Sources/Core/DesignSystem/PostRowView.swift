@@ -14,6 +14,9 @@ import SwiftUI
 /// off the bottom of the visible area.
 struct PostRowView: View {
     let item: PostFeedItemDto
+    /// The feed's zoom namespace. `nil` where the row appears in a list that does not
+    /// run the zoom transition, in which case the push is the ordinary one.
+    var zoomNamespace: Namespace.ID? = nil
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -24,8 +27,9 @@ struct PostRowView: View {
 
     private var post: PostSummaryDto { item.post }
 
-    init(item: PostFeedItemDto) {
+    init(item: PostFeedItemDto, zoomNamespace: Namespace.ID? = nil) {
         self.item = item
+        self.zoomNamespace = zoomNamespace
         _displayedLikeCount = State(initialValue: item.post.reactionAmount.value)
         _isLiked = State(initialValue: item.isReacted)
         _isSaved = State(initialValue: item.isSaved)
@@ -47,6 +51,10 @@ struct PostRowView: View {
                 }
             }
             .buttonStyle(.bumpSurface)
+            // Anchored to the author-plus-photo link rather than the whole row, so the
+            // action bar and caption stay put while the photo grows into the detail
+            // screen. Anchoring the outer stack would drag them into the zoom too.
+            .zoomSource(zoomNamespace, id: AppRoute.post(post.id))
 
             // `s`, not `m`: the trailing save button centres a glyph inside a 44pt box,
             // so 8pt of padding is what puts the *glyph* on the same 16pt margin as the
@@ -169,5 +177,18 @@ struct PostRowView: View {
             .foregroundStyle(BumpColor.textPrimary)
             .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
             .redacted(reason: shop == nil ? .placeholder : [])
+    }
+}
+
+private extension View {
+    /// `matchedTransitionSource` needs a concrete namespace, so the optional is unwrapped
+    /// here rather than at each call site.
+    @ViewBuilder
+    func zoomSource(_ namespace: Namespace.ID?, id: AppRoute) -> some View {
+        if let namespace {
+            matchedTransitionSource(id: id, in: namespace)
+        } else {
+            self
+        }
     }
 }
