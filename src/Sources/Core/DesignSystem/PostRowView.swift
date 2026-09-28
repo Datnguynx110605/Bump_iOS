@@ -69,10 +69,15 @@ struct PostRowView: View {
             }
             .buttonStyle(.bumpSurface)
 
+            // Asymmetric on purpose. The gap above the rule closes out the post that
+            // just ended; the gap below it opens the next one. Splitting 16/16 — as this
+            // did — leaves the author row exactly as far from the caption above it as
+            // from its own photo below, and a reader scanning the feed cannot tell which
+            // post the name belongs to. Proximity is the only cue a flat page has.
             BumpDivider()
-                .padding(.top, BumpSpacing.m)
+                .padding(.top, BumpSpacing.l)
         }
-        .padding(.top, BumpSpacing.m)
+        .padding(.top, BumpSpacing.ms)
         .task {
             environment.reactionStore.setLiked(post: post.id, isLiked)
             environment.saveStore.setSaved(post: post.id, isSaved)
