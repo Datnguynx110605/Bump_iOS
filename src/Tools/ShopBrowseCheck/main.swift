@@ -15,9 +15,7 @@
 //     screen. A genuine failure has to stay distinguishable from an empty directory, and
 //     the retry behind the error state has to bypass the once-only guard the ordinary
 //     appearance path honours.
-//  3. `ShopFieldRule` boundaries against `CreatePostValidator`, which caps shop name and
-//     address at 200 and requires both to be non-empty. Trailing whitespace must not
-//     count toward the limit, because the view model trims before sending.
+//  3. The caption ceiling shared with the edit sheets.
 //
 //   cd Bump_iOS/src
 //   swiftc -o /tmp/shopbrowsecheck \
@@ -185,26 +183,12 @@ assert(reloading.loadFirst(.page(page)))
 reloading.retry(.page(page))
 assert(reloading.requests == 2, "retry must bypass the once-only guard")
 
-// MARK: - 3. ShopFieldRule matches CreatePostValidator
-
-assert(ShopFieldRule.maxLength == 200, "server caps shop name and address at 200")
-assert(ShopFieldRule.isValid("Blue Bottle"))
-assert(!ShopFieldRule.isValid(""), "server requires a non-empty shop name")
-assert(!ShopFieldRule.isValid("   "), "whitespace-only is empty once trimmed")
-
-let atLimit = String(repeating: "a", count: 200)
-assert(ShopFieldRule.isValid(atLimit), "200 is inclusive")
-assert(!ShopFieldRule.isTooLong(atLimit))
-
-let overLimit = String(repeating: "a", count: 201)
-assert(!ShopFieldRule.isValid(overLimit))
-assert(ShopFieldRule.isTooLong(overLimit))
-
-// The view model trims before sending, so padding must not be counted against the cap.
-assert(ShopFieldRule.isValid("  " + atLimit + "  "), "trailing whitespace must not push a valid name over")
-assert(!ShopFieldRule.isTooLong("  " + atLimit + "  "))
-
-// Captions keep their own, larger ceiling and stay clearable.
+// MARK: - 3. Caption ceiling
+//
+// Shop name and address rules used to be checked here against `CreatePostValidator`.
+// They are gone: the compose screen no longer sends either field, only a place
+// identifier picked from Apple Maps, so there is no client-side shop text left to bound.
+// `CreatePostCheck` covers what replaced them.
 assert(FreeTextRule.isValid(""), "clearing a caption is a legitimate edit")
 assert(FreeTextRule.isValid(String(repeating: "b", count: 2000)))
 assert(!FreeTextRule.isValid(String(repeating: "b", count: 2001)))

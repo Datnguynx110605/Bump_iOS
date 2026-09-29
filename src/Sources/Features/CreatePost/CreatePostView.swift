@@ -40,7 +40,6 @@ struct CreatePostView: View {
             if viewModel == nil {
                 viewModel = CreatePostViewModel(
                     postService: environment.postService,
-                    shopService: environment.shopService,
                     locationProvider: environment.locationProvider
                 )
             }
@@ -90,44 +89,48 @@ private struct CreatePostForm: View {
             }
 
             Section {
-                if viewModel.isPlacePicked {
-                    PickedPlaceRow(viewModel: viewModel)
+                if let picked = viewModel.picked {
+                    PickedPlaceRow(place: picked) { viewModel.clearPick() }
                 } else {
-                    TextField("Shop name", text: $viewModel.shopName)
-                        .onChange(of: viewModel.shopName) { _, newValue in viewModel.searchShops(keyword: newValue) }
-                    if ShopFieldRule.isTooLong(viewModel.shopName) {
+                    TextField("Shop name", text: $viewModel.shopQuery)
+                        .onChange(of: viewModel.shopQuery) { _, newValue in viewModel.search(name: newValue) }
+
+                    if viewModel.isSearching {
+                        HStack(spacing: BumpSpacing.s) {
+                            ProgressView()
+                            Text("Searching Apple Maps…")
+                                .font(BumpFont.caption)
+                                .foregroundStyle(BumpColor.textSecondary)
+                        }
+                        .frame(minHeight: BumpHitTarget.min)
+                    }
+
+                    ForEach(viewModel.matches) { match in
+                        Button {
+                            viewModel.pick(match)
+                        } label: {
+                            PlaceSuggestionRow(name: match.name, detail: match.address, glyph: .storefront)
+                        }
+                        .accessibilityHint(String(localized: "Picks this place for your post"))
+                    }
+
+                    // The only dead end on this screen, so it says so plainly. A shop
+                    // Apple Maps has no record of cannot be posted about at all: the
+                    // server resolves every shop from Apple and rejects what it cannot
+                    // find, so there is no typing past this.
+                    if viewModel.didSearch && viewModel.matches.isEmpty {
                         FieldHint(
-                            text: "Shop name is too long (max \(ShopFieldRule.maxLength) characters).",
+                            text: "No places found. Try the name as it appears on Apple Maps — only places Apple knows can be reviewed.",
                             tone: .error
                         )
                     }
-                    ForEach(viewModel.shopSuggestions) { shop in
-                        Button {
-                            viewModel.selectShop(shop)
-                        } label: {
-                            PlaceSuggestionRow(name: shop.name, detail: shop.address, glyph: .mappin)
-                        }
-                        .accessibilityHint(String(localized: "Fills in this shop"))
-                    }
-                    ForEach(viewModel.nearbyPlaces) { place in
-                        Button {
-                            viewModel.selectPlace(place)
-                        } label: {
-                            PlaceSuggestionRow(name: place.name, detail: place.address, glyph: .storefront)
-                        }
-                        .accessibilityHint(String(localized: "Fills in this place"))
-                    }
-                    TextField("Address", text: $viewModel.shopAddress)
-                    if ShopFieldRule.isTooLong(viewModel.shopAddress) {
-                        FieldHint(
-                            text: "Address is too long (max \(ShopFieldRule.maxLength) characters).",
-                            tone: .error
-                        )
-                    }
-                    LocationAttachRow(viewModel: viewModel)
                 }
             } header: {
                 Text("The place").bumpSectionLabel()
+            } footer: {
+                if !viewModel.isPlacePicked {
+                    Text("Type the shop's name, then pick the right one from the list.")
+                }
             }
 
             Section {
@@ -179,16 +182,16 @@ private struct CreatePostForm: View {
     }
 }
 
-/// One tappable place, whether it came from Bump's own shop list or from the map.
-/// The place once it has been picked, in place of the fields it fills.
+/// The place once it has been picked, in place of the search field.
 ///
-/// Those fields stayed editable before, which was a lie: the server resolves a picked
-/// place from Apple and never reads the name and address sent with it, so typing over
-/// them changed nothing that got posted. A confirmed row with a way back to typing says
-/// the same thing honestly — and keeps a real identifier from being paired with text
-/// describing somewhere else.
+/// The name and address are read-only because they are Apple's copy, not the user's: the
+/// server resolves them from the identifier and never reads anything sent alongside it,
+/// so an editable field here would change nothing that gets posted. "Change" goes back to
+/// the list rather than to a blank field — the shop was picked out of a set of branches
+/// and picking the neighbouring one should not mean retyping the name.
 private struct PickedPlaceRow: View {
-    let viewModel: CreatePostViewModel
+    let place: PlaceMatch
+    let onChange: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: BumpSpacing.xs) {
@@ -197,15 +200,15 @@ private struct PickedPlaceRow: View {
                     .foregroundStyle(BumpColor.success)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: BumpSpacing.xs) {
-                    Text(viewModel.shopName)
+                    Text(place.name)
                         .font(BumpFont.control)
                         .foregroundStyle(BumpColor.textPrimary)
-                    Text(viewModel.shopAddress)
+                    Text(place.address)
                         .font(BumpFont.caption)
                         .foregroundStyle(BumpColor.textSecondary)
                 }
                 Spacer(minLength: 0)
-                Button("Change") { viewModel.clearPickedPlace() }
+                Button("Change", action: onChange)
                     .buttonStyle(.bumpText)
             }
             .frame(minHeight: BumpHitTarget.min)
@@ -235,63 +238,5 @@ private struct PlaceSuggestionRow: View {
         }
         .frame(minHeight: BumpHitTarget.min)
         .contentShape(Rectangle())
-    }
-}
-
-/// Fills the shop fields from where the user is standing, and pins the post while it is
-/// at it. The pin is what lets a brand-new shop appear in the nearby list, but naming the
-/// place is the part the user actually feels, so the copy leads with that.
-private struct LocationAttachRow: View {
-    let viewModel: CreatePostViewModel
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: BumpSpacing.xs) {
-            if viewModel.coordinate != nil {
-                HStack(spacing: BumpSpacing.s) {
-                    BumpIcon(.mappin, .circledFilled, size: BumpIconSize.small)
-                        .foregroundStyle(BumpColor.success)
-                        .accessibilityHidden(true)
-                    Text("Location attached")
-                        .font(BumpFont.callout)
-                        .foregroundStyle(BumpColor.textPrimary)
-                    Spacer(minLength: 0)
-                    Button("Remove") { viewModel.clearLocation() }
-                        .buttonStyle(.bumpText)
-                }
-                .frame(minHeight: BumpHitTarget.min)
-                if viewModel.locationIssue == .noPlaces {
-                    FieldHint(text: "No places found here. Type the shop name yourself.")
-                }
-            } else {
-                Button {
-                    Task { await viewModel.attachLocation() }
-                } label: {
-                    HStack(spacing: BumpSpacing.s) {
-                        if viewModel.isLocating {
-                            ProgressView()
-                        } else {
-                            BumpIcon(.location, .circled, size: BumpIconSize.small)
-                                .foregroundStyle(BumpColor.brand)
-                                .accessibilityHidden(true)
-                        }
-                        Text("Use my current location")
-                            .foregroundStyle(BumpColor.brand)
-                        Spacer(minLength: 0)
-                    }
-                    .frame(minHeight: BumpHitTarget.min)
-                    .contentShape(Rectangle())
-                }
-                .disabled(viewModel.isLocating)
-
-                switch viewModel.locationIssue {
-                case .denied:
-                    FieldHint(text: "Location is off. Turn it on in Settings to pin this shop.", tone: .error)
-                case .noFix:
-                    FieldHint(text: "Couldn't get your location. Try again.", tone: .error)
-                default:
-                    FieldHint(text: "Optional. Fills in nearby shops and pins this one for nearby searches.")
-                }
-            }
-        }
     }
 }

@@ -6,9 +6,9 @@ import Observation
 
 /// A latitude/longitude pair, always carried as a unit.
 ///
-/// The server rejects a half-supplied coordinate on post creation, and
-/// `GET /Shop/around` takes two non-optional query parameters, so both call sites need
-/// the pair to be present or absent together rather than two independent optionals.
+/// `GET /Shop/around` takes two non-optional query parameters and `GET /Post/related`
+/// ignores a half-supplied pair, so both call sites need the pair to be present or absent
+/// together rather than two independent optionals.
 struct PostCoordinate: Equatable {
     let latitude: Double
     let longitude: Double
@@ -25,10 +25,11 @@ struct PostCoordinate: Equatable {
 
 /// Wraps `CLLocationManager` in an async, observable form.
 ///
-/// Location is optional everywhere it is used: a post can be shared without a place, and
-/// the nearby-shops section degrades to an explicit "location off" state rather than an
-/// empty list — `GET /Shop/around` cannot be called at all without a coordinate, so an
-/// empty result and a missing permission are different things and must look different.
+/// Location is optional everywhere it is used: the compose screen only biases its place
+/// search with it, the feed loses its nearby tier without it, and the nearby-shops
+/// section degrades to an explicit "location off" state rather than an empty list —
+/// `GET /Shop/around` cannot be called at all without a coordinate, so an empty result
+/// and a missing permission are different things and must look different.
 @MainActor
 @Observable
 final class LocationProvider {
@@ -163,79 +164,74 @@ private final class Delegate: NSObject, CLLocationManagerDelegate {
     }
 }
 
-/// A place MapKit knows about at a coordinate.
+/// A place on Apple Maps that a post can be written about.
 ///
-/// No longer only a naming aid. `placeId` is Apple's own identifier for the place, and it
-/// is the one field the server trusts: a post carrying it has its shop resolved from
-/// Apple rather than from whatever name and address the app sent, which is what keeps a
-/// shop that does not exist out of the catalogue and an Apple Maps pin on the right
-/// building. Nil for a POI Apple has no identifier for, which posts on the unverified
-/// tier exactly as a hand-typed shop does.
-struct NearbyPlace: Identifiable, Equatable {
-    let id = UUID()
+/// `placeId` is Apple's own identifier and the only thing the server accepts about a
+/// shop: it resolves the name, address and coordinate from Apple itself, so the two
+/// strings here exist purely so a human can tell two branches apart before picking one.
+/// A place Apple has no identifier for is not representable, because it could not be
+/// posted about — see `PlaceLookup.search(name:near:)`.
+struct PlaceMatch: Identifiable, Equatable {
+    var id: String { placeId }
+    let placeId: String
     let name: String
     let address: String
-    let coordinate: PostCoordinate
-    let placeId: String?
 }
 
-/// Turns a raw fix into something a human can put in a form.
+/// Finds the shop the user is about to review, by name.
 ///
-/// Attaching a location used to hand the server a coordinate and nothing else, which left
-/// the person standing in the shop still typing its name and address by hand. MapKit
-/// answers both questions at that point — which businesses are here, and what the street
-/// address is — with no key, no dependency, and no server work.
+/// This is the whole of shop entry now. Nothing is typed through to the server any more —
+/// a post carries an identifier and the server resolves the place from Apple — so the job
+/// here is to turn a name into a short list of real places precise enough to pick the
+/// right branch out of.
 @MainActor
 enum PlaceLookup {
-    /// Tight on purpose: this is "which shop am I standing in", not "what is in this
-    /// neighbourhood". A wide radius buries the right answer under a list.
-    private static let poiRadius: CLLocationDistance = 200
-    /// A busy street corner answers with fifty places; nobody scrolls a form section that
-    /// long, and MapKit returns them nearest-first, so the tail is the wrong part anyway.
-    private static let maxPlaces = 10
+    /// A common name answers with dozens of branches; nobody scrolls a form section that
+    /// long, and MapKit returns them best-first, so the tail is the wrong part anyway.
+    private static let maxMatches = 10
+    /// Wide enough to cover a city and the towns around it, so a shop a short drive away
+    /// still appears, and narrow enough that the local branch outranks the one abroad.
+    private static let searchSpan: CLLocationDistance = 50_000
 
-    static func places(around coordinate: PostCoordinate) async -> [NearbyPlace] {
-        let request = MKLocalPointsOfInterestRequest(
-            center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude),
-            radius: poiRadius
-        )
-        guard let response = try? await MKLocalSearch(request: request).start() else { return [] }
-        // A POI without a name is not something anyone can pick out of a list.
-        let places = response.mapItems.compactMap { item -> NearbyPlace? in
-            guard let name = item.name, let address = formatted(item.placemark) else { return nil }
-            return NearbyPlace(
-                name: name,
-                address: address,
-                coordinate: PostCoordinate(item.placemark.coordinate),
-                placeId: item.identifier?.rawValue
+    /// Places matching `name`, biased toward `coordinate` when one is known.
+    ///
+    /// The bias is what disambiguates a chain: "Blue Bottle" alone is a worldwide list,
+    /// and the same query around a known point puts the branches the user could actually
+    /// be standing in at the top. It is only a bias — a shop outside the region still
+    /// comes back, which matters for reviewing somewhere remembered from a trip.
+    static func search(name: String, near coordinate: PostCoordinate?) async -> [PlaceMatch] {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [] }
+
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = trimmed
+        // Businesses, not street addresses: a post reviews a shop, and an address result
+        // carries no place identifier to post with.
+        request.resultTypes = .pointOfInterest
+        if let coordinate {
+            request.region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude),
+                latitudinalMeters: searchSpan,
+                longitudinalMeters: searchSpan
             )
         }
-        return Array(places.prefix(maxPlaces))
-    }
 
-    /// The street address of the point itself, for a shop MapKit has never heard of.
-    static func address(of coordinate: PostCoordinate) async -> String? {
-        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        guard let placemark = try? await CLGeocoder().reverseGeocodeLocation(location).first else { return nil }
-        return formatted(placemark)
-    }
+        guard let response = try? await MKLocalSearch(request: request).start() else { return [] }
 
-    /// The other direction: a pin for an address somebody typed rather than picked.
-    ///
-    /// A shop entered by hand carries no coordinate, and the server stores that as no
-    /// `Location` at all — the 2dsphere index is sparse, so the row is skipped and the
-    /// shop can never come back from `GET /Shop/around` however well it is rated.
-    /// Geocoding the typed address puts the pin on the shop rather than on whoever
-    /// happened to be posting about it.
-    static func coordinate(of address: String) async -> PostCoordinate? {
-        guard !address.isEmpty else { return nil }
-        guard let placemark = try? await CLGeocoder().geocodeAddressString(address).first,
-              let location = placemark.location else { return nil }
-        return PostCoordinate(location.coordinate)
+        // Dropped rather than shown greyed out: a place with no identifier, no name or no
+        // address is one the server would reject or the user could not tell apart, and a
+        // row that looks pickable and then fails the Post button is worse than absent.
+        let matches = response.mapItems.compactMap { item -> PlaceMatch? in
+            guard let placeId = item.identifier?.rawValue,
+                  let name = item.name,
+                  let address = formatted(item.placemark) else { return nil }
+            return PlaceMatch(placeId: placeId, name: name, address: address)
+        }
+        return Array(matches.prefix(maxMatches))
     }
 
     /// `CNPostalAddressFormatter` writes a mailing label, so the line breaks are flattened
-    /// into the single line the form field and the server's 200-character limit expect.
+    /// into the single line the picker row shows.
     private static func formatted(_ placemark: CLPlacemark) -> String? {
         guard let postalAddress = placemark.postalAddress else { return nil }
         let address = CNPostalAddressFormatter()

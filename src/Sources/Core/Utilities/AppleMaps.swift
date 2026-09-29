@@ -8,8 +8,8 @@ enum AppleMaps {
     /// With Apple's own identifier this opens the exact place Apple holds. Without one
     /// there is only a name and an address, and Maps has to go and search for them — which
     /// is how a pin lands on a different branch, on a similarly named shop, or on nothing
-    /// at all. That search is the fallback, not the plan: shops the server verified carry
-    /// an identifier, and shops somebody typed in do not.
+    /// at all. That search is the fallback, not the plan: every shop is created from an
+    /// identifier now, and only legacy rows written before that can arrive without one.
     static func openDirections(placeId: String?, shopName: String, address: String) {
         guard let placeId, let identifier = MKMapItem.Identifier(rawValue: placeId) else {
             openByQuery(shopName: shopName, address: address)

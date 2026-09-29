@@ -3,28 +3,21 @@ import Foundation
 struct PostService {
     let api: APIClient
 
-    /// Either a place identifier or a typed name and address. With an identifier the
-    /// server resolves the shop from Apple and ignores any shop text sent with it, so the
-    /// caller sends one or the other rather than both.
+    /// A place identifier and nothing else about the shop.
+    ///
+    /// The server resolves the name, address and coordinate from Apple itself and accepts
+    /// none of them from the request — a name is only trustworthy under an identifier the
+    /// client cannot invent, and a coordinate sent from here is indistinguishable from
+    /// where the person writing the review happens to be standing. `placeId` is required:
+    /// a place Apple does not answer for cannot be posted about at all.
     func create(
-        placeId: String?,
-        shopName: String?,
-        shopAddress: String?,
-        coordinate: PostCoordinate?,
+        placeId: String,
         caption: String?,
         rate: Int,
         images: [ImageUpload]
     ) async throws -> PostDto {
         var form = MultipartFormData()
-        if let placeId { form.addField(name: "placeId", value: placeId) }
-        if let shopName { form.addField(name: "shopName", value: shopName) }
-        if let shopAddress { form.addField(name: "shopAddress", value: shopAddress) }
-        // The server rejects a half-supplied pair ("Latitude and longitude must be
-        // provided together"), so both fields are added or neither is.
-        if let coordinate {
-            form.addField(name: "latitude", value: String(coordinate.latitude))
-            form.addField(name: "longitude", value: String(coordinate.longitude))
-        }
+        form.addField(name: "placeId", value: placeId)
         if let caption { form.addField(name: "caption", value: caption) }
         form.addField(name: "rate", value: String(rate))
         for image in images {
