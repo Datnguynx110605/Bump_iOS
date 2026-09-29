@@ -71,13 +71,14 @@ struct ChangePasswordView: View {
                 .disabled(!isValid || isSaving)
             }
         }
+        // No sign-out any more. Changing a password revokes every refresh token on the
+        // account, but the server now answers with a replacement pair, so the session
+        // this screen is running in carries straight on instead of being thrown away and
+        // retyped.
         .alert("Password Updated", isPresented: $didSave) {
-            Button("OK") {
-                dismiss()
-                authSession.signOut()
-            }
+            Button("OK") { dismiss() }
         } message: {
-            Text("Please log in again with your new password.")
+            Text("Your password has been changed.")
         }
     }
 
@@ -86,7 +87,11 @@ struct ChangePasswordView: View {
         errorMessage = nil
         defer { isSaving = false }
         do {
-            try await environment.accountService.changePassword(current: currentPassword, new: newPassword)
+            let tokens = try await environment.accountService.changePassword(current: currentPassword, new: newPassword)
+            // Every refresh token on the account is now revoked, including the one in the
+            // keychain. Storing the replacement pair before anything else can fire a
+            // request is what keeps this session alive.
+            authSession.setTokens(accessToken: tokens.accessToken, refreshToken: tokens.refreshToken)
             didSave = true
         } catch {
             errorMessage = APIError.userMessage(for: error, fallback: String(localized: "Couldn't update your password."))

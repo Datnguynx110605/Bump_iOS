@@ -32,8 +32,11 @@ struct AccountService {
         ))
     }
 
-    func changePassword(current: String, new: String) async throws {
-        let _: EmptyResponse = try await api.send(.json(
+    /// Answers a fresh token pair rather than nothing: the server revokes every refresh
+    /// token on the account, so the caller's own session has to be replaced with what
+    /// comes back or it dies the next time the access token expires.
+    func changePassword(current: String, new: String) async throws -> AuthTokens {
+        try await api.send(.json(
             path: "api/v1/Account/me/password",
             method: .put,
             body: ChangePasswordRequest(currentPassword: current, newPassword: new)
