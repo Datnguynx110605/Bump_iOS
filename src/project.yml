@@ -32,6 +32,8 @@ targets:
       path: Generated/Info.plist
       properties:
         UILaunchScreen: {}
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         # Opts the app out of the iOS 26 Liquid Glass appearance. Bump's design language
         # is flat and opaque; without this the SDK gives TabView, navigation bars and bar
         # buttons translucent refractive chrome that no appearance proxy can override.
