@@ -168,11 +168,14 @@ struct EditProfileView: View {
     }
 
     private func removeAvatar() async {
+        // The endpoint names the avatar to drop by url, and the button that gets here is
+        // only shown while there is one, so a missing url means there is nothing to remove.
+        guard let url = account?.avatar?.url else { return }
         isUploadingAvatar = true
         errorMessage = nil
         defer { isUploadingAvatar = false }
         do {
-            try await environment.accountService.removeAvatar()
+            try await environment.accountService.removeAvatar(url: url)
             let updated = try await environment.accountService.me()
             account = updated
             environment.accountCache.store(updated)

@@ -75,8 +75,14 @@ struct AccountService {
         let _: EmptyResponse = try await api.send(.multipart(path: "api/v1/Account/me/avatar", form: form))
     }
 
-    func removeAvatar() async throws {
-        let _: EmptyResponse = try await api.send(.plain(path: "api/v1/Account/me/avatar", method: .delete))
+    /// The url names which avatar to drop: the account keeps a history of them, so the
+    /// server needs the one being removed rather than "the current one".
+    func removeAvatar(url: String) async throws {
+        let _: EmptyResponse = try await api.send(.plain(
+            path: "api/v1/Account/me/avatar",
+            method: .delete,
+            query: [URLQueryItem(name: "url", value: url)]
+        ))
     }
 
     func deleteAccount() async throws {
