@@ -65,10 +65,25 @@ struct PostService {
         try await api.send(.plain(path: "api/v1/Post/shop/\(shopId)", query: .cursor(cursor, pageSize: pageSize)))
     }
 
-    /// The personalized feed: posts from accounts the viewer follows or has reacted to.
-    /// Replaces the removed `/latest` and `/most-reacted` endpoints.
-    func related(cursor: String?, pageSize: Int = 20) async throws -> CursorPage<PostFeedItemDto> {
-        try await api.send(.plain(path: "api/v1/Post/related", query: .cursor(cursor, pageSize: pageSize)))
+    /// The personalized feed: a blend of the accounts the viewer follows, the ones they
+    /// react to, widely-followed accounts, and shops near `coordinate`.
+    ///
+    /// The coordinate is what gives the nearby tier anything to draw from — without one
+    /// the server falls to a mix that has no nearby share at all. `mode` is deliberately
+    /// not sent: the server derives it from whether a cursor came with the request, and
+    /// pins the origin on the first page, so a coordinate sent while paging is ignored
+    /// rather than able to shift the feed under the reader.
+    func related(
+        cursor: String?,
+        coordinate: PostCoordinate?,
+        pageSize: Int = 20
+    ) async throws -> CursorPage<PostFeedItemDto> {
+        var query: [URLQueryItem] = .cursor(cursor, pageSize: pageSize)
+        if let coordinate {
+            query.append(URLQueryItem(name: "latitude", value: String(coordinate.latitude)))
+            query.append(URLQueryItem(name: "longitude", value: String(coordinate.longitude)))
+        }
+        return try await api.send(.plain(path: "api/v1/Post/related", query: query))
     }
 
     func search(keyword: String, cursor: String?, pageSize: Int = 20) async throws -> CursorPage<PostFeedItemDto> {

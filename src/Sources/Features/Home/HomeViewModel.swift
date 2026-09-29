@@ -58,7 +58,7 @@ final class HomeViewModel {
         errorMessage = nil
         defer { isLoading = false }
         do {
-            let page = try await postService.related(cursor: nil)
+            let page = try await postService.related(cursor: nil, coordinate: locationProvider.lastKnown)
             posts = page.items
             nextCursor = page.nextCursor
             hasMore = page.hasMore
@@ -93,7 +93,11 @@ final class HomeViewModel {
             await reload()
             return
         }
-        guard let page = try? await postService.related(cursor: nil, pageSize: 1) else { return }
+        guard let page = try? await postService.related(
+            cursor: nil,
+            coordinate: locationProvider.lastKnown,
+            pageSize: 1
+        ) else { return }
         if page.items.first?.id != topPostId { await reload() }
     }
 
@@ -122,7 +126,9 @@ final class HomeViewModel {
         isLoadingMore = true
         defer { isLoadingMore = false }
         do {
-            let page = try await postService.related(cursor: nextCursor)
+            // The origin was pinned on the first page; the server ignores a coordinate
+            // sent with a cursor, so paging does not need to carry one.
+            let page = try await postService.related(cursor: nextCursor, coordinate: nil)
             posts.append(contentsOf: page.items)
             nextCursor = page.nextCursor
             hasMore = page.hasMore
